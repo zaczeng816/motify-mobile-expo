@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image, Animated } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import SwipeComponent from "./SwipeComponent";
 
-function ChallengeComponent(props) {
-    const {title, category} = props.data;
+function ChallengeComponent({challenge, showCompleted}) {
+    const {title, category} = challenge;
     const [completed, setCompleted] = useState(false);
 
     const onSwipeComplete = () => {
@@ -13,33 +14,22 @@ function ChallengeComponent(props) {
     };
 
     const renderRightActions = (progress, dragX) => {
-      const opacity = dragX.interpolate({
-        inputRange: [-100, 0],
-        outputRange: [1, 0],
-      });
-
-      return (
-        <Animated.View style={[styles.rightAction, { opacity }]}>
-          <TouchableOpacity
-            onPress={onSwipeComplete}
-            style={styles.actionButton}>
-            <Text style={styles.actionText}>Complete</Text>
-          </TouchableOpacity>
-        </Animated.View>
-      );
+      return <SwipeComponent dragX={dragX} 
+                            onSwipeComplete={onSwipeComplete}
+                            showCompleted={showCompleted}/>
     };
 
     return (
-      <Swipeable renderRightActions={renderRightActions}>
-        <View style={styles.container}>
-          <View style={styles.iconContainer}>
-            <Image source={Icons[category]} style={styles.icon} />
+        <Swipeable renderRightActions={renderRightActions}>
+          <View style={styles.container}>
+            <View style={styles.iconContainer}>
+              <Image source={Icons[category]} style={styles.icon} />
+            </View>
+            <View style={styles.detailsContainer}>
+              <Text style={styles.title}>{title}</Text>
+            </View>
           </View>
-          <View style={styles.detailsContainer}>
-            <Text style={styles.title}>{title}</Text>
-          </View>
-        </View>
-      </Swipeable>
+        </Swipeable>
     );
 }
 
@@ -77,43 +67,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  progressContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  progressBar: {
-    height: 10,
-    backgroundColor: '#007AFF',
-    marginRight: 5,
-    borderRadius: 5,
-  },
-  progressText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  completed: {
-    color: 'green',
-    fontWeight: 'bold',
-  },
-  rightAction: {
-    backgroundColor: 'green',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    padding: 20,
-    borderRadius: 10,
-    marginVertical: 10,
-    marginHorizontal: 20,
-    height: 100,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  actionText: {
-    color: 'white',
-    fontWeight: 'bold',
-    marginLeft: 10,
-  }
+  // progressContainer: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  // },
+  // progressBar: {
+  //   height: 10,
+  //   backgroundColor: '#007AFF',
+  //   marginRight: 5,
+  //   borderRadius: 5,
+  // },
+  // progressText: {
+  //   fontSize: 14,
+  //   fontWeight: 'bold',
+  // },
 });
 
 

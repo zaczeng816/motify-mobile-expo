@@ -1,35 +1,55 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Dimensions, ScrollView, FlatList} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text} from 'react-native';
 import CalendarComponent from '../components/CalenderComponent';
-import ChallengeComponent from '../components/ChallengeComponent';
+import DisplayChallenges from '../components/DisplayChallenges';
+import SwitchComponent from '../components/SwitchComponent';
+
 
 function TodayScreen({ navigation }) {
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
+    const [showCompleted, setShowCompleted] = useState(false);
+    const options = [{label: 'To do', value: 'uncompleted'}, {label: 'Completed', value: 'completed'}];
 
     const challenges = [
         {
-          title: 'Reading',
-          category: 'reading'
+            title: 'Reading',
+            category: 'reading',
+            completed: true,
+            type: 'habit',
+            frequency: 'week',
+            duration: new Date(0, 0, 0, 1, 30)
         },
         {
-          title: 'Exercise',
-          category: 'exercise'
+            title: 'Exercise',
+            category: 'exercise',
+            completed: false,
+            type: 'habit',
+            frequency: 'day',
+
         },
         {
-          title: 'Meditation',
-          category: 'meditation'
+            title: 'Meditation',
+            category: 'meditation',
+            completed: true,
+            type: 'goal'
         },
         {
             title: 'Wake up early',
-            category: 'sleeping'
+            category: 'sleeping',
+            completed: false,
+            type: 'goal'
         },
         {
             title: 'Professional',
-            category: 'professional'
+            category: 'professional',
+            completed: true,
+            type: 'goal'
         },
         {
             title: 'Networking',
-            category: 'social'
+            category: 'social',
+            completed: false,
+            type: 'goal'
           },
       ];
 
@@ -37,20 +57,22 @@ function TodayScreen({ navigation }) {
         setSelectedDate(day);
     }
 
-    function renderItem({item}){
-        return <ChallengeComponent data={item}/>
+    const showChallenges = challenges.filter(challenge => showCompleted ? challenge.completed : !challenge.completed);
+
+
+    function switchHandler(){
+        setShowCompleted(!showCompleted);
     }
 
     return (
         <View style={styles.screen}>
             <CalendarComponent handleDayPress={handleDayPress}
                             selectedDate={selectedDate}/>
-            <View style={styles.flatListView}>
-                <FlatList data={challenges}
-                        renderItem={renderItem}
-                        keyExtractor={(item, index) => index.toString()}
-                        contentContainerStyle={styles.challengeContentContainer}>
-                </FlatList>
+            <View style={styles.challengesContainer} >
+                <SwitchComponent options={options} 
+                                switchHandler={switchHandler}/>
+                <DisplayChallenges challenges={showChallenges}
+                                showCompleted={showCompleted}/>
             </View>
         </View>
     );
@@ -62,13 +84,14 @@ const styles = StyleSheet.create({
     screen: {
       flex: 1,
     },
-    challengeContentContainer: {
-    //   alignItems: 'center',
-    //   justifyContent: 'center',
-        //flex: 1,
+    challengesContainer: {
+        flex: 1,
         margin: 20
     },
-    flatListView: {
-        flex: 1
-    }
+    displayContainer: {
+        // flex: 1,
+        // backgroundColor: 'red',
+        // height: 400
+    },
+
   });
