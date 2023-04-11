@@ -39,15 +39,15 @@ function GoalProgress({challenge}){
 
     return (
         <View style={styles.container}>
-            <Progress.Bar progress={percent} 
-                        width={50}
-                        color = {barColor}
-                        unfilledColor='#D3D3D3'
-                        borderWidth={0}
-                        style={styles.progressBar}/> 
-            <Text style={styles.progressText}>
-                {progressText}
-            </Text>
+            <View style={styles.progressBarContainer}>
+                <Progress.Bar progress={percent} 
+                            color = {barColor}
+                            unfilledColor='#D3D3D3'
+                            borderWidth={0}/> 
+                <Text style={styles.progressText}>
+                    {progressText}
+                </Text>
+            </View>
         </View>
     );
 }
@@ -57,17 +57,18 @@ export default GoalProgress;
 const styles = StyleSheet.create({
     container: {
       flexDirection: 'column',
-      alignItems: 'flex-end',
-      marginTop: 20,
+      //alignItems: 'flex-end',
+      alignItems: 'center'
+      //marginTop: 20,
       //justifyContent: 'right'
-    },
-    progressBar: {
-        alignContent: 'right'
     },
     progressText: {
       fontSize: 10,
       //fontWeight: 'bold',
-      marginVertical: 10,
+      marginVertical: 5,
       color: '#808080'
     },
+    progressBarContainer: {
+        width: '80%'
+    }
   });

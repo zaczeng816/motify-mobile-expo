@@ -2,10 +2,10 @@ import React from "react";
 import {View, FlatList, StyleSheet, Text} from 'react-native';
 import ChallengeComponent from "./ChallengeComponent";
 
-function DisplayChallenges({challenges}){
+function DisplayChallenges({challenges, onClick}){
 
   function renderItem({item}){
-    return <ChallengeComponent challenge={item}/>
+    return <ChallengeComponent challenge={item} onClick={onClick}/>
   }
 
   return (

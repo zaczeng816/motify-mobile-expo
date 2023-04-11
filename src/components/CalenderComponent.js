@@ -6,7 +6,7 @@ import Day from "./Day";
 
 const { width, height } = Dimensions.get('window');
 
-function CalendarComponent({ handleDayPress, selectedDate }) {
+function CalendarComponent({ handleDayPress, selectedDate, setMonth, setYear}) {
   //startDate is the first day that the user 
   const flatListRef = useRef(null);
   const startDate = '2023-01-01';
@@ -28,7 +28,6 @@ function CalendarComponent({ handleDayPress, selectedDate }) {
   };
 
   const dateRange = generateDateRange(startDate, endDate);
-  const [currentMonth, setCurrentMonth] = useState(getMonthName(selectedDate));
 
 
   const renderItem = ({ item }) => (
@@ -42,8 +41,11 @@ function CalendarComponent({ handleDayPress, selectedDate }) {
 
   const onViewableItemsChanged = useRef(({ viewableItems }) => {
     if (viewableItems.length > 0) {
-      const month = getMonthName(viewableItems[0].item);
-      setCurrentMonth(month);
+      const currentItem = viewableItems[0].item;
+      const currentDate = new Date(currentItem);
+      setMonth(getMonthName(currentDate));
+      setYear(currentDate.getFullYear());
+      //console.log(currentItem.getFullYear());
     }
   }).current;
 
@@ -55,8 +57,7 @@ function CalendarComponent({ handleDayPress, selectedDate }) {
     };
   };
 
-  function getMonthName(dateString) {
-    const date = new Date(dateString);
+  function getMonthName(date) {
     const monthNames = ["January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
     ];
@@ -76,7 +77,6 @@ function CalendarComponent({ handleDayPress, selectedDate }) {
   return (
     <View>
       <View style={styles.monthContainer}>
-        <Text style={styles.monthText}>{currentMonth}</Text>
       </View>
       <FlatList
         ref={flatListRef}

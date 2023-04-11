@@ -29,10 +29,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#F2F2F2',
         borderRadius: 10,
         padding: 10,
+        alignSelf: 'center'
+        // marginBottom: 5,
+        // marginTop: 10
       },
     text: {
         color: '#666666',
         fontSize: 12,
         fontWeight: 'bold'
     },
+    streak: {
+        color: '#666666',
+        fontSize: 8,
+        paddingTop: 5
+    }
 })
