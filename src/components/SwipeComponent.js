@@ -1,19 +1,17 @@
 import React from "react";
 import { StyleSheet , Animated, TouchableOpacity, Text} from "react-native";
 
-function SwipeComponent({dragX, onSwipeComplete, showCompleted}){
+function SwipeComponent({dragX, onSwipeComplete}){
     const opacity = dragX.interpolate({
         inputRange: [-100, 0],
         outputRange: [1, 0],
       });
 
-    const showText = showCompleted? 'Undo':'Complete';
-    const swipeColor = showCompleted? 'red':'green';
 
     return (
-        <Animated.View style={[styles.rightAction, { opacity}, {backgroundColor: swipeColor}]}>
+        <Animated.View style={[styles.rightAction, { opacity}, {backgroundColor: 'green'}]}>
             <TouchableOpacity onPress={onSwipeComplete} style={styles.actionButton}>
-            <Text style={styles.actionText}>{showText}</Text>
+                <Text style={styles.actionText}>Complete</Text>
             </TouchableOpacity>
         </Animated.View>
     );

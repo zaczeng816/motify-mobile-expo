@@ -28,9 +28,11 @@ export default Day;
 
 const styles = StyleSheet.create({
     todayContainer: {
-        borderRadius: 50,
-        borderColor: 'orange',
-        borderWidth: 2
+      borderRadius: 60,
+      borderColor: 'orange',
+      borderWidth: 2,
+      // paddingVertical: 5,
+      // paddingHorizontal: 10
     },
     dayContainer: {
         padding: 5,
@@ -40,8 +42,8 @@ const styles = StyleSheet.create({
     selectedDayContainer: {
         backgroundColor: 'orange',
         borderRadius: 50,
-        paddingVertical: 5,
-        paddingHorizontal: 10,
+        // paddingVertical: 5,
+        // paddingHorizontal: 10,
     },
     dayText: {
       fontSize: 12,

@@ -2,11 +2,10 @@ import React from "react";
 import {View, FlatList, StyleSheet, Text} from 'react-native';
 import ChallengeComponent from "./ChallengeComponent";
 
-function DisplayChallenges({challenges, showCompleted}){
-  //console.log(challenges);
+function DisplayChallenges({challenges}){
 
   function renderItem({item}){
-    return <ChallengeComponent challenge={item} showCompleted={showCompleted}/>
+    return <ChallengeComponent challenge={item}/>
   }
 
   return (

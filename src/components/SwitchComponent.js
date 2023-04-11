@@ -3,10 +3,15 @@ import { StyleSheet } from "react-native";
 import SwitchSelector from 'react-native-switch-selector';
 
 function SwitchComponent({options, switchHandler}){
+
+    function handlePress(value){
+        switchHandler(value);
+    }
+
     return (
         <SwitchSelector options={options}
             initial={0}
-            onPress={switchHandler}
+            onPress={handlePress}
             buttonColor='orange'
             style={styles.switchContainer}/>
     )
