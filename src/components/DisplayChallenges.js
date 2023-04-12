@@ -1,10 +1,13 @@
 import React from "react";
 import {View, FlatList, StyleSheet, Text} from 'react-native';
+import ChallengeProgress from "./ChallengeProgress";
 import ChallengeComponent from "./ChallengeComponent";
 
-function DisplayChallenges({challenges, onClick}){
+function DisplayChallenges({challenges, onClick, includeProgress}){
 
   function renderItem({item}){
+    if (includeProgress)
+      return <ChallengeProgress challenge={item} onClick={onClick}/>
     return <ChallengeComponent challenge={item} onClick={onClick}/>
   }
 

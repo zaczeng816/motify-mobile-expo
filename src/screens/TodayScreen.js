@@ -1,105 +1,42 @@
 import React, { useState, useEffect} from 'react';
-import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, View, Text, Dimensions, Button} from 'react-native';
 import CalendarComponent from '../components/CalenderComponent';
 import DisplayChallenges from '../components/DisplayChallenges';
 import SwitchComponent from '../components/SwitchComponent';
 import AddButton from '../components/AddButton';
+import { useNavigation, useRoute, useParams } from '@react-navigation/native';
+import NewChallengeModal from '../components/NewChallengeModal';
+import DisplayChallengeModal from '../components/DisplayChallengeModal';
 
 
 function TodayScreen() {
+    const { challenges } = useRoute().params;
     const navigation = useNavigation();
     const screenHeight = Dimensions.get('window').height;
     const paddingTop = 0.08 * screenHeight;
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
     const [selectedOption, setSelectedOption] = useState('habit');
     const options = [{label: 'Habit', value: 'habit'}, {label: 'Goal', value: 'goal'}];
+    const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+    const [isDisplayModalVisible, setIsDisplayModalVisible] = useState(false);
+    const [currentChallenge, setCurrentChallenge] = useState(challenges[0]);
+
+    function hideAddModal(){
+        setIsAddModalVisible(false);
+    }
+
+    function hideDisplayModal(){
+        setIsDisplayModalVisible(false);
+    }
 
     function onAddHandler(){
-        navigation.navigate('Create Challenge');
+        setIsAddModalVisible(true);
     }
+
     function onClickChallengeHandler(challenge){
-        navigation.navigate('Display Challenge', {challenge: challenge});
+        setIsDisplayModalVisible(true);
+        setCurrentChallenge(challenge);
     }
-    const challenges = [
-        {
-            title: 'Reading',
-            category: 'reading',
-            completed: true,
-            type: 'habit',
-            amountType: 'duration',
-            frequency: 'week',
-            duration: new Date(0, 0, 0, 0, 30),
-            endDate: new Date(2023, 4, 20, 0, 0),
-            streak: 5
-        },
-        {
-            title: 'Running',
-            category: 'exercise',
-            completed: false,
-            type: 'habit',
-            amountType: 'times',
-            frequency: 'day',
-            amount: 5,
-            unit: 'mile',
-            endDate: new Date(2023, 4, 25, 0, 0),
-            streak: 10
-        },
-        {
-            title: 'Meditation',
-            category: 'meditation',
-            completed: true,
-            type: 'goal',
-            amountType: 'duration',
-            duration: new Date(0, 0, 0, 2, 0),
-            accomplished: new Date(0, 0, 0, 0, 5),
-            endDate: null
-        },
-        {
-            title: 'Wake up early',
-            category: 'sleeping',
-            completed: false,
-            type: 'habit',
-            frequency: 'day',
-            amountType: 'times',
-            amount: 1,
-            unit: 'time',
-            endDate: null,
-            streak: 1
-        },
-        {
-            title: 'Professional',
-            category: 'professional',
-            completed: true,
-            type: 'goal',
-            amountType: 'duration',
-            duration: new Date(0, 0, 0, 10, 0),
-            accomplished: new Date(0, 0, 0, 4, 0),
-            endDate: new Date(2024, 6, 2, 0, 0)
-        },
-        {
-            title: 'Networking',
-            category: 'social',
-            completed: false,
-            type: 'goal',
-            amountType: 'times',
-            amount: 3,
-            unit: 'time',
-            accomplished: 3,
-            endDate: null
-          },
-        {
-            title: 'Save money',
-            category: 'finance',
-            completed: false,
-            type: 'goal',
-            amountType: 'times',
-            amount: 100,
-            unit: 'dollar',
-            accomplished: 62,
-            endDate: null
-        }
-      ];
 
     function handleDayPress(day){
         setSelectedDate(day);
@@ -141,8 +78,14 @@ function TodayScreen() {
                 <SwitchComponent options={options} 
                                 switchHandler={switchHandler}/>
                 <DisplayChallenges challenges={showChallenges}
-                                onClick={onClickChallengeHandler}/>
+                                onClick={onClickChallengeHandler}
+                                includeProgress={true}/>
             </View>
+            <NewChallengeModal isModalVisible={isAddModalVisible}
+                            hideModal={hideAddModal}/>
+            <DisplayChallengeModal isModalVisible={isDisplayModalVisible}
+                            hideModal={hideDisplayModal}
+                            challenge={currentChallenge}/>
         </View>
     );
 }

@@ -10,7 +10,9 @@ const Icons = {
     sleeping: require('../../assets/category/sleeping.png'),
     social: require('../../assets/category/social.png'),
     study: require('../../assets/category/study.png'),
-    writing: require('../../assets/category/writing.png')
+    writing: require('../../assets/category/writing.png'),
+    habit: require('../../assets/habit.png'),
+    goal: require('../../assets/goal.png'),
 }
 
 export default Icons;

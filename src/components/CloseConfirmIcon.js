@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 function CloseConfirmIcon({iconName, onPress}) {
-  const backgroundColor = iconName === 'close'? '#cccccc':'#40bf45';
+  const backgroundColor = iconName === 'close'? '#cccccc':'orange';
 
   return (
     <View style={[styles.container, {backgroundColor}]}>
