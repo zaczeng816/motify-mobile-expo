@@ -43,7 +43,7 @@ function ChallengeProgress({challenge, onClick}) {
                   </View>}
               {challenge.type === 'goal' && 
                   <View style={styles.progressBarContainer}>
-                    <GoalProgress challenge={challenge}/>
+                    <GoalProgress challenge={challenge} color='default'/>
                   </View>}
             </View>
             {challenge.type === 'habit' && 

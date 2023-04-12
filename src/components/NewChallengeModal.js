@@ -15,7 +15,7 @@ function NewChallengeModal({ isModalVisible, hideModal }) {
       visible={isModalVisible}
       onRequestClose={hideModal}
     >
-        <BlurView intensity={50} style={styles.modalBackground} />
+        <BlurView intensity={300} style={styles.modalBackground} />
         <View style={styles.modalContainer}>
           <View style={styles.header}>
             <CloseConfirmIcon iconName={'close'} onPress={closeModal} />
@@ -33,9 +33,11 @@ const styles = StyleSheet.create({
   modalBackground: {
     flex: 1,
     justifyContent: 'center',
+    //backgroundColor: 'rgba(0, 0, 0, 0.5)'
   },
   modalContainer: {
     height: '90%',
+    width: '100%',
     alignSelf: 'center',
     backgroundColor: 'white',
     borderRadius: 30,

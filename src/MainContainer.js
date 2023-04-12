@@ -51,7 +51,8 @@ const challenges = [
         duration: new Date(0, 0, 0, 2, 0),
         accomplished: new Date(0, 0, 0, 0, 5),
         endDate: null,
-        private: false
+        private: false,
+        participantsNum: 52
     },
     {
         title: 'Wake up early',
@@ -64,7 +65,8 @@ const challenges = [
         unit: 'time',
         endDate: null,
         streak: 1,
-        private: false
+        private: false,
+        participantsNum: 2
     },
     {
         title: 'Professional',
@@ -99,7 +101,8 @@ const challenges = [
         unit: 'dollar',
         accomplished: 62,
         endDate: null,
-        private: false
+        private: false,
+        participantsNum: 231
     }
   ];
 

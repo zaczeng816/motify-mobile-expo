@@ -6,7 +6,7 @@ import ProgressCircle from 'react-native-progress-circle';
 import * as Progress from 'react-native-progress';
 
 
-function GoalProgress({challenge}){
+function GoalProgress({challenge, color}){
     const [percent, setPercent] = useState(0);
     const [progressText, setProgressText] = useState('');
 
@@ -30,21 +30,25 @@ function GoalProgress({challenge}){
             setProgressText(displayTime(challenge.accomplished) + ' / ' + displayTime(challenge.duration));
         }
         else if (challenge.amountType === 'times'){
+            const unitText = challenge.amount > 1? challenge.unit + 's': challenge.unit;
             setPercent(challenge.accomplished / challenge.amount);
-            setProgressText(challenge.accomplished + ' / ' + challenge.amount + ' ' + challenge.unit);
+            setProgressText(challenge.accomplished + ' / ' + challenge.amount + ' ' + unitText);
         }
     }, []);
 
-    const barColor = percent < 0.1 ? 'red' : percent < 0.5 ? '#fcc000' : '#0ca40e';
+    const defaultColor = percent < 0.1 ? 'red' : percent < 0.5 ? '#fcc000' : '#0ca40e';
+    barColor = color === 'default'? defaultColor: color;
+    const textColor = color === 'default'? '#808080': 'white';
+    const unfilledColor = color === 'default'? '#D3D3D3': '#d9d9d9';
 
     return (
         <View style={styles.container}>
             <View style={styles.progressBarContainer}>
                 <Progress.Bar progress={percent} 
                             color = {barColor}
-                            unfilledColor='#D3D3D3'
+                            unfilledColor= {unfilledColor}
                             borderWidth={0}/> 
-                <Text style={styles.progressText}>
+                <Text style={[styles.progressText, {color: textColor}]}>
                     {progressText}
                 </Text>
             </View>
@@ -66,7 +70,6 @@ const styles = StyleSheet.create({
       fontSize: 10,
       //fontWeight: 'bold',
       marginVertical: 5,
-      color: '#808080'
     },
     progressBarContainer: {
         width: '80%'
