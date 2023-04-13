@@ -13,6 +13,8 @@ const Icons = {
     writing: require('../../assets/category/writing.png'),
     habit: require('../../assets/habit.png'),
     goal: require('../../assets/goal.png'),
+    discussion: require('../../assets/discussion.png'),
+    search: require('../../assets/search.png')
 }
 
 export default Icons;

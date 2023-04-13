@@ -27,7 +27,8 @@ const challenges = [
         duration: new Date(0, 0, 0, 0, 30),
         endDate: new Date(2023, 4, 20, 0, 0),
         streak: 5,
-        private: true
+        private: true,
+        description: 'I want to read more books'
     },
     {
         title: 'Running',
@@ -40,7 +41,8 @@ const challenges = [
         unit: 'mile',
         endDate: new Date(2023, 4, 25, 0, 0),
         streak: 10,
-        private: true
+        private: true,
+        description: 'I want to run around the river'
     },
     {
         title: 'Meditation',
@@ -52,7 +54,8 @@ const challenges = [
         accomplished: new Date(0, 0, 0, 0, 5),
         endDate: null,
         private: false,
-        participantsNum: 52
+        participantsNum: 52,
+        description: 'I think meditation is good for me'
     },
     {
         title: 'Wake up early',
@@ -66,7 +69,8 @@ const challenges = [
         endDate: null,
         streak: 1,
         private: false,
-        participantsNum: 2
+        participantsNum: 2,
+        description: 'I would like to wake up at 7am everyday'
     },
     {
         title: 'Professional',
@@ -77,7 +81,8 @@ const challenges = [
         duration: new Date(0, 0, 0, 10, 0),
         accomplished: new Date(0, 0, 0, 4, 0),
         endDate: new Date(2024, 6, 2, 0, 0),
-        private: true
+        private: true,
+        description: 'I want to finish all my work'
     },
     {
         title: 'Networking',
@@ -89,7 +94,8 @@ const challenges = [
         unit: 'time',
         accomplished: 3,
         endDate: null,
-        private: true
+        private: true,
+        description: 'I plan to attend social events three times'
       },
     {
         title: 'Save money',
@@ -102,7 +108,8 @@ const challenges = [
         accomplished: 62,
         endDate: null,
         private: false,
-        participantsNum: 231
+        participantsNum: 231,
+        description: 'I would like to save money for travelling'
     }
   ];
 
@@ -143,7 +150,9 @@ export default function MainContainer({navigation}){
             <Tab.Screen name={challengesName} 
                         component={ChallengesScreen}
                         initialParams={{challenges: challenges}}/>
-            <Tab.Screen name={discoverName} component={DiscoverScreen}/>
+            <Tab.Screen name={discoverName} 
+                        component={DiscoverScreen}
+                        initialParams={{challenges: challenges}}/>
             <Tab.Screen name={settingsName} component={SettingsScreen}/>
             </Tab.Navigator>
         </NavigationContainer>

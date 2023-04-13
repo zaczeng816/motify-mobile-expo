@@ -3,40 +3,39 @@ import { StyleSheet, View, Text, Dimensions, Button} from 'react-native';
 import CalendarComponent from '../components/CalenderComponent';
 import DisplayChallenges from '../components/DisplayChallenges';
 import SwitchComponent from '../components/SwitchComponent';
-import AddButton from '../components/AddButton';
+import AddButton from '../components/buttons/AddButton';
 import { useNavigation, useRoute, useParams } from '@react-navigation/native';
-import NewChallengeModal from '../components/NewChallengeModal';
-import DisplayChallengeModal from '../components/DisplayChallengeModal';
+import NewChallengeModal from '../modals/NewChallengeModal';
+// import DisplayChallengeModal from '../modals/DisplayChallengeModal';
 
 
 function TodayScreen() {
     const { challenges } = useRoute().params;
-    const navigation = useNavigation();
     const screenHeight = Dimensions.get('window').height;
     const paddingTop = 0.08 * screenHeight;
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
     const [selectedOption, setSelectedOption] = useState('habit');
     const options = [{label: 'Habit', value: 'habit'}, {label: 'Goal', value: 'goal'}];
     const [isAddModalVisible, setIsAddModalVisible] = useState(false);
-    const [isDisplayModalVisible, setIsDisplayModalVisible] = useState(false);
-    const [currentChallenge, setCurrentChallenge] = useState(challenges[0]);
+    // const [isDisplayModalVisible, setIsDisplayModalVisible] = useState(false);
+    // const [currentChallenge, setCurrentChallenge] = useState(challenges[0]);
 
     function hideAddModal(){
         setIsAddModalVisible(false);
     }
 
-    function hideDisplayModal(){
-        setIsDisplayModalVisible(false);
-    }
+    // function hideDisplayModal(){
+    //     setIsDisplayModalVisible(false);
+    // }
 
     function onAddHandler(){
         setIsAddModalVisible(true);
     }
 
-    function onClickChallengeHandler(challenge){
-        setIsDisplayModalVisible(true);
-        setCurrentChallenge(challenge);
-    }
+    // function onClickChallengeHandler(challenge){
+    //     setIsDisplayModalVisible(true);
+    //     setCurrentChallenge(challenge);
+    // }
 
     function handleDayPress(day){
         setSelectedDate(day);
@@ -78,14 +77,13 @@ function TodayScreen() {
                 <SwitchComponent options={options} 
                                 switchHandler={switchHandler}/>
                 <DisplayChallenges challenges={showChallenges}
-                                onClick={onClickChallengeHandler}
                                 includeProgress={true}/>
             </View>
             <NewChallengeModal isModalVisible={isAddModalVisible}
                             hideModal={hideAddModal}/>
-            <DisplayChallengeModal isModalVisible={isDisplayModalVisible}
+            {/* <DisplayChallengeModal isModalVisible={isDisplayModalVisible}
                             hideModal={hideDisplayModal}
-                            challenge={currentChallenge}/>
+                            challenge={currentChallenge}/> */}
         </View>
     );
 }

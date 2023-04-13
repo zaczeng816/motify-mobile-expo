@@ -21,7 +21,6 @@ function HabitDetail({challenge}){
     return (
         <View style={styles.container}> 
             <Text style={styles.frequencyText}>{frequencyText}</Text>
-            {/* <Text style={styles.streak}>Streak: {challenge.streak} 🌟</Text> */}
         </View>
     )
 }

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet} from 'react-native';
 import SwitchComponent from '../components/SwitchComponent';
 import { useNavigation, useRoute, useParams } from '@react-navigation/native';
 import DisplayChallenges from '../components/DisplayChallenges';
-import DisplayChallengeModal from '../components/DisplayChallengeModal';
+import DisplayChallengeModal from '../modals/DisplayChallengeModal';
 
 
 function ChallengesScreen() {
