@@ -14,7 +14,8 @@ const Icons = {
     habit: require('../../assets/habit.png'),
     goal: require('../../assets/goal.png'),
     discussion: require('../../assets/discussion.png'),
-    search: require('../../assets/search.png')
+    search: require('../../assets/search.png'),
+    avatar: require('../../assets/avatar.png'),
 }
 
 export default Icons;
