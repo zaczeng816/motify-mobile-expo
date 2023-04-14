@@ -1,8 +1,13 @@
 import React from "react";
 import { View, Text, Modal, StyleSheet, Dimensions } from 'react-native';
 import IconButton from "../components/buttons/IconButton";
+import ScreenHeader from "../components/ScreenHeader";
+
+const screenHeight = Dimensions.get('window').height;
+const headerHeight = screenHeight * 0.15;
 
 function DiscussionModal({challenge, isModalVisible, hideModal}){
+
     function goBack(){
         hideModal();
     }
@@ -13,15 +18,11 @@ function DiscussionModal({challenge, isModalVisible, hideModal}){
         visible={isModalVisible}
         onRequestClose={hideModal}
         >
-            <View style={styles.container}>
-                <View style={styles.backButtonContainer}>
-                    <IconButton iconName={'chevron-back'} onPress={goBack} />
-                </View>
-                <View style={styles.titleContainer} >
-                    <Text style={styles.title}>Discussion</Text>
-                </View>
-
-            </View>
+            <ScreenHeader title='Discussion'
+                        onBackPress={goBack}
+                        rightIcon={'add-outline'}
+                        //onRightIconPress
+                        />
         </Modal>
     )
 }
@@ -31,22 +32,30 @@ export default DiscussionModal;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'orange',
-        alignItems: 'center',
-        justifyContent: 'center'
+        //backgroundColor: 'orange',
+        alignItems: 'stretch',
+        justifyContent: 'flex-start'
     },
     backButtonContainer: {
-        position: "absolute",
-        top: 30,
-        left: 0,
-        padding: 20,
-        zIndex: 1
+        // position: "absolute",
+        // top: 30,
+        // left: 0,
+        // padding: 20,
+        // zIndex: 1
+        borderWidth: 2
     },
     title: {
-        fontSize: 30,
-        color: 'white'
+        fontSize: 20,
+        color: 'white',
+        fontWeight: 'bold'
     },
     titleContainer: {
-        marginTop: 50
+        marginBottom: 30
+    },
+    headerContainer: {
+        backgroundColor: 'orange',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        flexDirection: 'row'
     }
 })  

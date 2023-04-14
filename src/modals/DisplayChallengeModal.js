@@ -10,15 +10,15 @@ import ChallengeDetail from "../components/ChallengeDetail";
 import NewChallengeModal from "./NewChallengeModal";
 import EditChallengeModal from "./EditChallengeModal";
 import DiscussionModal from "./DiscussionModal";
+import DiscussionButton from "../components/buttons/DiscussionButton";
 
 const screenHeight = Dimensions.get('window').height;
 const topHeight = screenHeight * 0.5;
 const topColor = 'orange';
 const titleMarginTop = screenHeight * 0.15;
 
-function DisplayChallenges({isModalVisible, hideModal, challenge}){
+function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-    const [isDiscussionModalVisible, setIsDiscussionModalVisible] = useState(false);
 
     function getFontSize() {
         const length = challenge.title.length;
@@ -43,14 +43,6 @@ function DisplayChallenges({isModalVisible, hideModal, challenge}){
         setIsEditModalVisible(false);
     }
 
-    function hideDiscussionModal(){
-        setIsDiscussionModalVisible(false);
-    }
-
-    function showDiscussion(){
-        setIsDiscussionModalVisible(true);
-    }
-
     return (
         <Modal
             animationType="slide"
@@ -66,9 +58,6 @@ function DisplayChallenges({isModalVisible, hideModal, challenge}){
                     <View style={styles.editButtonContainer}>
                         <IconButton onPress={showSetting} iconName={'create-outline'}/>
                     </View>
-                    <DiscussionModal challenge={challenge}
-                                    isModalVisible={isDiscussionModalVisible}
-                                    hideModal={hideDiscussionModal}/>
                     <EditChallengeModal challenge={challenge}
                                         isModalVisible={isEditModalVisible}
                                         hideModal={hideEditModal}/>
@@ -85,15 +74,19 @@ function DisplayChallenges({isModalVisible, hideModal, challenge}){
                     </View>
                 </View>
                 <View style={styles.bottom}>
-                    <ChallengeDetail challenge={challenge} 
-                                    showDiscussion={showDiscussion}/>
+                    <View style={styles.detailContainer}>
+                        <ChallengeDetail challenge={challenge}/>
+                        </View>
+                    <View style={styles.discussionButtonContainer}>
+                        <DiscussionButton challenge={challenge} isPrivate={challenge.private}/>
+                    </View>
                 </View>
             </View>
         </Modal>
     )
 }
 
-export default DisplayChallenges;
+export default DisplayChallengeModal;
 
 
 const styles = StyleSheet.create({
@@ -105,10 +98,6 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
       justifyContent: 'space-between',
       alignItems: 'flex-end',
-    },
-    bottom: {
-      flex: 0.7,
-      //backgroundColor: '#808080',
     },
     title: {
         color: 'white',
@@ -154,5 +143,21 @@ const styles = StyleSheet.create({
         right: 0,
         padding: 20,
         zIndex: 1
-    }
+    },
+    bottom: {
+        flex: 0.7,
+        flexDirection: 'column',
+        alignItems: 'stretch',
+        //backgroundColor: '#808080',
+    },
+    discussionButtonContainer: {
+        flex: 1,
+        alignItems: 'center',
+        //borderWidth: 2
+        //marginBottom: 30
+    },
+    detailContainer: {
+        flex: 3,
+        //borderWidth: 2
+    },
 });
