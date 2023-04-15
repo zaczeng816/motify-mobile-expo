@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Modal, StyleSheet, Dimensions } from 'react-native';
 import IconButton from "../components/buttons/IconButton";
 import ScreenHeader from "../components/ScreenHeader";
+import DiscussionComponent from "../components/DiscussionComponent";
 
 const screenHeight = Dimensions.get('window').height;
 const headerHeight = screenHeight * 0.15;
@@ -20,9 +21,10 @@ function DiscussionModal({challenge, isModalVisible, hideModal}){
         >
             <ScreenHeader title='Discussion'
                         onBackPress={goBack}
-                        rightIcon={'add-outline'}
+                        //rightIcon={'add-outline'}
                         //onRightIconPress
                         />
+            <DiscussionComponent />
         </Modal>
     )
 }

@@ -24,18 +24,10 @@ function TodayScreen() {
         setIsAddModalVisible(false);
     }
 
-    // function hideDisplayModal(){
-    //     setIsDisplayModalVisible(false);
-    // }
 
     function onAddHandler(){
         setIsAddModalVisible(true);
     }
-
-    // function onClickChallengeHandler(challenge){
-    //     setIsDisplayModalVisible(true);
-    //     setCurrentChallenge(challenge);
-    // }
 
     function handleDayPress(day){
         setSelectedDate(day);
