@@ -1,160 +1,166 @@
-import * as React from 'react';
-import {View, Text} from 'react-native';
-import {NavigationContainer} from "@react-navigation/native";
-import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import * as React from "react";
+import { View, Text } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
-import TodayScreen from './screens/TodayScreen';
-import DiscoverScreen from './screens/DiscoverScreen';
-import SettingsScreen from './screens/SettingsScreen';
-import ChallengesScreen from './screens/ChallengesScreen';
+import TodayScreen from "./screens/TodayScreen";
+import DiscoverScreen from "./screens/DiscoverScreen";
+import SettingsScreen from "./screens/SettingsScreen";
+import ChallengesScreen from "./screens/ChallengesScreen";
 
-const todayName = 'Today';
-const challengesName = 'Challenges'
-const discoverName = 'Discover';
-const settingsName = 'Settings';
+const todayName = "Today";
+const challengesName = "Challenges";
+const discoverName = "Discover";
+const settingsName = "Settings";
 
 const Tab = createBottomTabNavigator();
 
 const challenges = [
     {
-        title: 'Reading',
-        category: 'reading',
+        title: "Reading",
+        category: "reading",
         completed: true,
-        type: 'habit',
-        amountType: 'duration',
-        frequency: 'week',
+        type: "habit",
+        amountType: "duration",
+        frequency: "week",
         duration: new Date(0, 0, 0, 0, 30),
         endDate: new Date(2023, 4, 20, 0, 0),
         streak: 5,
         private: true,
-        description: 'I want to read more books'
+        description: "I want to read more books",
     },
     {
-        title: 'Running',
-        category: 'exercise',
+        title: "Running",
+        category: "exercise",
         completed: false,
-        type: 'habit',
-        amountType: 'times',
-        frequency: 'day',
+        type: "habit",
+        amountType: "times",
+        frequency: "day",
         amount: 5,
-        unit: 'mile',
+        unit: "mile",
         endDate: new Date(2023, 4, 25, 0, 0),
         streak: 10,
         private: true,
-        description: 'I want to run around the river'
+        description: "I want to run around the river",
     },
     {
-        title: 'Meditation',
-        category: 'meditation',
+        title: "Meditation",
+        category: "meditation",
         completed: true,
-        type: 'goal',
-        amountType: 'duration',
+        type: "goal",
+        amountType: "duration",
         duration: new Date(0, 0, 0, 2, 0),
         accomplished: new Date(0, 0, 0, 0, 5),
         endDate: null,
         private: false,
         participantsNum: 52,
-        description: 'I think meditation is good for me'
+        description: "I think meditation is good for me",
     },
     {
-        title: 'Wake up early',
-        category: 'sleeping',
+        title: "Wake up early",
+        category: "sleeping",
         completed: false,
-        type: 'habit',
-        frequency: 'day',
-        amountType: 'times',
+        type: "habit",
+        frequency: "day",
+        amountType: "times",
         amount: 1,
-        unit: 'time',
+        unit: "time",
         endDate: null,
         streak: 1,
         private: false,
         participantsNum: 2,
-        description: 'I would like to wake up at 7am everyday'
+        description: "I would like to wake up at 7am everyday",
     },
     {
-        title: 'Professional',
-        category: 'professional',
+        title: "Professional",
+        category: "professional",
         completed: true,
-        type: 'goal',
-        amountType: 'duration',
+        type: "goal",
+        amountType: "duration",
         duration: new Date(0, 0, 0, 10, 0),
         accomplished: new Date(0, 0, 0, 4, 0),
         endDate: new Date(2024, 6, 2, 0, 0),
         private: true,
-        description: 'I want to finish all my work'
+        description: "I want to finish all my work",
     },
     {
-        title: 'Networking',
-        category: 'social',
+        title: "Networking",
+        category: "social",
         completed: false,
-        type: 'goal',
-        amountType: 'times',
+        type: "goal",
+        amountType: "times",
         amount: 3,
-        unit: 'time',
+        unit: "time",
         accomplished: 3,
         endDate: null,
         private: true,
-        description: 'I plan to attend social events three times'
-      },
+        description: "I plan to attend social events three times",
+    },
     {
-        title: 'Save money',
-        category: 'finance',
+        title: "Save money",
+        category: "finance",
         completed: false,
-        type: 'goal',
-        amountType: 'times',
+        type: "goal",
+        amountType: "times",
         amount: 100,
-        unit: 'dollar',
+        unit: "dollar",
         accomplished: 62,
         endDate: null,
         private: false,
         participantsNum: 231,
-        description: 'I would like to save money for travelling'
-    }
-  ];
+        description: "I would like to save money for travelling",
+    },
+];
 
-export default function MainContainer({navigation}){
+export default function MainContainer({ navigation }) {
     return (
         <NavigationContainer>
             <Tab.Navigator
-            initialRouteName={todayName}
-            screenOptions={({ route }) => ({
-                    tabBarActiveTintColor: 'orange',
-                    inactiveTintColor: 'grey',
-                    labelStyle: { paddingBottom: 10, fontSize: 10},
-                    style: {padding: 10, height: 70},
-                    tabBarIcon: ({focused, color, size}) => {
-                    let iconName;
-                    let routeName = route.name;
-
-                    if(routeName === todayName){
-                        iconName = focused ? 'home': 'home-outline';
-                    }
-                    else if (routeName === challengesName){
-                        iconName = focused? 'list' : 'list-outline';
-                    }
-                    else if (routeName === discoverName){
-                    iconName = focused ? 'search': 'search-outline';
-                    }
-                    else if(routeName === settingsName){
-                        iconName = focused ? 'settings': 'settings-outline';
-                    }
-                    return <Ionicons name={iconName} size={size} color={color}/>
-                }
-            })}
+                initialRouteName={todayName}
+                screenOptions={mainScreenOptions} // See below
             >
-            <Tab.Screen name={todayName} 
-                        component={TodayScreen}
-                        options={{headerShown: false}}
-                        initialParams={{challenges: challenges}}/> 
-            <Tab.Screen name={challengesName} 
-                        component={ChallengesScreen}
-                        initialParams={{challenges: challenges}}/>
-            <Tab.Screen name={discoverName} 
-                        component={DiscoverScreen}
-                        initialParams={{challenges: challenges}}/>
-            <Tab.Screen name={settingsName} component={SettingsScreen}/>
+                <Tab.Screen
+                    name={todayName}
+                    component={TodayScreen}
+                    options={{ headerShown: false }}
+                    initialParams={{ challenges: challenges }}
+                />
+                <Tab.Screen
+                    name={challengesName}
+                    component={ChallengesScreen}
+                    initialParams={{ challenges: challenges }}
+                />
+                <Tab.Screen
+                    name={discoverName}
+                    component={DiscoverScreen}
+                    initialParams={{ challenges: challenges }}
+                />
+                <Tab.Screen name={settingsName} component={SettingsScreen} />
             </Tab.Navigator>
         </NavigationContainer>
-    )
+    );
 }
+
+// This is the function that is passed to the screenOptions prop of the Tab.Navigator
+const mainScreenOptions = ({ route }) => ({
+    tabBarActiveTintColor: "orange",
+    inactiveTintColor: "grey",
+    labelStyle: { paddingBottom: 10, fontSize: 10 },
+    style: { padding: 10, height: 70 },
+    tabBarIcon: ({ focused, color, size }) => {
+        let iconName;
+        let routeName = route.name;
+
+        if (routeName === todayName) {
+            iconName = focused ? "home" : "home-outline";
+        } else if (routeName === challengesName) {
+            iconName = focused ? "list" : "list-outline";
+        } else if (routeName === discoverName) {
+            iconName = focused ? "search" : "search-outline";
+        } else if (routeName === settingsName) {
+            iconName = focused ? "settings" : "settings-outline";
+        }
+        return <Ionicons name={iconName} size={size} color={color} />;
+    },
+});
