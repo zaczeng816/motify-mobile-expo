@@ -40,7 +40,7 @@ function RegisterScreen() {
 
     return (
         <View style={styles.screen}>
-            <Text style={styles.registerText}>Mot</Text>
+            <Text style={styles.registerText}>Motify</Text>
             <TextInput
                 placeholder="Username"
                 onChangeText={setUsername}
