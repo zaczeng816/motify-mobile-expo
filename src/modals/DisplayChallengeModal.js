@@ -7,7 +7,7 @@ import IconButton from "../components/buttons/IconButton";
 import Icons from "../constants/Icons";
 import HabitProgress from "../components/HabitProgress";
 import ChallengeDetail from "../components/ChallengeDetail";
-import NewChallengeModal from "./NewChallengeModal";
+import NewChallengeModal from "./NewChallengeTest";
 import EditChallengeModal from "./EditChallengeModal";
 import DiscussionModal from "./DiscussionModal";
 import DiscussionButton from "../components/buttons/DiscussionButton";

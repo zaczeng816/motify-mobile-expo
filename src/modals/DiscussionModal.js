@@ -20,9 +20,8 @@ function DiscussionModal({challenge, isModalVisible, hideModal}){
         onRequestClose={hideModal}
         >
             <ScreenHeader title='Discussion'
-                        onBackPress={goBack}
-                        //rightIcon={'add-outline'}
-                        //onRightIconPress
+                        leftIcon='chevron-back'
+                        onLeftIconPress={goBack}
                         />
             <DiscussionComponent />
         </Modal>
@@ -39,11 +38,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start'
     },
     backButtonContainer: {
-        // position: "absolute",
-        // top: 30,
-        // left: 0,
-        // padding: 20,
-        // zIndex: 1
         borderWidth: 2
     },
     title: {

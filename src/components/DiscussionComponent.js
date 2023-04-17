@@ -175,12 +175,12 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 10,
         marginLeft: 5,
-        backgroundColor: '#f8f8f8', // Add a background color
+        backgroundColor: '#f8f8f8', 
         borderColor: '#ccc',
-        borderWidth: 1, // Add a border
-        borderRadius: 25, // Increase the border radius
-        paddingHorizontal: 20, // Increase the horizontal padding
-        paddingVertical: 10, // Add vertical padding
+        borderWidth: 1, 
+        borderRadius: 25, 
+        paddingHorizontal: 20, 
+        paddingVertical: 10, 
         marginRight: 10,
         fontSize: 16, // Increase the font size
       },

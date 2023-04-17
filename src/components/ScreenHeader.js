@@ -6,12 +6,12 @@ import IconButton from './buttons/IconButton';
 const screenHeight = Dimensions.get('window').height;
 const height = screenHeight * 0.12;
 
-function ScreenHeader({ title, onBackPress, rightIcon, onRightIconPress }) {
+function ScreenHeader({ title, leftIcon, onLeftIconPress, rightIcon, onRightIconPress }) {
   return (
     <View style={[styles.container, {height}]}>
         <View style={styles.header}>
-            <TouchableOpacity onPress={onBackPress} style={styles.sideIcon}>
-                <Ionicons name='chevron-back' size={35} color="white" />
+            <TouchableOpacity onPress={onLeftIconPress} style={styles.sideIcon}>
+                <Ionicons name={leftIcon} size={35} color="white" />
             </TouchableOpacity>
             <View style={styles.titleContainer}>
                 <Text style={styles.title}>{title}</Text>

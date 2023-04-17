@@ -6,7 +6,6 @@ import SwitchComponent from '../components/SwitchComponent';
 import AddButton from '../components/buttons/AddButton';
 import { useNavigation, useRoute, useParams } from '@react-navigation/native';
 import NewChallengeModal from '../modals/NewChallengeModal';
-// import DisplayChallengeModal from '../modals/DisplayChallengeModal';
 
 
 function TodayScreen() {
@@ -73,9 +72,6 @@ function TodayScreen() {
             </View>
             <NewChallengeModal isModalVisible={isAddModalVisible}
                             hideModal={hideAddModal}/>
-            {/* <DisplayChallengeModal isModalVisible={isDisplayModalVisible}
-                            hideModal={hideDisplayModal}
-                            challenge={currentChallenge}/> */}
         </View>
     );
 }
