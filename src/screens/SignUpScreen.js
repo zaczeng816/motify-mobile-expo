@@ -7,17 +7,18 @@ import {
     StyleSheet,
     Dimensions,
 } from "react-native";
-import { register } from "../services/auth";
+import { signup } from "../services/auth";
 
 const windowWidth = Dimensions.get("window").width;
 
-function RegisterScreen() {
+function SignUpScreen() {
     const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
 
-    const handleRegister = async (username, password) => {
+    const handleSignUp = async (username, password) => {
         if (username.length === 0 || password.length === 0) {
             setError("Please fill out all fields");
             return;
@@ -48,6 +49,12 @@ function RegisterScreen() {
                 style={styles.input}
             />
             <TextInput
+                placeholder="Email"
+                onChangeText={setEmail}
+                value={email}
+                style={styles.input}
+            />
+            <TextInput
                 placeholder="Password"
                 onChangeText={setPassword}
                 value={password}
@@ -61,16 +68,16 @@ function RegisterScreen() {
             />
             {error ? <Text style={styles.error}>{error}</Text> : null}
             <TouchableOpacity
-                onPress={async () => await handleRegister(username, password)}
+                onPress={async () => await handleSignUp(username, password)}
                 style={styles.button}
             >
-                <Text style={styles.buttonText}>Register</Text>
+                <Text style={styles.buttonText}>Sign Up</Text>
             </TouchableOpacity>
         </View>
     );
 }
 
-export default RegisterScreen;
+export default SignUpScreen;
 
 const styles = StyleSheet.create({
     screen: {
