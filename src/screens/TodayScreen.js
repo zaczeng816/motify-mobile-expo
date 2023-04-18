@@ -71,8 +71,9 @@ function TodayScreen() {
                                 includeProgress={true}/>
             </View>
             <NewChallengeModal isModalVisible={isAddModalVisible}
-                            hideModal={hideAddModal}/>
+                hideModal={hideAddModal}/>
         </View>
+
     );
 }
 

@@ -1,13 +1,10 @@
 import React, {useState} from "react";
-import { useRoute } from "@react-navigation/native";
 import { Text, View, StatusBar, Modal, Animated, Dimensions, StyleSheet, Image} from "react-native";
 import GoalDetail from "../components/GoalDetail";
 import HabitDetail from "../components/HabitDetail";
 import IconButton from "../components/buttons/IconButton";
 import Icons from "../constants/Icons";
-import HabitProgress from "../components/HabitProgress";
 import ChallengeDetail from "../components/ChallengeDetail";
-import NewChallengeModal from "./NewChallengeTest";
 import EditChallengeModal from "./EditChallengeModal";
 import DiscussionModal from "./DiscussionModal";
 import DiscussionButton from "../components/buttons/DiscussionButton";
