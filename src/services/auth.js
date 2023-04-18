@@ -8,6 +8,6 @@ export const login = async (username, password) => {
     return "success";
 };
 
-export const register = async (username, password) => {
+export const signup = async (username, password) => {
     return "success";
 };
