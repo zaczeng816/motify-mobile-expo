@@ -5,6 +5,7 @@ import { Picker } from '@react-native-picker/picker';
 import ScreenHeader from '../components/ScreenHeader';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import SwitchSelector from 'react-native-switch-selector';
+import PickerModal from '../components/PickerModal';
 
 const categories = [
   'Reading',
@@ -32,15 +33,15 @@ const Section = ({title, showScrollModal, value}) => {
     )
 };
 
-const Title = ({title, setTitle}) => {
+const Title = ({title, setTitle, width, handleContentSizeChange}) => {
     return (
         <View style={styles.titleContainer}>
             <Input
-                //label="Title"
                 value={title}
                 onChangeText={setTitle}
-                placeholder="Challenge name"
-                style={styles.titleFont}
+                onContentSizeChange={handleContentSizeChange}
+                placeholder="Challenge title"
+                style={[styles.titleFont, {width: width}]}
             />
         </View>
     )
@@ -78,7 +79,7 @@ const Type = ({typeOptions, typeSwitchHandler}) => {
 const FrequencyPicker = ({curFrequency, setCurFrequency}) => {
     return (
         <View>
-            <Text style={styles.titleText}>Frequency</Text>
+            {/* <Text style={styles.titleText}>Frequency</Text> */}
             <View style={styles.pickerContainer}>
                 <Picker
                 selectedValue={curFrequency}
@@ -96,7 +97,7 @@ const FrequencyPicker = ({curFrequency, setCurFrequency}) => {
 const CategoryPicker = ({curCategory, setCurCategory}) => {
     return (
         <View>
-            <Text style={styles.titleText}>Category</Text>
+            {/* <Text style={styles.titleText}>Category</Text> */}
             <View style={styles.pickerContainer}>
                 <Picker
                 selectedValue={curCategory}
@@ -115,7 +116,9 @@ const TimeBasedSwitch = ({isTimeBased, setIsTimeBased}) => {
     return (
         <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>Time-based</Text>
-            <Switch value={isTimeBased} onValueChange={setIsTimeBased} />
+            <Switch value={isTimeBased} 
+                    onValueChange={setIsTimeBased}
+                    trackColor={{true: 'orange', false: 'grey'}} />
         </View>
     )
 }
@@ -124,7 +127,9 @@ const OngoingSwitch = ({isOngoing, setIsOngoing}) => {
     return (
         <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>Ongoing</Text>
-            <Switch value={isOngoing} onValueChange={setIsOngoing} />
+            <Switch value={isOngoing} 
+                    onValueChange={setIsOngoing}
+                    trackColor={{true: 'orange', false: 'grey'}} />
         </View>
     )
 }
@@ -198,30 +203,6 @@ const Description = ({description, setDescription}) => {
     )
 }
 
-const ScrollModal = ({scrollModalVisible, hideScrollModal, renderScrollContent, confirmSelection}) => {
-    return (
-            <Modal
-            transparent={true}
-            visible={scrollModalVisible}
-            onRequestClose={hideScrollModal}
-            >
-                <View style={styles.modalBackground}>
-                    <TouchableOpacity
-                    style={{ flex: 1}}
-                    activeOpacity={1}
-                    onPress={hideScrollModal}
-                        />
-                    <View style={styles.scrollModal}>
-                        <Animated.View style={[styles.animatedView]}>
-                            {renderScrollContent()}
-                            <Button title="Cancel" onPress={hideScrollModal} />
-                            <Button title="Confirm" onPress={confirmSelection} />
-                        </Animated.View>
-                    </View>
-                </View>
-            </Modal>
-    );
-  };
 
 function NewChallengeModal({isModalVisible, hideModal}){
 
@@ -245,6 +226,13 @@ function NewChallengeModal({isModalVisible, hideModal}){
     const [overlayOpacity] = useState(new Animated.Value(0));
     const [scrollModalVisible, setScrollModalVisible] = useState(false);
     const [currentSection, setCurrentSection] = useState('');
+
+    const [titleWidth, setTitleWidth] = useState(0);
+
+    const handleContentSizeChange = (event) => {
+        const { width } = event.nativeEvent.contentSize;
+        setTitleWidth(width);
+      };
 
     const showScrollModal = (section) => {
         setCurrentSection(section);
@@ -341,46 +329,51 @@ function NewChallengeModal({isModalVisible, hideModal}){
                         onLeftIconPress={hideModal}
                         />
           <ScrollView style={styles.container}>
-            <Title title={title} setTitle={setTitle}/>
-            <Access accessOptions={accessOptions}
-                    accessSwitchHandler={accessSwitchHandler}/>
-            <Type typeOptions={typeOptions}
-                    typeSwitchHandler={typeSwitchHandler}/>
-            <Section title='Category' 
-                    showScrollModal={showScrollModal}
-                    value={category}/>
-            {type === 'habit' && 
-                            <Section title='Frequency' 
-                                    showScrollModal={showScrollModal}
-                                    value={frequency}/>}
-            <TimeBasedSwitch isTimeBased={isTimeBased}
-                            setIsTimeBased={setIsTimeBased}/>
-            {isTimeBased ?  <Section title='Duration' 
-                                    showScrollModal={showScrollModal}
-                                    value={duration}/> :
-                            <View>
-                                    <EnterAmount amount={amount} 
-                                                setAmount={setAmount}
-                                                unit={unit}
-                                                setUnit={setUnit}/>
-                            </View>}
-            <OngoingSwitch isOngoing={isOngoing} setIsOngoing={setIsOngoing}/>
-            {!isOngoing && <StartEndDate startDate={startDate}
-                                        startDateHandler={startDateHandler}
-                                        endDate={endDate}
-                                        endDateHandler={endDateHandler}/>}
-            <Description description={description} 
-                        setDescription={setDescription}/>
-            <Button
-              title="Create Challenge"
-              buttonStyle={styles.button}
-              onPress={handleSubmit}
-            />
-            <ScrollModal scrollModalVisible={scrollModalVisible}
-                        hideScrollModal={hideScrollModal}
-                        renderScrollContent={renderScrollContent}
-                        confirmSelection={confirmSelection}/>
-          </ScrollView>
+                <Title title={title} 
+                        setTitle={setTitle}
+                        width={titleWidth}
+                        handleContentSizeChange={handleContentSizeChange}/>
+                <Access accessOptions={accessOptions}
+                        accessSwitchHandler={accessSwitchHandler}/>
+                <Type typeOptions={typeOptions}
+                        typeSwitchHandler={typeSwitchHandler}/>
+                <Section title='Category' 
+                        showScrollModal={showScrollModal}
+                        value={category}/>
+                {type === 'habit' && 
+                                <Section title='Frequency' 
+                                        showScrollModal={showScrollModal}
+                                        value={frequency}/>}
+                <TimeBasedSwitch isTimeBased={isTimeBased}
+                                setIsTimeBased={setIsTimeBased}/>
+                {isTimeBased ?  <Section title='Duration' 
+                                        showScrollModal={showScrollModal}
+                                        value={duration}/> :
+                                <View>
+                                        <EnterAmount amount={amount} 
+                                                    setAmount={setAmount}
+                                                    unit={unit}
+                                                    setUnit={setUnit}/>
+                                </View>}
+                <OngoingSwitch isOngoing={isOngoing} setIsOngoing={setIsOngoing}/>
+                {!isOngoing && <StartEndDate startDate={startDate}
+                                            startDateHandler={startDateHandler}
+                                            endDate={endDate}
+                                            endDateHandler={endDateHandler}/>}
+                <Description description={description} 
+                            setDescription={setDescription}/>
+                <PickerModal scrollModalVisible={scrollModalVisible}
+                            hideScrollModal={hideScrollModal}
+                            renderScrollContent={renderScrollContent}
+                            confirmSelection={confirmSelection}/>
+            </ScrollView>
+            <View style={styles.buttonContainer}>
+                <Button
+                    title="Create Challenge"
+                    buttonStyle={styles.button}
+                    onPress={handleSubmit}
+                    />
+            </View>
         </Modal>
       );
 }
@@ -389,9 +382,11 @@ export default NewChallengeModal;
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      padding: 20,
-      marginBottom: 50, // Increased bottom margin
+        height: '100%',
+        width: '100%',
+        position: 'absolute',
+        marginTop: 100,
+        padding: 20,
     },
     row: {
       flexDirection: 'row',
@@ -405,18 +400,35 @@ const styles = StyleSheet.create({
       margin: 30,
     },
     button: {
-      backgroundColor: 'orange',
-      marginTop: 20,
+        backgroundColor: 'orange',
+        borderRadius: 30,
+        marginHorizontal: 20,
+        marginBottom: 40,
+        paddingVertical: 15,
+        shadowColor: "#000", // Set the shadow color
+        shadowOffset: {
+          width: 0,
+          height: 3, // Control the vertical offset of the shadow
+        },
+        shadowOpacity: 0.3, // Control the opacity of the shadow
+        shadowRadius: 4, // Control the blur radius of the shadow
+        elevation: 5, // For Android, add elevation property to create shadow
     },
+    buttonContainer:{
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+    },
+
     titleText: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginBottom: 5,
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 5,
     },
     titleFont: {
         textAlign: 'center',
         fontWeight: 'bold',
-        color: '#9b9b9b',
+        //color: '#9b9b9b',
         fontSize: 25
     },
     titleContainer: {
@@ -431,16 +443,17 @@ const styles = StyleSheet.create({
       borderWidth: 2,
       borderRadius: 20,
       borderColor: 'gray',
+      marginBottom: 250,
       //borderBottomWidth: 0
     },
     sectionContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#fafafa',
         borderRadius: 10,
         padding: 15,
-        marginBottom: 10,
+        marginBottom: 15,
       },
       sectionTitle: {
         fontSize: 16,
@@ -451,23 +464,4 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'black',
       },
-      modalBackground: {
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        flex: 1,
-        // position: "absolute",
-        // width: "100%",
-        // height: "100%",
-      },
-    scrollModal: {
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        padding: 20,
-        paddingBottom: 50,
-        backgroundColor: "#fff", 
-    },
-    animatedView: {
-        // position: "absolute",
-        // bottom: 0,
-        // width: "100%",
-    },
   });

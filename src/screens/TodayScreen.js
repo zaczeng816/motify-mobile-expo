@@ -3,9 +3,8 @@ import { StyleSheet, View, Text, Dimensions, Button} from 'react-native';
 import CalendarComponent from '../components/CalenderComponent';
 import DisplayChallenges from '../components/DisplayChallenges';
 import SwitchComponent from '../components/SwitchComponent';
-import AddButton from '../components/buttons/AddButton';
+import AddChallengeButton from '../components/buttons/AddChallengeButton';
 import { useNavigation, useRoute, useParams } from '@react-navigation/native';
-import NewChallengeModal from '../modals/NewChallengeModal';
 
 
 function TodayScreen() {
@@ -15,18 +14,6 @@ function TodayScreen() {
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
     const [selectedOption, setSelectedOption] = useState('habit');
     const options = [{label: 'Habit', value: 'habit'}, {label: 'Goal', value: 'goal'}];
-    const [isAddModalVisible, setIsAddModalVisible] = useState(false);
-    // const [isDisplayModalVisible, setIsDisplayModalVisible] = useState(false);
-    // const [currentChallenge, setCurrentChallenge] = useState(challenges[0]);
-
-    function hideAddModal(){
-        setIsAddModalVisible(false);
-    }
-
-
-    function onAddHandler(){
-        setIsAddModalVisible(true);
-    }
 
     function handleDayPress(day){
         setSelectedDate(day);
@@ -57,7 +44,7 @@ function TodayScreen() {
                     <Text style={styles.dateText}>{currentMonth} {currentYear}</Text>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <AddButton onPress={onAddHandler}/>
+                    <AddChallengeButton/>
                 </View>
             </View>
             <CalendarComponent handleDayPress={handleDayPress}
@@ -70,8 +57,6 @@ function TodayScreen() {
                 <DisplayChallenges challenges={showChallenges}
                                 includeProgress={true}/>
             </View>
-            <NewChallengeModal isModalVisible={isAddModalVisible}
-                hideModal={hideAddModal}/>
         </View>
 
     );
@@ -111,5 +96,5 @@ const styles = StyleSheet.create({
         paddingRight: 30,
         alignContent: 'center',
         justifyContent: 'center'
-    }
+    },
   });
