@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, ScrollView, StyleSheet, Modal, Switch, TouchableOpacity, Animated} from 'react-native';
-import { Input, Text, Button, Divider,  } from 'react-native-elements';
+import { View, ScrollView, Image, StyleSheet, Modal, Switch, TouchableOpacity, Animated, TextInput, Keyboard} from 'react-native';
+import { Text, Button, Divider,  } from 'react-native-elements';
 import { Picker } from '@react-native-picker/picker';
 import ScreenHeader from '../components/ScreenHeader';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import SwitchSelector from 'react-native-switch-selector';
 import PickerModal from '../components/PickerModal';
+import Icons from '../constants/Icons';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const categories = [
   'Reading',
@@ -23,6 +25,13 @@ const Section = ({title, showScrollModal, value}) => {
 
     }
 
+    if (value instanceof Date){
+        const hour = value.getHours();
+        const min = value.getMinutes();
+        value = hour === 0? '': hour + 'hr ';
+        value += min + ' min';
+    }
+
     return (
         <TouchableOpacity onPress={onPress}>
             <View style={styles.sectionContainer}>
@@ -33,15 +42,17 @@ const Section = ({title, showScrollModal, value}) => {
     )
 };
 
-const Title = ({title, setTitle, width, handleContentSizeChange}) => {
+const Title = ({setTitle, handleContentSizeChange, titleIcon}) => {
     return (
         <View style={styles.titleContainer}>
-            <Input
-                value={title}
+            <Image source={titleIcon} style={styles.titleIcon}/>
+            <TextInput
+                //value={title}
                 onChangeText={setTitle}
                 onContentSizeChange={handleContentSizeChange}
-                placeholder="Challenge title"
-                style={[styles.titleFont, {width: width}]}
+                placeholder="Title..."
+                placeholderTextColor="#C4C4C4"
+                style={[styles.titleFont]}
             />
         </View>
     )
@@ -135,71 +146,83 @@ const OngoingSwitch = ({isOngoing, setIsOngoing}) => {
 }
 
 const TimePicker = ({curDuration, setCurDuration}) => {
+    // const format = (date) => {
+    //     const hours = date.getHours();
+    //     const minutes = date.getMinutes();
+    //     return `${hours}h ${minutes}m`;
+    //   };
+
     return (
         <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={curDuration}
-            onValueChange={(itemValue) => setCurDuration(itemValue)}
-            >
-            {Array.from({ length: 61 }, (_, i) => i).map((value, index) => (
-              <Picker.Item key={index} label={`${value} min`} value={value} />
-            ))}
-          </Picker>
+            <DateTimePicker 
+                value={curDuration}
+                mode='time'
+                is24Hour={true}
+                display='spinner'
+                onChange={(_, selectedDate) => setCurDuration(selectedDate)}
+            />
         </View>
     )
 }
 
 const EnterAmount = ({amount, setAmount, unit, setUnit}) => {
+    const amountWidthStyle = amount.toString().length > 3? {}: {width: 50};
+    const unitWidthStyle = unit.length > 3? {}: {width: 50};
+
     return (
         <View>
-            <Input
-                label="Amount"
-                value={amount}
-                onChangeText={setAmount}
-                keyboardType="numeric"
-                placeholder="Enter amount"
-            />
-            <Input
-                label="Unit"
-                value={unit}
-                onChangeText={setUnit}
-                placeholder="Enter unit"
-            />
+            <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>Amount</Text>
+                <TextInput
+                    style={[styles.amountInput, amountWidthStyle]}
+                    label="Amount"
+                    onChangeText={setAmount}
+                    keyboardType="numeric"
+                    //placeholder="Enter amount"
+                />
+            </View>
+            <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>Unit</Text>
+                <TextInput
+                    style={[styles.amountInput, unitWidthStyle]}
+                    label="Unit"
+                    onChangeText={setUnit}
+                    //placeholder="Enter unit"
+                />
+            </View>
         </View>
       )
 }
 
-const StartEndDate = ({startDate, startDateHandler, endDate, endDateHandler}) => {
+const DatePicker = ({title, date, dateHandler}) => {
     return (
-        <View>
-            <Text>Start Date</Text>
+        <View style={styles.dateContainer}>
+            <Text style={styles.sectionTitle}>{title}</Text>
             <DateTimePicker
-                value={startDate}
+                value={date}
                 mode="date"
                 display="default"
-                onChange={startDateHandler}
-            />
-            <Text>End Date</Text>
-            <DateTimePicker
-                value={endDate}
-                mode="date"
-                display="default"
-                onChange={endDateHandler}
+                onChange={dateHandler}
+                accentColor='orange'
+
             />
         </View>
     )
 }
 
 const Description = ({description, setDescription}) => {
+
     return (
-        <Input
-            label="Description"
-            value={description}
-            onChangeText={setDescription}
-            placeholder="Enter challenge description"
-            multiline
-            inputStyle={styles.descriptionInput}
-      />
+            <View style={styles.descriptionContainer}>
+                <Text style={styles.descriptionTitle}>Description</Text>
+                <TextInput
+                    label="Description"
+                    onChangeText={setDescription}
+                    placeholder="Challenge description..."
+                    multiline
+                    style={styles.descriptionInput}
+                />
+            </View>
     )
 }
 
@@ -221,13 +244,12 @@ function NewChallengeModal({isModalVisible, hideModal}){
     const [endDate, setEndDate] = useState(new Date());
     const [curCategory, setCurCategory] = useState(categories[0]);
     const [curFrequency, setCurFrequency] = useState();
-    const [curDuration, setCurDuration] = useState();
+    const [curDuration, setCurDuration] = useState(new Date(0,0,0,0,0,0));
 
-    const [overlayOpacity] = useState(new Animated.Value(0));
     const [scrollModalVisible, setScrollModalVisible] = useState(false);
     const [currentSection, setCurrentSection] = useState('');
-
     const [titleWidth, setTitleWidth] = useState(0);
+    const [titleIcon, setTitleIcon] = useState(Icons[category.toLowerCase()]);
 
     const handleContentSizeChange = (event) => {
         const { width } = event.nativeEvent.contentSize;
@@ -261,6 +283,8 @@ function NewChallengeModal({isModalVisible, hideModal}){
     const confirmSelection = () => {
         if (currentSection === 'Category') {
             setCategory(curCategory);
+            const category = curCategory.toLowerCase();
+            setTitleIcon(Icons[category]);
         } else if (currentSection === 'Duration') {
             setDuration(curDuration);
         } else if (currentSection === 'Frequency') {
@@ -277,8 +301,8 @@ function NewChallengeModal({isModalVisible, hideModal}){
         setType('habit');
         setCategory(categories[0]);
         setIsTimeBased(false);
-        setDuration(0);
-        setAmount();
+        setDuration(new Date(0,0,0,0,0,0));
+        setAmount(0);
         setUnit('');
         setIsOngoing(false);
         setStartDate(new Date());
@@ -324,15 +348,15 @@ function NewChallengeModal({isModalVisible, hideModal}){
           visible={isModalVisible}
           onRequestClose={hideModal}
         >
-          <ScreenHeader title='Add new challenge'
-                        leftIcon='close-sharp'
-                        onLeftIconPress={hideModal}
-                        />
-          <ScrollView style={styles.container}>
-                <Title title={title} 
-                        setTitle={setTitle}
+            <ScreenHeader title='Add new challenge'
+                            leftIcon='close-sharp'
+                            onLeftIconPress={hideModal}
+                            />
+            <KeyboardAwareScrollView style={styles.container}>
+                <Title setTitle={setTitle}
                         width={titleWidth}
-                        handleContentSizeChange={handleContentSizeChange}/>
+                        handleContentSizeChange={handleContentSizeChange}
+                        titleIcon={titleIcon}/>
                 <Access accessOptions={accessOptions}
                         accessSwitchHandler={accessSwitchHandler}/>
                 <Type typeOptions={typeOptions}
@@ -343,7 +367,7 @@ function NewChallengeModal({isModalVisible, hideModal}){
                 {type === 'habit' && 
                                 <Section title='Frequency' 
                                         showScrollModal={showScrollModal}
-                                        value={frequency}/>}
+                                        value={'Every ' + frequency}/>}
                 <TimeBasedSwitch isTimeBased={isTimeBased}
                                 setIsTimeBased={setIsTimeBased}/>
                 {isTimeBased ?  <Section title='Duration' 
@@ -356,17 +380,21 @@ function NewChallengeModal({isModalVisible, hideModal}){
                                                     setUnit={setUnit}/>
                                 </View>}
                 <OngoingSwitch isOngoing={isOngoing} setIsOngoing={setIsOngoing}/>
-                {!isOngoing && <StartEndDate startDate={startDate}
-                                            startDateHandler={startDateHandler}
-                                            endDate={endDate}
-                                            endDateHandler={endDateHandler}/>}
+                {!isOngoing && <View>
+                                    <DatePicker title='Start Date'
+                                                date={startDate}
+                                                dateHandler={startDateHandler}/>
+                                    <DatePicker title='End Date'
+                                                date={endDate}
+                                                dateHandler={endDateHandler}/>
+                                </View>}
                 <Description description={description} 
                             setDescription={setDescription}/>
                 <PickerModal scrollModalVisible={scrollModalVisible}
                             hideScrollModal={hideScrollModal}
                             renderScrollContent={renderScrollContent}
                             confirmSelection={confirmSelection}/>
-            </ScrollView>
+            </KeyboardAwareScrollView>
             <View style={styles.buttonContainer}>
                 <Button
                     title="Create Challenge"
@@ -419,7 +447,13 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: '100%',
     },
-
+    titleContainer:{
+        margin: 30,
+        alignContent: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        marginBottom: 40
+    },
     titleText: {
         fontSize: 18,
         fontWeight: 'bold',
@@ -428,23 +462,61 @@ const styles = StyleSheet.create({
     titleFont: {
         textAlign: 'center',
         fontWeight: 'bold',
-        //color: '#9b9b9b',
-        fontSize: 25
+        fontSize: 20,
+        backgroundColor: '#f5f5f5',
+        borderRadius: 10,
+        height: 70,
+        width: 250
     },
-    titleContainer: {
+    titleIcon:{
+        height: 70,
+        width: 70,
+        marginRight: 20,
+    },
+    amountInput:{
+        borderWidth: 2,
+        borderColor: 'lightgrey',
+        borderRadius: 20,
+        backgroundColor: 'white',
+        height: 30,
+        textAlign: 'center',
+        padding: 5,
+
+    },
+    dateContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignContent: 'center',
-        justifyContent: 'center',
-        margin: 30
+        marginBottom: 10,
+        marginTop: 10,
+        marginHorizontal: 10,
     },
     descriptionInput: {
-      height: 100,
+      height: 120,
       textAlignVertical: 'top',
       marginTop: 10,
-      borderWidth: 2,
+      //marginHorizontal: 10,
+      //borderWidth: 2,
       borderRadius: 20,
-      borderColor: 'gray',
+      borderColor: '#ccc',
       marginBottom: 250,
-      //borderBottomWidth: 0
+      padding: 20,
+      paddingTop: 10,
+      backgroundColor: '#f5f5f5',
+      borderRadius: 10,
+      marginBottom: 250,
+      fontSize: 18,
+    },
+    descriptionContainer:{
+        marginTop: 30,
+    },
+    descriptionTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#222222',
+        alignContent: 'flex-start',
+        marginLeft: 10,
+        marginBottom: 10,
     },
     sectionContainer: {
         flexDirection: 'row',
@@ -458,10 +530,13 @@ const styles = StyleSheet.create({
       sectionTitle: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: 'black',
+        color: '#222222',
+        alignSelf: 'center',
+        justifyContent: 'center'
       },
+      
       sectionValue: {
         fontSize: 16,
-        color: 'black',
+        color: '#4d4d4d',
       },
   });

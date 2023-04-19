@@ -83,8 +83,6 @@ function DiscussionComponent() {
                     placeholder="Write your message..."
                     onChangeText={setMessage}
                     value={message}
-                    // returnKeyType="send"
-                    // onSubmitEditing={handleSend}
                     />
                     <View style={styles.iconContainer}>
                         <TouchableOpacity style={styles.addButton}>
