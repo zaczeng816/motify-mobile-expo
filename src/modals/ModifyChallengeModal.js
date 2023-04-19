@@ -239,7 +239,7 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
     const [frequency, setFrequency] = isNew? useState('day') : useState(challenge.frequency);
     const [isTimeBased, setIsTimeBased] = isNew? useState(false) : useState(challenge.isTimeBased);
     const [duration, setDuration] = isNew? useState(new Date(0,0,0,0,0,0)) : useState(challenge.duration);
-    const [amount, setAmount] = isNew? useState(0) : useState(challenge.amount);
+    const [amount, setAmount] = isNew? useState('') : useState(challenge.amount);
     const [unit, setUnit] = isNew? useState('') : useState(challenge.unit);
     const [description, setDescription] = isNew? useState('') : useState(challenge.description);
     const [isOngoing, setIsOngoing] = isNew? useState(false) : useState(challenge.isOngoing);
@@ -305,7 +305,7 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
         setCategory(categories[0]);
         setIsTimeBased(false);
         setDuration(new Date(0,0,0,0,0,0));
-        setAmount(0);
+        setAmount('');
         setUnit('');
         setIsOngoing(false);
         setStartDate(new Date());
@@ -346,6 +346,7 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
     }
 
     const buttonTitle = isNew? 'Create Challenge' : 'Update Challenge';
+    const headerTitle = isNew? 'Add new challenge' : 'Edit challenge';
 
     return (
         <Modal
@@ -353,7 +354,7 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
           visible={isModalVisible}
           onRequestClose={hideModal}
         >
-            <ScreenHeader title='Add new challenge'
+            <ScreenHeader title={headerTitle}
                             leftIcon='close-sharp'
                             onLeftIconPress={hideModal}
                             />

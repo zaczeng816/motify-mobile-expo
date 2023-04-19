@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import { View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import SwitchComponent from '../components/SwitchComponent';
 import {useRoute } from '@react-navigation/native';
 import DisplayChallenges from '../components/DisplayChallenges';
 import SearchComponent from '../components/SearchComponent';
+
+
 
 function DiscoverScreen() {
     const options = [{label: 'Habit', value: 'habit'}, {label: 'Goal', value: 'goal'}];
@@ -24,8 +26,6 @@ function DiscoverScreen() {
         <View style={styles.container}>
             <SwitchComponent options={options} switchHandler={switchHandler}/>
             <View style={styles.challengesContainer}>
-                {/* <DisplayChallenges challenges={filteredChallenges}
-                                includeProgress={false}/> */}
                 <SearchComponent challenges={filteredChallenges}/>
             </View>
         </View>
@@ -44,5 +44,6 @@ const styles = StyleSheet.create({
     },
     challengesContainer: {
         flex: 1,
-    }
+    },
+    
 })

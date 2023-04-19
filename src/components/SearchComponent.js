@@ -1,18 +1,57 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TextInput, StyleSheet, Keyboard, TouchableOpacity} from 'react-native';
-import debounce from 'lodash/debounce';
+import { Text, View, TextInput, ScrollView, StyleSheet, Keyboard, TouchableOpacity} from 'react-native';
 import DisplayChallenges from './DisplayChallenges';
 import NoResult from './NoResult';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { style } from 'deprecated-react-native-prop-types/DeprecatedViewPropTypes';
+
+const categories = ['All', 'eating', 'exercise', 'finance', 'meditation','professional',
+                    'reading', 'sleeping', 'social', 'study', 'writing'];
+
+const FilterList = ({selectedCategory, setSelectedCategory}) => {
+  function getCategoryText(category){
+    return category.substring(0, 1).toUpperCase() + category.substring(1);
+  }
+
+  return (
+      <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.categoryContainer}>
+          {categories.map((category) => (
+              <TouchableOpacity
+              key={category}
+              style={[
+                  styles.categoryButton,
+                  selectedCategory === category && styles.selectedCategory,
+              ]}
+              onPress={() => setSelectedCategory(category)}>
+                  <Text style={[styles.categoryText, selectedCategory === category && styles.selectedCategoryText]}>
+                        {getCategoryText(category)}</Text>
+              </TouchableOpacity>
+          ))}
+      </ScrollView>
+  )
+}
 
 function SearchComponent({challenges}){
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchResult, setSearchResult] = useState([])
+
 
   useEffect(() => {
       setSuggestions(filterData(challenges, searchQuery))}, 
       [challenges, searchQuery]);
+
+  useEffect(() => {
+    const results =
+      selectedCategory === 'All' ? suggestions
+        : suggestions.filter((challenge) => challenge.category === selectedCategory);
+    setSearchResult(results);
+  }, [selectedCategory, suggestions]);
 
   // const handleSearch = debounce((query) => {setSearchQuery(query)}, 0);
   function handleSearch(query){
@@ -86,8 +125,14 @@ function SearchComponent({challenges}){
         }
 
       </View>
-      <DisplayChallenges challenges={suggestions} includeProgress={false}/>
-      {suggestions.length === 0  && <NoResult />}
+      <View style={styles.filterListContainer}>
+        <FilterList selectedCategory={selectedCategory}
+                    setSelectedCategory={setSelectedCategory}/>
+      </View>
+      <View style={styles.displayChallengeContainer}> 
+        <DisplayChallenges challenges={searchResult} includeProgress={false}/>
+        {suggestions.length === 0  && <NoResult />}
+      </View>
     </View>
   );
 };
@@ -97,11 +142,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   searchContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   inputContainer: {
     flex: 4,
-    marginVertical: 20,
+    marginVertical: 5,
+    marginTop: 10,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'hsl(0, 0%, 90%)',
@@ -130,6 +176,37 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     margin: 10,
+  },
+  categoryContainer: {
+    paddingHorizontal: 10,
+    maxHeight: 50,
+  },
+  categoryButton: {
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    //backgroundColor: 'white',
+    borderColor: 'orange',
+    //borderWidth: 1,
+    marginRight: 10,
+  },
+  categoryText: {
+    fontSize: 14,
+    color: 'grey',
+    //fontWeight: 'bold',
+  },
+  selectedCategoryText:{
+    color: 'white',
+  },
+  selectedCategory: {
+    backgroundColor: 'orange',
+  },
+  displayChallengeContainer: {
+    flex: 1, 
+  },
+  filterListContainer: {
+    marginVertical: 10,
   }
 });
 
