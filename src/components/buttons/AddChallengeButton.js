@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
-import NewChallengeModal from '../../modals/NewChallengeModal';
+import ModifyChallengeModal from '../../modals/ModifyChallengeModal';
 
 function AddChallengeButton() {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
@@ -20,8 +20,9 @@ function AddChallengeButton() {
           <Text style={styles.buttonText}>+</Text>
         </View>
       </TouchableOpacity>
-      <NewChallengeModal isModalVisible={isAddModalVisible}
-                          hideModal={hideAddModal}/>
+      <ModifyChallengeModal isModalVisible={isAddModalVisible}
+                          hideModal={hideAddModal}
+                          isNew={true}/>
     </View>
   );
 }

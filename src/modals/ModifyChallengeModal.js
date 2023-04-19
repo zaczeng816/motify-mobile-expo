@@ -42,12 +42,12 @@ const Section = ({title, showScrollModal, value}) => {
     )
 };
 
-const Title = ({setTitle, handleContentSizeChange, titleIcon}) => {
+const Title = ({title, setTitle, handleContentSizeChange, titleIcon}) => {
     return (
         <View style={styles.titleContainer}>
             <Image source={titleIcon} style={styles.titleIcon}/>
             <TextInput
-                //value={title}
+                value={title}
                 onChangeText={setTitle}
                 onContentSizeChange={handleContentSizeChange}
                 placeholder="Title..."
@@ -58,10 +58,11 @@ const Title = ({setTitle, handleContentSizeChange, titleIcon}) => {
     )
 }
 
-const Access = ({accessOptions, accessSwitchHandler}) => {
+const Access = ({isPrivate, accessOptions, accessSwitchHandler}) => {
     return (
         <View style={styles.row}>
-            <SwitchComponent options={accessOptions} 
+            <SwitchComponent value={isPrivate? 'private' : 'public'}
+                            options={accessOptions} 
                             switchHandler={accessSwitchHandler}/>
         </View>
     )
@@ -176,9 +177,9 @@ const EnterAmount = ({amount, setAmount, unit, setUnit}) => {
                 <TextInput
                     style={[styles.amountInput, amountWidthStyle]}
                     label="Amount"
+                    value={amount.toString()}
                     onChangeText={setAmount}
                     keyboardType="numeric"
-                    //placeholder="Enter amount"
                 />
             </View>
             <View style={styles.sectionContainer}>
@@ -186,6 +187,7 @@ const EnterAmount = ({amount, setAmount, unit, setUnit}) => {
                 <TextInput
                     style={[styles.amountInput, unitWidthStyle]}
                     label="Unit"
+                    value={unit}
                     onChangeText={setUnit}
                     //placeholder="Enter unit"
                 />
@@ -217,6 +219,7 @@ const Description = ({description, setDescription}) => {
                 <Text style={styles.descriptionTitle}>Description</Text>
                 <TextInput
                     label="Description"
+                    value={description}
                     onChangeText={setDescription}
                     placeholder="Challenge description..."
                     multiline
@@ -227,24 +230,24 @@ const Description = ({description, setDescription}) => {
 }
 
 
-function NewChallengeModal({isModalVisible, hideModal}){
+function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
 
-    const [title, setTitle] = useState('');
-    const [category, setCategory] = useState(categories[0]);
-    const [isPrivate, setIsPrivate] = useState(true);
-    const [type, setType] = useState('habit');
-    const [frequency, setFrequency] = useState('day');
-    const [isTimeBased, setIsTimeBased] = useState(false);
-    const [duration, setDuration] = useState(0);
-    const [amount, setAmount] = useState(0);
-    const [unit, setUnit] = useState('');
-    const [description, setDescription] = useState('');
-    const [isOngoing, setIsOngoing] = useState(false);
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
-    const [curCategory, setCurCategory] = useState(categories[0]);
-    const [curFrequency, setCurFrequency] = useState();
-    const [curDuration, setCurDuration] = useState(new Date(0,0,0,0,0,0));
+    const [title, setTitle] = isNew? useState('') : useState(challenge.title);
+    const [category, setCategory] = isNew? useState(categories[0]) : useState(challenge.category);
+    const [isPrivate, setIsPrivate] = isNew? useState(true) : useState(challenge.isPrivate);
+    const [type, setType] = isNew? useState('habit') : useState(challenge.type);
+    const [frequency, setFrequency] = isNew? useState('day') : useState(challenge.frequency);
+    const [isTimeBased, setIsTimeBased] = isNew? useState(false) : useState(challenge.isTimeBased);
+    const [duration, setDuration] = isNew? useState(new Date(0,0,0,0,0,0)) : useState(challenge.duration);
+    const [amount, setAmount] = isNew? useState(0) : useState(challenge.amount);
+    const [unit, setUnit] = isNew? useState('') : useState(challenge.unit);
+    const [description, setDescription] = isNew? useState('') : useState(challenge.description);
+    const [isOngoing, setIsOngoing] = isNew? useState(false) : useState(challenge.isOngoing);
+    const [startDate, setStartDate] = isNew? useState(new Date()) : useState(challenge.startDate);
+    const [endDate, setEndDate] = isNew? useState(new Date()) : useState(challenge.endDate);
+    const [curCategory, setCurCategory] = useState(category);
+    const [curFrequency, setCurFrequency] = useState(frequency);
+    const [curDuration, setCurDuration] = useState(duration);
 
     const [scrollModalVisible, setScrollModalVisible] = useState(false);
     const [currentSection, setCurrentSection] = useState('');
@@ -342,6 +345,8 @@ function NewChallengeModal({isModalVisible, hideModal}){
         setEndDate(currentDate);
     }
 
+    const buttonTitle = isNew? 'Create Challenge' : 'Update Challenge';
+
     return (
         <Modal
           animationType="slide"
@@ -353,11 +358,13 @@ function NewChallengeModal({isModalVisible, hideModal}){
                             onLeftIconPress={hideModal}
                             />
             <KeyboardAwareScrollView style={styles.container}>
-                <Title setTitle={setTitle}
+                <Title title={title}
+                        setTitle={setTitle}
                         width={titleWidth}
                         handleContentSizeChange={handleContentSizeChange}
                         titleIcon={titleIcon}/>
-                <Access accessOptions={accessOptions}
+                <Access isPrivate={isPrivate}
+                        accessOptions={accessOptions}
                         accessSwitchHandler={accessSwitchHandler}/>
                 <Type typeOptions={typeOptions}
                         typeSwitchHandler={typeSwitchHandler}/>
@@ -397,7 +404,7 @@ function NewChallengeModal({isModalVisible, hideModal}){
             </KeyboardAwareScrollView>
             <View style={styles.buttonContainer}>
                 <Button
-                    title="Create Challenge"
+                    title={buttonTitle}
                     buttonStyle={styles.button}
                     onPress={handleSubmit}
                     />
@@ -406,7 +413,7 @@ function NewChallengeModal({isModalVisible, hideModal}){
       );
 }
 
-export default NewChallengeModal;
+export default ModifyChallengeModal;
 
 const styles = StyleSheet.create({
     container: {

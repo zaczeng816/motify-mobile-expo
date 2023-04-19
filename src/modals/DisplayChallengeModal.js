@@ -5,8 +5,7 @@ import HabitDetail from "../components/HabitDetail";
 import IconButton from "../components/buttons/IconButton";
 import Icons from "../constants/Icons";
 import ChallengeDetail from "../components/ChallengeDetail";
-import EditChallengeModal from "./EditChallengeModal";
-import DiscussionModal from "./DiscussionModal";
+import ModifyChallengeModal from "./ModifyChallengeModal";
 import DiscussionButton from "../components/buttons/DiscussionButton";
 
 const screenHeight = Dimensions.get('window').height;
@@ -55,9 +54,10 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
                     <View style={styles.editButtonContainer}>
                         <IconButton onPress={showSetting} iconName={'create-outline'}/>
                     </View>
-                    <EditChallengeModal challenge={challenge}
-                                        isModalVisible={isEditModalVisible}
-                                        hideModal={hideEditModal}/>
+                    <ModifyChallengeModal isModalVisible={isEditModalVisible}
+                                        hideModal={hideEditModal}
+                                        isNew={false}
+                                        challenge={challenge}/>
                     <View style={styles.topDetail}>
                         <View style={styles.topHeader}>
                             <Text style={[styles.title, {fontSize: getFontSize()}, {marginTop: titleMarginTop}]}>
