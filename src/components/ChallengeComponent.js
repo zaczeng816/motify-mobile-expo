@@ -1,8 +1,6 @@
 import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image} from "react-native";
 import Icons from "../constants/Icons";
-//import { ColorMatrix } from 'react-native-color-matrix-image-filters';
-
 
 function ChallengeComponent({challenge, onClick}){
     const {title, category, type} = challenge;

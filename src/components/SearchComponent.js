@@ -130,8 +130,8 @@ function SearchComponent({challenges}){
                     setSelectedCategory={setSelectedCategory}/>
       </View>
       <View style={styles.displayChallengeContainer}> 
-        <DisplayChallenges challenges={searchResult} includeProgress={false}/>
-        {suggestions.length === 0  && <NoResult />}
+        <DisplayChallenges challenges={searchResult}/>
+        {searchResult.length === 0  && <NoResult />}
       </View>
     </View>
   );

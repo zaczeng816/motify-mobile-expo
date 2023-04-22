@@ -2,6 +2,7 @@ import React, { useState, useEffect} from 'react';
 import { StyleSheet, View, Text, Dimensions, Button} from 'react-native';
 import CalendarComponent from '../components/CalenderComponent';
 import DisplayChallenges from '../components/DisplayChallenges';
+import DisplayChallengesProgress from '../components/DisplayChallengesProgress';
 import SwitchComponent from '../components/SwitchComponent';
 import AddChallengeButton from '../components/buttons/AddChallengeButton';
 import { useNavigation, useRoute, useParams } from '@react-navigation/native';
@@ -54,8 +55,7 @@ function TodayScreen() {
             <View style={styles.challengesContainer} >
                 <SwitchComponent options={options} 
                                 switchHandler={switchHandler}/>
-                <DisplayChallenges challenges={showChallenges}
-                                includeProgress={true}/>
+                <DisplayChallengesProgress challenges={showChallenges}/>
             </View>
         </View>
 
@@ -83,7 +83,6 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: 'bold',
         color: '#000',
-        //fontFamily: 'Times New Roman'
     },
     dateText: {
         paddingTop: 10,

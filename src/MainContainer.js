@@ -21,6 +21,7 @@ const challenges = [
         title: "Reading",
         category: "reading",
         isPrivate: true,
+        completed: false,
         type: "habit",
         frequency: "week",
         isTimeBased: false,
@@ -52,7 +53,7 @@ const challenges = [
     {
         title: "Meditation",
         category: "meditation",
-        completed: true,
+        completed: false,
         type: "goal",
         amountType: "duration",
         duration: new Date(0, 0, 0, 2, 0),
