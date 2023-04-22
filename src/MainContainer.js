@@ -35,11 +35,11 @@ const challenges = [
         amountType: "duration",
         streak: 5,
         private: true,
+        isCompleted: true
     },
     {
         title: "Running",
         category: "exercise",
-        completed: false,
         type: "habit",
         amountType: "times",
         frequency: "day",
@@ -49,11 +49,11 @@ const challenges = [
         streak: 10,
         private: true,
         description: "I want to run around the river",
+        isCompleted: false
     },
     {
         title: "Meditation",
         category: "meditation",
-        completed: false,
         type: "goal",
         amountType: "duration",
         duration: new Date(0, 0, 0, 2, 0),
@@ -62,11 +62,11 @@ const challenges = [
         private: false,
         participantsNum: 52,
         description: "I think meditation is good for me",
+        isCompleted: false
     },
     {
         title: "Wake up early",
         category: "sleeping",
-        completed: false,
         type: "habit",
         frequency: "day",
         amountType: "times",
@@ -77,11 +77,11 @@ const challenges = [
         private: false,
         participantsNum: 2,
         description: "I would like to wake up at 7am everyday",
+        isCompleted: false
     },
     {
         title: "Professional",
         category: "professional",
-        completed: true,
         type: "goal",
         amountType: "duration",
         duration: new Date(0, 0, 0, 10, 0),
@@ -89,11 +89,11 @@ const challenges = [
         endDate: new Date(2024, 6, 2, 0, 0),
         private: true,
         description: "I want to finish all my work",
+        isCompleted: false
     },
     {
         title: "Networking",
         category: "social",
-        completed: false,
         type: "goal",
         amountType: "times",
         amount: 3,
@@ -102,11 +102,11 @@ const challenges = [
         endDate: null,
         private: true,
         description: "I plan to attend social events three times",
+        isCompleted: false
     },
     {
         title: "Save money",
         category: "finance",
-        completed: false,
         type: "goal",
         amountType: "times",
         amount: 100,
@@ -116,6 +116,7 @@ const challenges = [
         private: false,
         participantsNum: 231,
         description: "I would like to save money for travelling",
+        isCompleted: false
     },
 ];
 

@@ -1,47 +1,94 @@
 import Icons from "../constants/Icons";
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, PanResponder, TouchableHighlight, Image, Animated } from 'react-native';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
-import SwipeComponent from "./SwipeComponent";
+import React, { useState, useEffect} from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Image, Animated } from 'react-native';
 import GoalProgress from "./GoalProgress";
 import HabitProgress from "./HabitProgress";
 import { SwipeListView } from 'react-native-swipe-list-view';
 import DisplayChallengeModal from "../modals/DisplayChallengeModal";
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+const HiddenButtonContent = ({isHabit, completed}) => {
+  if (isHabit){
+      if (completed){
+        return <Text style={styles.undoText}>Undo</Text>;
+      }
+      return <Ionicons name='checkmark' size={50} color='white'/>
+  }
+  return <Ionicons name='add' size={50} color='white'/>
+}
 
 function DisplayChallengesProgress({challenges}) {
-    const [completed, setCompleted] = useState(false);
     const [isChallengeModalVisible, setIsChallengeModalVisible] = useState(false);
-    const [currentChallenge, setCurrentChallenge] = useState(challenges[0]);
+    const [challengesList, setChallengesList] = useState(sortChallenges(challenges));
+    const [currentChallenge, setCurrentChallenge] = useState(challengesList[0]);
 
-    const onSwipeComplete = () => {
-      setCompleted(true);
+    useEffect(() => {
+      setChallengesList(sortChallenges(challenges));
+    },[challenges])
+
+    function sortChallenges(challenges) {
+      return challenges.sort((a, b) => {
+        if (a.isCompleted && !b.isCompleted) {
+          return 1;
+        }
+        if (!a.isCompleted && b.isCompleted) {
+          return -1;
+        }
+        return 0; 
+      });
+    }
+
+    function onPressHiddenButton(challenge, rowMap, data){
+        rowMap[data.item.title].closeRow();
+        setTimeout(() => {
+          setChallengesList((prevState) => {
+            const updatedChallenges = prevState.map((item) => {
+              if (item.title === challenge.title){
+                return {...item, isCompleted: !item.isCompleted};
+              }
+              return item;
+            });
+            return sortChallenges(updatedChallenges);
+          });
+        }, 200);
+    }
+
+    const renderHiddenItem = (data, rowMap) => {
+      const challenge = data.item;
+      const isHabit = challenge.type === 'habit';
+      const completed = challenge.isCompleted;
+      const buttonColor = (isHabit && completed)? '#ff3b30': 'green';
+
+      return(
+          <View style={styles.hiddenItem}>
+            <TouchableOpacity
+              style={[styles.hiddenButton, {backgroundColor: buttonColor}]}
+              onPress={() => onPressHiddenButton(challenge, rowMap, data)}
+            >
+              <HiddenButtonContent isHabit={isHabit} completed={completed}/>
+            </TouchableOpacity>
+          </View>
+      )
     };
-
-    const renderHiddenItem = (data, rowMap) => (
-      <View style={styles.hiddenItem}>
-        <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={() => console.log('Delete', data.item.id)}
-        >
-          <Text style={styles.deleteText}>Delete</Text>
-        </TouchableOpacity>
-      </View>
-    );
 
     const renderItem = ({item}) => {
       const challenge = item;
       const {title, category} = challenge;
+      const crossedOut = challenge.isCompleted && challenge.type === 'habit';
 
       return(
         <View style={styles.container}>
           <TouchableOpacity onPress={() => onClickHandler(challenge)}>
-            <View style={styles.challengeContainer}>
+          <View style={[styles.challengeContainer, 
+              crossedOut? styles.completedChallenge : null]}>
                 <View style={styles.iconContainer}>
                   <Image source={Icons[category]} style={styles.icon} />
                 </View>
                 <View style={styles.detailContainer}>
                   <View style={styles.titleWrapper} >
-                    <Text style={styles.title}>{title}</Text>
+                    <Text style={[styles.title, crossedOut? styles.crossedOut: null]}>
+                      {title}
+                    </Text>
                   </View>
                   {challenge.type === 'habit' && 
                       <View style={styles.streakContainer}>
@@ -72,7 +119,7 @@ function DisplayChallengesProgress({challenges}) {
     return (
       <View style={{flex: 1}}>
         <SwipeListView
-          data={challenges}
+          data={challengesList}
           renderItem={renderItem}
           renderHiddenItem={renderHiddenItem}
           rightOpenValue={-130}
@@ -161,7 +208,8 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   hiddenItem: {
-    height: 100,
+    marginTop: 5,
+    height: 110,
     backgroundColor: '#f3f3f3',
     flexDirection: 'row-reverse',
     justifyContent: 'space-between',
@@ -169,15 +217,23 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     padding: 5,
   },
-  deleteButton: {
-    backgroundColor: '#ff3b30',
+  hiddenButton: {
     justifyContent: 'center',
     alignItems: 'center',
     width: 120,
     borderRadius: 20,
     height: '100%',
   },
-  deleteText: {
+  undoText: {
     color: '#ffffff',
+  },
+  completedChallenge: {
+    opacity: 0.7
+  },
+  crossedOut: {
+    textDecorationLine: 'line-through',
+    textDecorationStyle: 'solid',
+    textDecorationColor: '#grey',
+    color: 'grey'
   },
 });
