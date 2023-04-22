@@ -6,6 +6,7 @@ import HabitProgress from "./HabitProgress";
 import { SwipeListView } from 'react-native-swipe-list-view';
 import DisplayChallengeModal from "../modals/DisplayChallengeModal";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+// import EnterAmountModal from "../modals/EnterAmountModal";
 
 const HiddenButtonContent = ({isHabit, completed}) => {
   if (isHabit){
@@ -21,6 +22,7 @@ function DisplayChallengesProgress({challenges}) {
     const [isChallengeModalVisible, setIsChallengeModalVisible] = useState(false);
     const [challengesList, setChallengesList] = useState(sortChallenges(challenges));
     const [currentChallenge, setCurrentChallenge] = useState(challengesList[0]);
+    const [isEnterAmountModalVisible, setIsEnterAmountModalVisible] = useState(false);
 
     useEffect(() => {
       setChallengesList(sortChallenges(challenges));
@@ -39,7 +41,8 @@ function DisplayChallengesProgress({challenges}) {
     }
 
     function onPressHiddenButton(challenge, rowMap, data){
-        rowMap[data.item.title].closeRow();
+      rowMap[data.item.title].closeRow();
+      if (challenge.type === 'habit'){
         setTimeout(() => {
           setChallengesList((prevState) => {
             const updatedChallenges = prevState.map((item) => {
@@ -51,6 +54,11 @@ function DisplayChallengesProgress({challenges}) {
             return sortChallenges(updatedChallenges);
           });
         }, 200);
+      }
+      else if (challenge.type === 'goal'){
+          openAmountModal();
+          setCurrentChallenge(data.item);
+      }
     }
 
     const renderHiddenItem = (data, rowMap) => {
@@ -116,6 +124,14 @@ function DisplayChallengesProgress({challenges}) {
       setIsChallengeModalVisible(false);
     }
 
+    function openAmountModal(){
+      setIsEnterAmountModalVisible(true);
+    }
+
+    function closeAmountModal(){
+      setIsEnterAmountModalVisible(false);
+    };
+
     return (
       <View style={{flex: 1}}>
         <SwipeListView
@@ -129,6 +145,9 @@ function DisplayChallengesProgress({challenges}) {
         <DisplayChallengeModal challenge={currentChallenge}
                         isModalVisible={isChallengeModalVisible}
                         hideModal={closeChallengeModal}/>
+        {/* <EnterAmountModal challenge={currentChallenge}
+                        isModalVisible={isEnterAmountModalVisible}
+                        hideModal={closeAmountModal}/> */}
       </View>
     );
 }
@@ -233,7 +252,7 @@ const styles = StyleSheet.create({
   crossedOut: {
     textDecorationLine: 'line-through',
     textDecorationStyle: 'solid',
-    textDecorationColor: '#grey',
+    textDecorationColor: 'grey',
     color: 'grey'
   },
 });
