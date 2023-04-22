@@ -35,7 +35,7 @@ const challenges = [
         amountType: "duration",
         streak: 5,
         private: true,
-        isCompleted: true
+        isCompleted: true,
     },
     {
         title: "Running",
@@ -49,7 +49,8 @@ const challenges = [
         streak: 10,
         private: true,
         description: "I want to run around the river",
-        isCompleted: false
+        isCompleted: false,
+        isTimeBased: false,
     },
     {
         title: "Meditation",
@@ -62,7 +63,8 @@ const challenges = [
         private: false,
         participantsNum: 52,
         description: "I think meditation is good for me",
-        isCompleted: false
+        isCompleted: false,
+        isTimeBased: true,
     },
     {
         title: "Wake up early",
@@ -77,7 +79,8 @@ const challenges = [
         private: false,
         participantsNum: 2,
         description: "I would like to wake up at 7am everyday",
-        isCompleted: false
+        isCompleted: false,
+        isTimeBased: false,
     },
     {
         title: "Professional",
@@ -89,7 +92,8 @@ const challenges = [
         endDate: new Date(2024, 6, 2, 0, 0),
         private: true,
         description: "I want to finish all my work",
-        isCompleted: false
+        isCompleted: false,
+        isTimeBased: true,
     },
     {
         title: "Networking",
@@ -102,7 +106,8 @@ const challenges = [
         endDate: null,
         private: true,
         description: "I plan to attend social events three times",
-        isCompleted: false
+        isCompleted: false,
+        isTimeBased: false,
     },
     {
         title: "Save money",
@@ -116,7 +121,8 @@ const challenges = [
         private: false,
         participantsNum: 231,
         description: "I would like to save money for travelling",
-        isCompleted: false
+        isCompleted: false,
+        isTimeBased: false,
     },
 ];
 
