@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Image, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Icons from '../constants/Icons';
-//import { FlatList } from 'react-native-gesture-handler';
+import * as ImagePicker from 'expo-image-picker';
 
 const posts = [
   {
@@ -40,6 +40,29 @@ const posts = [
 
 function DiscussionComponent() {
   const [message, setMessage] = useState('');
+  const [image, setImage] = useState(null);
+  const [inputHeight, setInputHeight] = useState(30);
+
+  const addImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+        alert("Please grant camera roll permissions inside your system's settings");
+        return;
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+    });
+
+    if (!result.canceled) {
+        if (result.assets && result.assets.length > 0) {
+            setImage({ uri: result.assets[0].uri });
+        }
+    }
+};
 
   function handleSend(){
 
@@ -68,35 +91,51 @@ function DiscussionComponent() {
 
   return (
     <KeyboardAvoidingView
-    style={{ flex: 1 }}
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-        <View style={styles.container}>
-            <FlatList data={posts}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => item.id.toString()}
-                    contentContainerStyle={styles.scrollView}>
-            </FlatList>
-                <View style={styles.inputContainer}>
-                    <TextInput
-                    style={styles.input}
-                    placeholder="Write your message..."
-                    onChangeText={setMessage}
-                    value={message}
-                    />
-                    <View style={styles.iconContainer}>
-                        <TouchableOpacity style={styles.addButton}>
-                                <Ionicons name="camera-sharp" size={30} color="orange" />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.sendButton}>
-                            <Ionicons name="send" size={25} color="orange" />
-                        </TouchableOpacity>
-                    </View>
-                </View>
+      <View style={styles.container}>
+        <FlatList
+          data={posts}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={styles.scrollView}
+        />
+        <View style={styles.inputContainer}>
+          <View style={styles.customInputContainer}>
+          {image && (
+              <View style={styles.imageContainer}>
+                <TouchableOpacity style={styles.closeButton} onPress={() => setImage(null)}>
+                  <Ionicons name="close-circle-outline" size={25} color="#fff"
+                            style={{marginTop: -1.7, marginLeft: -0.5}}/>
+                </TouchableOpacity>
+                <Image source={image} style={styles.imagePreview} />
+              </View>)}
+            <TextInput
+                style={[styles.input, {height: inputHeight}]}
+                placeholder="Write your message..."
+                onChangeText={setMessage}
+                value={message}
+                multiline={true}
+                onContentSizeChange={(event) => {
+                  setInputHeight(Math.max(30, event.nativeEvent.contentSize.height));
+                }}
+            />
+          </View>
+          <View style={styles.iconContainer}>
+            <TouchableOpacity style={styles.addButton} onPress={addImage}>
+              <Ionicons name="camera-sharp" size={30} color="orange" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.sendButton}>
+              <Ionicons name="send" size={25} color="orange" />
+            </TouchableOpacity>
+          </View>
         </View>
+      </View>
     </KeyboardAvoidingView>
   );
 }
+
 
 const styles = StyleSheet.create({
     container: {
@@ -133,9 +172,6 @@ const styles = StyleSheet.create({
       color: '#999',
       marginBottom: 5,
     },
-    // content: {
-    //   marginTop: 10,
-    // },
     postBackground: {
         backgroundColor: '#fff',
         //borderRadius: 10,
@@ -156,32 +192,44 @@ const styles = StyleSheet.create({
     },
     separator: {
         marginVertical: 10,
-      //backgroundColor: '#FFF',
-      //marginVertical: 10,
     },
     inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        padding: 10,
-        borderTopWidth: 1,
-        borderColor: '#eee',
-        backgroundColor: '#fff',
-        height: 100
-      },
-      input: {
-        flex: 1,
-        marginTop: 10,
-        marginLeft: 5,
-        backgroundColor: '#f8f8f8', 
-        borderColor: '#ccc',
-        borderWidth: 1, 
-        borderRadius: 25, 
-        paddingHorizontal: 20, 
-        paddingVertical: 10, 
-        marginRight: 10,
-        fontSize: 16, // Increase the font size
-      },
+      borderColor: 'black',
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      justifyContent: 'center',
+      padding: 10,
+      borderTopWidth: 1,
+      borderColor: '#eee',
+      backgroundColor: '#fff',
+      //height: 100,
+    },
+    customInputContainer: {
+      flex: 1,
+      flexDirection: 'column',
+      alignItems: 'center',
+      marginTop: 10,
+      marginLeft: 5,
+      backgroundColor: '#f8f8f8',
+      borderColor: '#ccc',
+      borderWidth: 1,
+      borderRadius: 25,
+      paddingHorizontal: 20,
+      paddingVertical: 10,
+      marginRight: 10,
+      marginBottom: 20,
+    },
+    input: {
+      //flex: 1,
+      fontSize: 16,
+      width: '100%'
+    },
+    imagePreview: {
+      width: 100,
+      height: 100,
+      borderRadius: 10,
+      marginRight: 10,
+    },
       sendContainer:{
         flexDirection: 'row',
         alignItems: 'center'
@@ -201,10 +249,28 @@ const styles = StyleSheet.create({
         marginRight: 5,
       },
       iconContainer: {
+        marginTop: 5,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'
-      }
+      },
+      imageContainer: {
+        position: 'relative',
+      },
+      closeButton: {
+        position: 'absolute',
+        alignContent: 'center',
+        alignItems: 'center',
+        top: -5,
+        right: -5,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        borderRadius: 12,
+        width: 22,
+        height: 22,
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1,
+      },
 });
    
 export default DiscussionComponent;

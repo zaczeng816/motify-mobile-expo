@@ -7,7 +7,7 @@ import NoChallenge from "./NoChallenge";
 function DisplayChallenges({challenges}){
 
   if (challenges.length === 0)
-    return <NoChallenge />
+    return;
 
   const [isChallengeModalVisible, setIsChallengeModalVisible] = useState(false);
   const [currentChallenge, setCurrentChallenge] = useState(challenges[0]);
