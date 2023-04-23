@@ -7,7 +7,6 @@ import TodayScreen from "./screens/TodayScreen";
 import DiscoverScreen from "./screens/DiscoverScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import ChallengesScreen from "./screens/ChallengesScreen";
-import { createTrue } from "typescript";
 
 const todayName = "Today";
 const challengesName = "Challenges";
