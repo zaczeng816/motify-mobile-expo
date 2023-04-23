@@ -92,7 +92,7 @@ const challenges = [
         endDate: new Date(2024, 6, 2, 0, 0),
         private: true,
         description: "I want to finish all my work",
-        isCompleted: false,
+        isCompleted: true,
         isTimeBased: true,
     },
     {

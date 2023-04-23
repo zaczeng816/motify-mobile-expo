@@ -5,10 +5,21 @@ import Icons from "../constants/Icons";
 function ChallengeComponent({challenge, onClick}){
     const {title, category, type} = challenge;
     const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric'};
-    const endDateText = challenge.endDate === null? 'Ongoing': 'To ' + challenge.endDate.toLocaleDateString('en-US', dateOptions);
+    let endDateText = '';
+    if (challenge.type === 'goal' && challenge.isCompleted){
+        endDateText = 'Completed';
+    }
+    else if (challenge.endDate === null){
+        endDateText = 'Ongoing';
+    }
+    else{
+        endDateText = 'To ' + challenge.endDate.toLocaleDateString('en-US', dateOptions);
+    }
+
     function onClickHandler(){
         onClick(challenge);
     }
+
     return (
         <TouchableOpacity onPress={onClickHandler}>
             <View style={styles.container}>

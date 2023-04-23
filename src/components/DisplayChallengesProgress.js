@@ -7,6 +7,7 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import DisplayChallengeModal from "../modals/DisplayChallengeModal";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EnterAmountModal from "../modals/EnterAmountModal";
+import NoChallenge from "./NoChallenge";
 
 const HiddenButtonContent = ({isHabit, completed}) => {
   if (isHabit){
@@ -19,10 +20,15 @@ const HiddenButtonContent = ({isHabit, completed}) => {
 }
 
 function DisplayChallengesProgress({challenges}) {
+    if (challenges.length === 0){
+      return <NoChallenge />
+    }
+
     const [isChallengeModalVisible, setIsChallengeModalVisible] = useState(false);
     const [challengesList, setChallengesList] = useState(sortChallenges(challenges));
     const [currentChallenge, setCurrentChallenge] = useState(challengesList[0]);
     const [isEnterAmountModalVisible, setIsEnterAmountModalVisible] = useState(false);
+
 
     useEffect(() => {
       setChallengesList(sortChallenges(challenges));
