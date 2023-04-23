@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { Text, View, StatusBar, Modal, Animated, Dimensions, StyleSheet, Image} from "react-native";
+import { Text, View, StatusBar, Modal, Alert, Dimensions, StyleSheet, Image} from "react-native";
 import GoalDetail from "../components/GoalDetail";
 import HabitDetail from "../components/HabitDetail";
 import IconButton from "../components/buttons/IconButton";
@@ -34,6 +34,26 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
     function showSetting(){
         setIsEditModalVisible(true)
     }
+    
+    function handleDelete(){
+        Alert.alert(
+            'Confirm Delete',
+            'Do you want to delete this challenge?',
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              {
+                text: 'Delete',
+                onPress: () => {
+                  // delete the challenge here
+                },
+                style: 'destructive',
+              },
+            ],
+          );
+    }
 
     function hideEditModal(){
         setIsEditModalVisible(false);
@@ -51,8 +71,12 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
                     <View style={styles.backButtonContainer}>
                         <IconButton onPress={goBack} iconName={'chevron-back-outline'}/>
                     </View>
-                    <View style={styles.editButtonContainer}>
-                        <IconButton onPress={showSetting} iconName={'create-outline'}/>
+                    <View style={styles.rightButtonsContainer}>
+                        <View style={styles.editButtonContainer}>
+                            <IconButton onPress={showSetting} 
+                                        iconName={'create-outline'}/>
+                        </View>
+                        <IconButton onPress={handleDelete} iconName={'trash-outline'} />
                     </View>
                     <ModifyChallengeModal isModalVisible={isEditModalVisible}
                                         hideModal={hideEditModal}
@@ -134,12 +158,18 @@ const styles = StyleSheet.create({
         padding: 20,
         zIndex: 1
       },
-    editButtonContainer: {
+    rightButtonsContainer: {
+        flexDirection: 'row',
+        justifyContent:'space-between',
+        alignContent: 'space-between',
         position: 'absolute',
         top: 40,
         right: 0,
         padding: 20,
         zIndex: 1
+    },
+    editButtonContainer:{
+        marginRight: 15,
     },
     bottom: {
         flex: 0.7,
