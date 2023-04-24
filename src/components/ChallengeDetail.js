@@ -1,11 +1,46 @@
 import React from "react";
-import { View, Text, StyleSheet} from "react-native";
-import DiscussionButton from "./buttons/DiscussionButton";
+import { View, Text, StyleSheet, ScrollView} from "react-native";
+import { Calendar } from 'react-native-calendars';
+
+const highlightedDates = {
+  '2023-05-01': { selected: true, selectedColor: 'orange'},
+  '2023-05-15': { selected: true, selectedColor: 'orange'},
+  '2023-04-23': { selected: true, selectedColor: 'orange'},
+  '2023-04-24': { selected: true, selectedColor: 'orange'},
+  '2023-04-25': { selected: true, selectedColor: 'orange'},
+};
+
+function formatDate(date){
+  const d = new Date(date);
+  return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+};
+
+function Duration({challenge}){
+    const {type, isOngoing, startDate, endDate, isCompleted} = challenge;
+    let durationText;
+    if (type === 'goal' && isCompleted){
+        durationText = 'Completed';
+    }
+    else if (isOngoing){
+        durationText = formatDate(startDate) + ' - Present';
+    }
+    else{
+        durationText = formatDate(startDate) + ' - ' + formatDate(endDate);
+    }
+
+    return (
+        <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Duration</Text>
+            <Text style={styles.sectionText}>{durationText}</Text>
+        </View>
+    )
+}
+
 
 function ChallengeDetail({challenge}){
 
     const {
-        title,
+        type,
         startDate,
         endDate,
         description,
@@ -14,97 +49,37 @@ function ChallengeDetail({challenge}){
         category
       } = challenge;
 
-    // function getDescription(){
-    //     if (challenge.description !== null){
-    //         return challenge.description;
-    //     }
-    //     return 'This is a description of the challenge.';
-    // }
-
-    function formatDate(date){
-        const d = new Date(date);
-        return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
-    };
-    
+    const challengeCategory = category.substring(0,1).toUpperCase() + category.substring(1);
+    const challengeType = type.substring(0,1).toUpperCase() + type.substring(1);
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Type</Text>
+            <Text style={styles.sectionText}>{challengeType}</Text>
+          </View>
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Category</Text>
-            <Text style={styles.sectionText}>{category}</Text>
+            <Text style={styles.sectionText}>{challengeCategory}</Text>
           </View>
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Start Date</Text>
-            <Text style={styles.sectionText}>{formatDate(startDate)}</Text>
-          </View>
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>End Date</Text>
-            <Text style={styles.sectionText}>{formatDate(endDate)}</Text>
-          </View>
+          <Duration challenge={challenge} />
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Description</Text>
             <Text style={styles.sectionText}>{description}</Text>
           </View>
-          {/* <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Current Streak</Text>
-            <Text style={styles.sectionText}>{currentStreak}</Text>
-          </View>
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Best Streak</Text>
-            <Text style={styles.sectionText}>{bestStreak}</Text>
-          </View> */}
-        </View>
+            <Text style={styles.sectionTitle}>Check-In History</Text>
+            <Calendar
+              markedDates={highlightedDates}
+              style={styles.calendar}
+              theme={{arrowColor: 'orange'}}
+            />
+          </View>
+        </ScrollView>
       );
     };
 
 export default ChallengeDetail;
-
-// const styles = StyleSheet.create({
-//     container: {
-//         backgroundColor: 'white',
-//         borderRadius: 8,
-//         flex: 1,
-//         margin: 20,
-//     },
-//     title: {
-//         fontSize: 24,
-//         fontWeight: 'bold',
-//         marginBottom: 15,
-//     },
-//     dateContainer: {
-//         flexDirection: 'column',
-//         justifyContent: 'space-between',
-//         marginBottom: 15,
-//     },
-//     date: {
-//         fontSize: 16,
-//         color: 'grey',
-//     },
-//     description: {
-//         fontSize: 18,
-//         textAlign: 'justify',
-//         marginBottom: 15,
-//     },
-//     descriptionTitle: {
-//         fontSize: 20,
-//         fontWeight: 'bold',
-//         marginBottom: 10
-//     },
-//     streakContainer: {
-//         flexDirection: 'column',
-//         justifyContent: 'space-between',
-//     },
-//     streak: {
-//         fontSize: 16,
-//         fontWeight: 'bold',
-//         color: 'orange',
-//     },
-//     buttonContainer: {
-//         position: 'absolute',
-//         bottom: 50,
-//         alignSelf: 'center'
-//     }
-// });
 
 const styles = StyleSheet.create({
     container: {
@@ -125,8 +100,13 @@ const styles = StyleSheet.create({
       marginBottom: 5,
     },
     sectionText: {
-        color: 'grey',
+        color: 'rgb(60, 60, 60)',
         fontSize: 16,
         lineHeight: 22,
+    },
+    calendar: {
+      marginTop: 20,
+      marginBottom: 50,
+      borderColor: 'orange',
     },
   });

@@ -124,8 +124,6 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         marginLeft: 30,
-        //borderWidth: 2,
-        //marginBottom: 20
     },
     topHeader: {
         //borderWidth: 2,
@@ -178,13 +176,12 @@ const styles = StyleSheet.create({
         //backgroundColor: '#808080',
     },
     discussionButtonContainer: {
-        flex: 1,
+        //flex: 1,
         alignItems: 'center',
         //borderWidth: 2
-        //marginBottom: 30
+        marginBottom: 40
     },
     detailContainer: {
         flex: 3,
-        //borderWidth: 2
     },
 });

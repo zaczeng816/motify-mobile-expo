@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Image, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity, FlatList, Image, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Icons from '../constants/Icons';
 import * as ImagePicker from 'expo-image-picker';
@@ -43,6 +43,15 @@ function DiscussionComponent() {
   const [image, setImage] = useState(null);
   const [inputHeight, setInputHeight] = useState(30);
 
+  function deletePost(){
+    Alert.alert('Confirm delete', 
+                'Do you want to delete this post?',
+                [
+                  { text: 'Cancel', style: 'cancel' },
+                  { text: 'Confirm', onPress: () =>{} },
+                ])
+  }
+
   const addImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -73,16 +82,21 @@ function DiscussionComponent() {
       <View key={item.id} style={styles.postBackground}>
         <View style={styles.post}>
           <Image source={item.avatar} style={styles.avatar} />
-          <View style={styles.postContent}>
+          <View style={styles.postInfo}>
             <Text style={styles.author}>{item.author}</Text>
             <Text style={styles.timestamp}>{item.timestamp}</Text>
           </View>
         </View>
         <View style={styles.contentContainer}>
-          <Text style={styles.content}>{item.content}</Text>
-          {item.image && (
-            <Image source={item.image} style={styles.postImage} />
-          )}
+          <View style={styles.postContent}>
+            <Text style={styles.content}>{item.content}</Text>
+            {item.image && (
+              <Image source={item.image} style={styles.postImage} />
+            )}
+          </View>
+          <TouchableOpacity style={styles.deleteButton} onPress={deletePost}>
+              <Ionicons name='trash-outline' size={20} color='grey'/>
+          </TouchableOpacity>
         </View>
         <View style={styles.separator} />
       </View>
@@ -153,6 +167,7 @@ const styles = StyleSheet.create({
       alignItems: 'flex-start',
       marginTop: 10,
       marginBottom: 20,
+      marginLeft: 10
     },
     avatar: {
       width: 50,
@@ -160,7 +175,7 @@ const styles = StyleSheet.create({
       borderRadius: 25,
       marginRight: 10,
     },
-    postContent: {
+    postInfo: {
       flex: 1,
     },
     author: {
@@ -178,9 +193,13 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 10,
       },
-    contentContainer: {
+      contentContainer: {
         marginTop: 10,
-    },
+        marginLeft: 10,
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        position: 'relative',
+      },
     postImage: {
         width: 200, 
         height: 200,
@@ -270,6 +289,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1,
+      },
+      deleteButton: {
+        position: 'absolute',
+        bottom: -20, 
+        right: 0, 
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 5,
       },
 });
    

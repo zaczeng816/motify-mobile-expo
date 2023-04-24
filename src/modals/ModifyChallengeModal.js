@@ -61,17 +61,18 @@ const Title = ({title, setTitle, handleContentSizeChange, titleIcon}) => {
 const Access = ({isPrivate, accessOptions, accessSwitchHandler}) => {
     return (
         <View style={styles.row}>
-            <SwitchComponent value={isPrivate? 'private' : 'public'}
+            <SwitchComponent value={isPrivate? 0 : 1}
                             options={accessOptions} 
                             switchHandler={accessSwitchHandler}/>
         </View>
     )
 }
 
-const SwitchComponent = ({options, switchHandler}) => {
+const SwitchComponent = ({value, options, switchHandler}) => {
     return (
         <SwitchSelector options={options}
             initial={0}
+            value={value}
             onPress={switchHandler}
             buttonColor='orange'
             borderRadius={10}
@@ -79,10 +80,11 @@ const SwitchComponent = ({options, switchHandler}) => {
     )
 }
 
-const Type = ({typeOptions, typeSwitchHandler}) => {
+const Type = ({value, typeOptions, typeSwitchHandler}) => {
     return (
         <View style={styles.row}>
-            <SwitchComponent options={typeOptions} 
+            <SwitchComponent value={value === 'habit'? 0 : 1}
+                            options={typeOptions} 
                             switchHandler={typeSwitchHandler}/>
         </View>
     )
@@ -367,7 +369,8 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
                 <Access isPrivate={isPrivate}
                         accessOptions={accessOptions}
                         accessSwitchHandler={accessSwitchHandler}/>
-                <Type typeOptions={typeOptions}
+                <Type   value={type}
+                        typeOptions={typeOptions}
                         typeSwitchHandler={typeSwitchHandler}/>
                 <Section title='Category' 
                         showScrollModal={showScrollModal}
@@ -521,7 +524,8 @@ const styles = StyleSheet.create({
     descriptionTitle: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#222222',
+        //color: '#222222',
+        color: 'rgb(60, 60, 60)',
         alignContent: 'flex-start',
         marginLeft: 10,
         marginBottom: 10,
@@ -538,7 +542,8 @@ const styles = StyleSheet.create({
       sectionTitle: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#222222',
+        //color: '#222222',
+        color: 'rgb(60, 60, 60)',
         alignSelf: 'center',
         justifyContent: 'center'
       },
