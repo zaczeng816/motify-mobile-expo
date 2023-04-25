@@ -3,7 +3,7 @@ import MainContainer from './src/MainContainer';
 import AuthContainer from './src/AuthContainer';
 
 function App() {
-    const [isAuthenticated, setIsAuthenticated] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     if (!isAuthenticated){
         return <AuthContainer />;

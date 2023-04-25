@@ -71,8 +71,8 @@ const Access = ({isPrivate, accessOptions, accessSwitchHandler}) => {
 const SwitchComponent = ({value, options, switchHandler}) => {
     return (
         <SwitchSelector options={options}
-            initial={0}
-            value={value}
+            initial={value}
+            value={0}
             onPress={switchHandler}
             buttonColor='orange'
             borderRadius={10}

@@ -22,6 +22,7 @@ const Icons = {
     avatar: require('../../assets/avatar.png'),
     pen: require('../../assets/pen.png'),
     pencil: require('../../assets/pencil.png'),
+    logo: require('../../assets/logo.png'),
 }
 
 export default Icons;

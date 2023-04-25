@@ -9,13 +9,12 @@ function AuthContainer() {
     return (
         <NavigationContainer>
             <AuthStack.Navigator initialRouteName="Login">
-                <AuthStack.Screen name="Login" component={LoginScreen} />
-                <AuthStack.Screen name="SignUp" component={SignUpScreen} />
-                {/* <AuthStack.Screen
-              name="Main"
-              component={MainContainer}
-              options={{ headerShown: false }}
-            /> */}
+                <AuthStack.Screen name="Login" 
+                                component={LoginScreen} 
+                                options={{ headerShown: false }} />
+                <AuthStack.Screen name="SignUp" 
+                                component={SignUpScreen}
+                                options={{ headerShown: false }} />
             </AuthStack.Navigator>
         </NavigationContainer>
     );
