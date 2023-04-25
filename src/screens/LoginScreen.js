@@ -4,20 +4,28 @@ import LoginInput from '../components/LoginInput';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
 const loginTextHeight = screenHeight * 0.3;
 const inputHeight = screenHeight * 0.3;
 
+const handleLogin = async (username, password) => {
+    const response = await login(username, password);
+    if (response !== "success") {
+        setError("Invalid username or password");
+        console.log("Passwords do not match");
+    } else {
+        console.log("Logged in!");
+        setError("");
+    }
+}
+
 function LoginPage(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState("");
+    
     const navigation = useNavigation();
-
-    const handleSubmit = () => {
-        console.log('Email:', email, 'Password:', password);
-    };
     
     function signUpHandler(){
         navigation.navigate('SignUp');
@@ -42,7 +50,9 @@ function LoginPage(){
                             value={password}
                             isPassword={true}/>
             </View>
-            <TouchableOpacity onPress={handleSubmit} style={styles.buttonContainer}>
+            {error ? <Text style={styles.error}>{error}</Text> : null}
+            <TouchableOpacity onPress={async () => await handleLogin(username, password)} 
+                                style={styles.buttonContainer}>
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
             <View style={[styles.bottomTextContainer, {width: screenWidth}]}>
@@ -118,6 +128,11 @@ const styles = StyleSheet.create({
     color: 'orange',
     fontWeight: 'bold',
   },
+  error: {
+    fontStyle: "italic",
+    color: "red",
+    marginBottom: 10,
+  }
 });
 
 export default LoginPage;
