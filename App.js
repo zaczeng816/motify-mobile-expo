@@ -1,10 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import MainContainer from './src/MainContainer';
 import AuthContainer from './src/AuthContainer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {testAuth, login} from "./src/api/auth";
-import {getSelf} from "./src/api/user";
-import {setIfNotExist} from "./src/utils/AsyncStorageUtils";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -46,7 +42,7 @@ function App() {
     }, [setIsAuthenticated]);
 
     if (!isAuthenticated){
-        return <AuthContainer setAuthTrue = {(val)=>{setIsAuthenticated(val)}} />;
+        return <AuthContainer />;
     }
     else{
         return <MainContainer />;

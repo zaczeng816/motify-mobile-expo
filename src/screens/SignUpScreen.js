@@ -2,26 +2,31 @@ import React, { useState } from "react";
 import {
     View,
     Text,
-    TextInput,
+    KeyboardAvoidingView,
     TouchableOpacity,
     StyleSheet,
+    Keyboard,
+    TouchableWithoutFeedback,
     Dimensions,
+    ScrollView,
 } from "react-native";
-import {login, signup} from "../api/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {getSelf} from "../api/user";
+import { signup } from "../services/auth";
+import LoginInput from "../components/LoginInput";
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
 const windowWidth = Dimensions.get("window").width;
 
-function SignUpScreen({setAuthTrue}) {
+function SignUpScreen() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
+    const navigation = useNavigation();
 
-    const handleSignUp = async (username, email, password) => {
-        if (username.length === 0 || email.length === 0 || password.length === 0) {
+    const handleSignUp = async (username, password) => {
+        if (username.length === 0 || password.length === 0) {
             setError("Please fill out all fields");
             return;
         } else if (password.length < 8) {
@@ -31,55 +36,64 @@ function SignUpScreen({setAuthTrue}) {
             setError("Passwords do not match");
             return;
         }
-        let response
-        try {
-            response = await signup(username, email, password);
-            if (response.status === 200) {
-                await AsyncStorage.setItem("token", response.data.token)
-                await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user))
-                setError("")
-                setAuthTrue()
-            }
-        }catch(e){
-            setError("Email already exists!");
+        const response = await register(username, password);
+        if (response !== "success") {
+            setError("Error registering user, try again later");
+            console.log("Error registering user, try again later");
+        } else {
+            console.log("Register Success!");
+            setError("");
         }
     };
 
+    function goBack(){
+        navigation.goBack();
+    }
+
     return (
-        <View style={styles.screen}>
-            <Text style={styles.registerText}>Motify</Text>
-            <TextInput
-                placeholder="Username"
-                onChangeText={setUsername}
-                value={username}
-                style={styles.input}
-            />
-            <TextInput
-                placeholder="Email"
-                onChangeText={setEmail}
-                value={email}
-                style={styles.input}
-            />
-            <TextInput
-                placeholder="Password"
-                onChangeText={setPassword}
-                value={password}
-                style={styles.input}
-            />
-            <TextInput
-                placeholder="Confirm Password"
-                onChangeText={setConfirmPassword}
-                value={confirmPassword}
-                style={styles.input}
-            />
-            {error ? <Text style={styles.error}>{error}</Text> : null}
-            <TouchableOpacity
-                onPress={async () => await handleSignUp(username, email, password)}
-                style={styles.button}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={{ flex: 1 }}
             >
-                <Text style={styles.buttonText}>Sign Up</Text>
-            </TouchableOpacity>
-        </View>
+                <TouchableOpacity onPress={goBack} style={{zIndex: 1}}>
+                    <Ionicons name='arrow-back-outline' 
+                            size={40} 
+                            color='#A9A9A9' 
+                            style={styles.backArrow}/>
+                </TouchableOpacity>
+                <ScrollView contentContainerStyle={styles.screen}>
+                    <Text style={styles.registerText}>Create Account</Text>
+                    <LoginInput title='Username'
+                                iconName='person-outline'
+                                onChangeText={setUsername}
+                                value={username}
+                                isPassword={false}/>
+                    <LoginInput title='Email'
+                                iconName='mail-outline'
+                                onChangeText={setEmail}
+                                value={email}
+                                isPassword={false}/>
+                    <LoginInput title='Password'
+                                iconName='key-outline'
+                                onChangeText={setPassword}
+                                value={password}
+                                isPassword={true}/>
+                    <LoginInput title='Confirm password'
+                                iconName='shield-checkmark-outline'
+                                onChangeText={setConfirmPassword}
+                                value={confirmPassword}
+                                isPassword={true}/>
+                    {error ? <Text style={styles.error}>{error}</Text> : null}
+                    <TouchableOpacity
+                        onPress={async () => await handleSignUp(username, password)}
+                        style={styles.button}
+                    >
+                        <Text style={styles.buttonText}>Sign Up</Text>
+                    </TouchableOpacity>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     );
 }
 
@@ -90,9 +104,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        paddingHorizontal: 10,
+        paddingHorizontal: 40,
     },
-    registerText: { fontSize: 30, textAlign: "center", marginBottom: 20 },
+    registerText: { 
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginBottom: 40,
+        marginTop: 30,
+    },
     input: {
         height: 40,
         fontSize: 15,
@@ -102,22 +121,37 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     button: {
-        height: 40,
-        margin: 10,
-        width: 250,
-        backgroundColor: "orange",
-        justifyContent: "center",
-        alignItems: "center",
+        marginTop: 50,
+        borderRadius: 50,
+        backgroundColor: 'orange',
+        width: 300,
+        height: 60,
+        alignContent: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 1,
+            height: 3,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 2,
+        elevation: 6,
+    },
+    backArrow:{
+        position: 'absolute',
+        left: 20,
+        top: 70
     },
     buttonText: {
-        fontSize: 15,
-        fontWeight: "bold",
-        color: "white",
-        textAlign: "center",
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        textAlignVertical: 'center',
+        fontSize: 20,
     },
     error: {
         fontStyle: "italic",
         color: "red",
-        marginBottom: 10,
+        marginTop: 10,
     },
 });

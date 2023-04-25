@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, Switch } from 'react-native';
+import { View, Text, TouchableOpacity, Image, TextInput, ScrollView, StyleSheet, Switch } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
+import UploadImage from '../components/UploadImage';
 import Icons from '../constants/Icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 function SettingsScreen() {
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-    const userName = 'Your Name';
+    const [userName, setUserName] = useState('Your Name');
+    const [isEditingName, setIsEditingName] = useState(false);
     const userEmail = 'user@example.com';
     const logOutColor = 'orange';
     const versionNumber = 'Version 0.1.0';
@@ -38,11 +42,28 @@ function SettingsScreen() {
   return (
     <ScrollView style={styles.container}>
         <View style={styles.profileContainer}>
-            <Image
-            style={styles.profileImage}
-            source={Icons.avatar}
-            />
-            <Text style={styles.profileName}>{userName}</Text>
+            <UploadImage />
+            {isEditingName ? (
+                <TextInput
+                    style={styles.profileNameInput}
+                    value={userName}
+                    onChangeText={setUserName}
+                    onSubmitEditing={() => setIsEditingName(false)}
+                    autoFocus={true}
+                    blurOnSubmit={true}
+                />
+                ) : (
+                <View style={styles.profileNameContainer}>
+                    <Text style={styles.profileName}>{userName}</Text>
+                    <View style={styles.penIcon}>
+                      <TouchableOpacity onPress={() => setIsEditingName(true)}>
+                          {/* <Image source={Icons.pencil} style={styles.pencil}/> */}
+                          <FontAwesome name='pencil' size={20} color="grey" style={styles.pencil}/>
+                          {/* <Ionicons name='pencil' size={20} style={styles.pencil} color=''/> */}
+                      </TouchableOpacity>
+                    </View>
+                </View>
+            )}
         </View>
 
         <View style={styles.section}>
@@ -133,12 +154,38 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 20,
     marginTop: 10,
-    //marginBottom: 10,
   },
   buttonText: {
     color: '#FFF',
     fontWeight: 'bold',
   },
+  profileNameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center', 
+    marginTop: 10,
+    paddingHorizontal: 10, 
+    width: '100%',
+  },
+  penIcon: {
+    marginLeft: 10,
+    marginTop: 10
+  },
+  profileNameInput: {
+    paddingTop: 10,
+    marginTop: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
+    borderBottomWidth: 1,
+    borderColor: 'black',
+},
+  pencil: {
+    width: 20,
+    height: 20,
+    position: 'absolute',
+    right: -20,
+    top: -10,
+  }
 });
 
 

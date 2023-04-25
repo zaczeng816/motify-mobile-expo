@@ -47,7 +47,7 @@ function DiscussionButton({challenge, isPrivate}){
                     <ButtonText />
                 </View>
             </TouchableOpacity>
-            <DiscussionModal challenge={challenge}
+            <DiscussionModal isPrivate={isPrivate}
                 isModalVisible={isDiscussionModalVisible}
                 hideModal={hideDiscussionModal}/>
         </View>
