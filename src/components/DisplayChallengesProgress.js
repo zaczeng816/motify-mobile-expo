@@ -1,12 +1,13 @@
 import Icons from "../constants/Icons";
 import React, { useState, useEffect} from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, Animated } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import GoalProgress from "./GoalProgress";
 import HabitProgress from "./HabitProgress";
 import { SwipeListView } from 'react-native-swipe-list-view';
 import DisplayChallengeModal from "../modals/DisplayChallengeModal";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-// import EnterAmountModal from "../modals/EnterAmountModal";
+import EnterAmountModal from "../modals/EnterAmountModal";
+import NoChallenge from "./NoChallenge";
 
 const HiddenButtonContent = ({isHabit, completed}) => {
   if (isHabit){
@@ -19,10 +20,15 @@ const HiddenButtonContent = ({isHabit, completed}) => {
 }
 
 function DisplayChallengesProgress({challenges}) {
+    if (challenges.length === 0){
+      return <NoChallenge />
+    }
+
     const [isChallengeModalVisible, setIsChallengeModalVisible] = useState(false);
     const [challengesList, setChallengesList] = useState(sortChallenges(challenges));
     const [currentChallenge, setCurrentChallenge] = useState(challengesList[0]);
     const [isEnterAmountModalVisible, setIsEnterAmountModalVisible] = useState(false);
+
 
     useEffect(() => {
       setChallengesList(sortChallenges(challenges));
@@ -68,14 +74,14 @@ function DisplayChallengesProgress({challenges}) {
       const buttonColor = (isHabit && completed)? '#ff3b30': 'green';
 
       return(
-          <View style={styles.hiddenItem}>
-            <TouchableOpacity
-              style={[styles.hiddenButton, {backgroundColor: buttonColor}]}
-              onPress={() => onPressHiddenButton(challenge, rowMap, data)}
-            >
+            <View style={styles.hiddenItem}>
+              <TouchableOpacity
+                style={[styles.hiddenButton, {backgroundColor: buttonColor}]}
+                onPress={() => onPressHiddenButton(challenge, rowMap, data)}
+              >
               <HiddenButtonContent isHabit={isHabit} completed={completed}/>
-            </TouchableOpacity>
-          </View>
+              </TouchableOpacity>
+            </View>
       )
     };
 
@@ -145,9 +151,9 @@ function DisplayChallengesProgress({challenges}) {
         <DisplayChallengeModal challenge={currentChallenge}
                         isModalVisible={isChallengeModalVisible}
                         hideModal={closeChallengeModal}/>
-        {/* <EnterAmountModal challenge={currentChallenge}
+        <EnterAmountModal challenge={currentChallenge}
                         isModalVisible={isEnterAmountModalVisible}
-                        hideModal={closeAmountModal}/> */}
+                        hideModal={closeAmountModal}/>
       </View>
     );
 }
@@ -243,6 +249,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     height: '100%',
   },
+  // hiddenButtons:{
+  //   flexDirection: 'row', 
+  //   alignContent: 'flex-end', 
+  //   justifyContent: 'flex-end'
+  // },
   undoText: {
     color: '#ffffff',
   },

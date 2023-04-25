@@ -1,103 +1,138 @@
-import React, { useState } from "react";
-import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    Dimensions,
-} from "react-native";
-import { login } from "../api/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {getSelf} from "../api/user";
+import React, { useState } from 'react';
+import { StyleSheet, Image, Button, View, Text, Dimensions, Keyboard, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+import LoginInput from '../components/LoginInput';
+import { useNavigation } from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const windowWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get('window').height;
+const screenWidth = Dimensions.get('window').width;
+const loginTextHeight = screenHeight * 0.3;
+const inputHeight = screenHeight * 0.3;
 
-function LoginScreen(setAuthTrue) {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-
-    const handleLogin = async (email, password) => {
-        const response = await login(email, password);
-        if (response.status !== 200) {
-            setError("Invalid email or password");
-        } else {
-            const token = response.data.token
-            await AsyncStorage.setItem("token", token)
-            let status = 0;
-            let userInfo = {}
-            while (status !== 200){
-                const userRes = await getSelf(token)
-                status = userRes.status;
-                userInfo = status.data
-            }
-            await AsyncStorage.setItem("userInfo", userInfo)
-            setAuthTrue()
-        }
-    };
-
-    return (
-        <View style={styles.screen}>
-            <Text style={styles.loginText}>Motify</Text>
-            <TextInput
-                placeholder="Email"
-                onChangeText={setEmail}
-                value={email}
-                style={styles.input}
-            />
-            <TextInput
-                placeholder="Password"
-                secureTextEntry
-                onChangeText={setPassword}
-                value={password}
-                style={styles.input}
-            />
-            {error ? <Text style={styles.error}>{error}</Text> : null}
-            <TouchableOpacity
-                onPress={async () => await handleLogin(email, password)}
-                style={styles.button}
-            >
-                <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
-        </View>
-    );
+const handleLogin = async (username, password) => {
+    const response = await login(username, password);
+    if (response !== "success") {
+        setError("Invalid username or password");
+        console.log("Passwords do not match");
+    } else {
+        console.log("Logged in!");
+        setError("");
+    }
 }
 
-export default LoginScreen;
+function LoginPage(){
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState("");
+    
+    const navigation = useNavigation();
+    
+    function signUpHandler(){
+        navigation.navigate('SignUp');
+    }
+
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View style={styles.container}>
+            <View style={[styles.titleContainer, {height: loginTextHeight}]}>
+                <Text style={styles.title}>Login</Text>
+                <Text style={styles.loginText}>Please sign in to continue.</Text>
+            </View>
+            <View style={[styles.inputFields, {height: inputHeight}]}>
+                <LoginInput title='Email' 
+                            iconName='mail-outline'
+                            onChangeText={setEmail}
+                            value={email}
+                            isPassword={false}/>
+                <LoginInput title='Password' 
+                            iconName='key-outline'
+                            onChangeText={setPassword}
+                            value={password}
+                            isPassword={true}/>
+            </View>
+            {error ? <Text style={styles.error}>{error}</Text> : null}
+            <TouchableOpacity onPress={async () => await handleLogin(username, password)} 
+                                style={styles.buttonContainer}>
+                <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
+            <View style={[styles.bottomTextContainer, {width: screenWidth}]}>
+                <Text style={styles.noAccountText}>Don't have an account?</Text>
+                <TouchableOpacity onPress={signUpHandler}>
+                    <Text style={styles.signUpText}>Sign up</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    </TouchableWithoutFeedback>
+  );
+};
+
 const styles = StyleSheet.create({
-    screen: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        paddingHorizontal: 10,
+  container: {
+    flex: 1,
+    paddingHorizontal: 40,
+  },
+  titleContainer:{
+    justifyContent: 'flex-end',
+    marginBottom: -20,
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    
+  },
+  loginText:{
+    color: '#A9A9A9',
+    fontWeight: 'bold',
+  },
+  inputFields:{
+    justifyContent: 'flex-end',
+  },
+  buttonText:{
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    fontSize: 20,
+  },
+  buttonContainer:{
+    marginTop: 50,
+    borderRadius: 50,
+    backgroundColor: 'orange',
+    width: 300,
+    height: 60,
+    alignContent: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000000',
+    shadowOffset: {
+        width: 1,
+        height: 3,
     },
-    loginText: { fontSize: 30, textAlign: "center", marginBottom: 20 },
-    input: {
-        height: 40,
-        fontSize: 15,
-        margin: 8,
-        width: 0.8 * windowWidth,
-        borderWidth: 1,
-        padding: 10,
-    },
-    button: {
-        height: 40,
-        margin: 10,
-        width: 250,
-        backgroundColor: "orange",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    buttonText: {
-        fontSize: 15,
-        fontWeight: "bold",
-        color: "white",
-        textAlign: "center",
-    },
-    error: {
-        fontStyle: "italic",
-        color: "red",
-        marginBottom: 10,
-    },
+    shadowOpacity: 0.25,
+    shadowRadius: 2,
+    elevation: 6,
+  },
+  bottomTextContainer:{
+    justifyContent: 'center',
+    alignContent: 'center',
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 60,
+  },
+  noAccountText:{
+    color: '#A9A9A9',
+    marginRight: 10,
+    fontWeight: 'bold',
+  },
+  signUpText: {
+    color: 'orange',
+    fontWeight: 'bold',
+  },
+  error: {
+    fontStyle: "italic",
+    color: "red",
+    marginBottom: 10,
+  }
 });
+
+export default LoginPage;

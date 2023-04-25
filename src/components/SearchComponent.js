@@ -3,7 +3,6 @@ import { Text, View, TextInput, ScrollView, StyleSheet, Keyboard, TouchableOpaci
 import DisplayChallenges from './DisplayChallenges';
 import NoResult from './NoResult';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { style } from 'deprecated-react-native-prop-types/DeprecatedViewPropTypes';
 
 const categories = ['All', 'eating', 'exercise', 'finance', 'meditation','professional',
                     'reading', 'sleeping', 'social', 'study', 'writing'];

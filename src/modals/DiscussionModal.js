@@ -7,7 +7,9 @@ import DiscussionComponent from "../components/DiscussionComponent";
 const screenHeight = Dimensions.get('window').height;
 const headerHeight = screenHeight * 0.15;
 
-function DiscussionModal({challenge, isModalVisible, hideModal}){
+function DiscussionModal({isPrivate, isModalVisible, hideModal}){
+
+    const title = isPrivate? 'Check-in log' : 'Discussion'
 
     function goBack(){
         hideModal();
@@ -19,7 +21,7 @@ function DiscussionModal({challenge, isModalVisible, hideModal}){
         visible={isModalVisible}
         onRequestClose={hideModal}
         >
-            <ScreenHeader title='Discussion'
+            <ScreenHeader title={title}
                         leftIcon='chevron-back'
                         onLeftIconPress={goBack}
                         />

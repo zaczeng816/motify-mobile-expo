@@ -4,6 +4,7 @@ import SwitchComponent from '../components/SwitchComponent';
 import { useNavigation, useRoute, useParams } from '@react-navigation/native';
 import DisplayChallenges from '../components/DisplayChallenges';
 import DisplayChallengeModal from '../modals/DisplayChallengeModal';
+import NoChallenge from '../components/NoChallenge';
 
 
 function ChallengesScreen() {
@@ -34,12 +35,15 @@ function ChallengesScreen() {
 
     return (
         <View style={styles.challengesContainer}>
+
             <SwitchComponent options={options} 
                             switchHandler={switchHandler}/>
+            {currentChallenges.length === 0 && <NoChallenge />}
             <DisplayChallenges challenges={currentChallenges} onClick={onClickChallengeHandler}/>
-            <DisplayChallengeModal isModalVisible={isDisplayModalVisible}
-                                hideModal={hideDisplayModal}
-                                challenge={currentChallenge}/>
+            {currentChallenge && 
+                <DisplayChallengeModal isModalVisible={isDisplayModalVisible}
+                                    hideModal={hideDisplayModal}
+                                    challenge={currentChallenge}/>}
         </View>
     );
 }
