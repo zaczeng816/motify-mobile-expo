@@ -10,16 +10,9 @@ import {
     Dimensions,
     ScrollView,
 } from "react-native";
-<<<<<<<<< Temporary merge branch 1
-import { signup } from "../services/auth";
 import LoginInput from "../components/LoginInput";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-=========
-import {login, signup} from "../api/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {getSelf} from "../api/user";
->>>>>>>>> Temporary merge branch 2
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -57,48 +50,15 @@ function SignUpScreen() {
     }
 
     return (
-<<<<<<<<< Temporary merge branch 1
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={{ flex: 1 }}
-=========
-        <View style={styles.screen}>
-            <Text style={styles.registerText}>Motify</Text>
-            <TextInput
-                placeholder="Username"
-                onChangeText={setUsername}
-                value={username}
-                style={styles.input}
-            />
-            <TextInput
-                placeholder="Email"
-                onChangeText={setEmail}
-                value={email}
-                style={styles.input}
-            />
-            <TextInput
-                placeholder="Password"
-                onChangeText={setPassword}
-                value={password}
-                style={styles.input}
-            />
-            <TextInput
-                placeholder="Confirm Password"
-                onChangeText={setConfirmPassword}
-                value={confirmPassword}
-                style={styles.input}
-            />
-            {error ? <Text style={styles.error}>{error}</Text> : null}
-            <TouchableOpacity
-                onPress={async () => await handleSignUp(username, email, password)}
-                style={styles.button}
->>>>>>>>> Temporary merge branch 2
             >
                 <TouchableOpacity onPress={goBack} style={{zIndex: 1}}>
-                    <Ionicons name='arrow-back-outline'
-                            size={40}
-                            color='#A9A9A9'
+                    <Ionicons name='arrow-back-outline' 
+                            size={40} 
+                            color='#A9A9A9' 
                             style={styles.backArrow}/>
                 </TouchableOpacity>
                 <ScrollView contentContainerStyle={styles.screen}>
@@ -145,7 +105,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingHorizontal: 40,
     },
-    registerText: {
+    registerText: { 
         fontSize: 30,
         fontWeight: 'bold',
         marginBottom: 40,
