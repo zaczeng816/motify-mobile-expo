@@ -7,19 +7,21 @@ import {
     StyleSheet,
     Dimensions,
 } from "react-native";
-import { signup } from "../services/auth";
+import {login, signup} from "../api/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {getSelf} from "../api/user";
 
 const windowWidth = Dimensions.get("window").width;
 
-function SignUpScreen() {
+function SignUpScreen({setAuthTrue}) {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
 
-    const handleSignUp = async (username, password) => {
-        if (username.length === 0 || password.length === 0) {
+    const handleSignUp = async (username, email, password) => {
+        if (username.length === 0 || email.length === 0 || password.length === 0) {
             setError("Please fill out all fields");
             return;
         } else if (password.length < 8) {
@@ -29,13 +31,17 @@ function SignUpScreen() {
             setError("Passwords do not match");
             return;
         }
-        const response = await register(username, password);
-        if (response !== "success") {
-            setError("Error registering user, try again later");
-            console.log("Error registering user, try again later");
-        } else {
-            console.log("Register Success!");
-            setError("");
+        let response
+        try {
+            response = await signup(username, email, password);
+            if (response.status === 200) {
+                await AsyncStorage.setItem("token", response.data.token)
+                await AsyncStorage.setItem("userInfo", JSON.stringify(response.data.user))
+                setError("")
+                setAuthTrue()
+            }
+        }catch(e){
+            setError("Email already exists!");
         }
     };
 
@@ -68,7 +74,7 @@ function SignUpScreen() {
             />
             {error ? <Text style={styles.error}>{error}</Text> : null}
             <TouchableOpacity
-                onPress={async () => await handleSignUp(username, password)}
+                onPress={async () => await handleSignUp(username, email, password)}
                 style={styles.button}
             >
                 <Text style={styles.buttonText}>Sign Up</Text>

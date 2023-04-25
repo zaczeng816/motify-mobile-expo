@@ -36,14 +36,14 @@ export default DiscoverScreen;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, 
-        alignItems: 'center', 
+        flex: 1,
+        alignItems: 'center',
         padding: 20,
-        alignItems: 'stretch',
+        // alignItems: 'stretch',
         //backgroundColor: '#d9d9d9'
     },
     challengesContainer: {
         flex: 1,
     },
-    
+
 })

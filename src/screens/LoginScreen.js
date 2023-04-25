@@ -7,23 +7,33 @@ import {
     StyleSheet,
     Dimensions,
 } from "react-native";
-import { login } from "../services/auth";
+import { login } from "../api/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {getSelf} from "../api/user";
 
 const windowWidth = Dimensions.get("window").width;
 
-function LoginScreen() {
-    const [username, setUsername] = useState("");
+function LoginScreen(setAuthTrue) {
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
-    const handleLogin = async (username, password) => {
-        const response = await login(username, password);
-        if (response !== "success") {
-            setError("Invalid username or password");
-            console.log("Passwords do not match");
+    const handleLogin = async (email, password) => {
+        const response = await login(email, password);
+        if (response.status !== 200) {
+            setError("Invalid email or password");
         } else {
-            console.log("Logged in!");
-            setError("");
+            const token = response.data.token
+            await AsyncStorage.setItem("token", token)
+            let status = 0;
+            let userInfo = {}
+            while (status !== 200){
+                const userRes = await getSelf(token)
+                status = userRes.status;
+                userInfo = status.data
+            }
+            await AsyncStorage.setItem("userInfo", userInfo)
+            setAuthTrue()
         }
     };
 
@@ -31,9 +41,9 @@ function LoginScreen() {
         <View style={styles.screen}>
             <Text style={styles.loginText}>Motify</Text>
             <TextInput
-                placeholder="Username"
-                onChangeText={setUsername}
-                value={username}
+                placeholder="Email"
+                onChangeText={setEmail}
+                value={email}
                 style={styles.input}
             />
             <TextInput
@@ -45,7 +55,7 @@ function LoginScreen() {
             />
             {error ? <Text style={styles.error}>{error}</Text> : null}
             <TouchableOpacity
-                onPress={async () => await handleLogin(username, password)}
+                onPress={async () => await handleLogin(email, password)}
                 style={styles.button}
             >
                 <Text style={styles.buttonText}>Login</Text>

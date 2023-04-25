@@ -3,14 +3,14 @@ import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import { NavigationContainer } from "@react-navigation/native";
 
-function AuthContainer() {
+function AuthContainer({setAuthTrue}) {
     const AuthStack = createStackNavigator();
 
     return (
         <NavigationContainer>
-            <AuthStack.Navigator initialRouteName="Login">
-                <AuthStack.Screen name="Login" component={LoginScreen} />
-                <AuthStack.Screen name="SignUp" component={SignUpScreen} />
+            <AuthStack.Navigator initialRouteName="Signup">
+                <AuthStack.Screen name="Login" component={LoginScreen} options={setAuthTrue} />
+                <AuthStack.Screen name="Signup" component={SignUpScreen} options={setAuthTrue} />
                 {/* <AuthStack.Screen
               name="Main"
               component={MainContainer}
