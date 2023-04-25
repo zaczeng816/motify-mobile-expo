@@ -9,6 +9,8 @@ import {getSelf} from "./src/api/user";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+<<<<<<<<< Temporary merge branch 1
+=========
 
     useEffect(() => {
         const initUserInfo = {id: "", username: "", email: "", profileImagePath: ""}
@@ -45,6 +47,7 @@ function App() {
         };
         init().then()
     }, [setIsAuthenticated]);
+>>>>>>>>> Temporary merge branch 2
 
     if (!isAuthenticated){
         return <AuthContainer />;
