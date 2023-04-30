@@ -37,7 +37,7 @@ function Duration({challenge}){
 }
 
 
-function ChallengeDetail({challenge}){
+function ChallengeDetail({challenge, hasJoinedChallenge}){
 
     const {
         type,
@@ -53,7 +53,9 @@ function ChallengeDetail({challenge}){
     const challengeType = type.substring(0,1).toUpperCase() + type.substring(1);
 
     return (
+      <View style={styles.outerContainer}>
         <ScrollView style={styles.container}>
+        {/* <View style={styles.container}> */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Type</Text>
             <Text style={styles.sectionText}>{challengeType}</Text>
@@ -67,22 +69,33 @@ function ChallengeDetail({challenge}){
             <Text style={styles.sectionTitle}>Description</Text>
             <Text style={styles.sectionText}>{description}</Text>
           </View>
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Check-In History</Text>
-            <Calendar
-              markedDates={highlightedDates}
-              style={styles.calendar}
-              theme={{arrowColor: 'orange'}}
-            />
-          </View>
+          {hasJoinedChallenge && 
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Check-In History</Text>
+              <Calendar
+                markedDates={highlightedDates}
+                style={styles.calendar}
+                theme={{arrowColor: 'orange'}}
+              />
+            </View>
+          }
         </ScrollView>
+      </View>
       );
     };
 
 export default ChallengeDetail;
 
 const styles = StyleSheet.create({
+    outerContainer:{
+      backgroundColor: 'orange',
+      // borderWidth: 2,
+      margin: -1,
+      flex: 1,
+    },
     container: {
+      flex: 1,
+      marginTop: 10,
       backgroundColor: 'white',
       borderTopLeftRadius: 30,
       borderTopRightRadius: 30,

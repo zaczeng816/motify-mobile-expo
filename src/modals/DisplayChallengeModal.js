@@ -7,6 +7,8 @@ import Icons from "../constants/Icons";
 import ChallengeDetail from "../components/ChallengeDetail";
 import ModifyChallengeModal from "./ModifyChallengeModal";
 import DiscussionButton from "../components/buttons/DiscussionButton";
+import JoinChallengeButton from "../components/buttons/JoinChallengeButton";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const screenHeight = Dimensions.get('window').height;
 const topHeight = screenHeight * 0.5;
@@ -15,6 +17,8 @@ const titleMarginTop = screenHeight * 0.15;
 
 function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+    const isOwner = true;
+    const [hasJoinedChallenge, setHasJoinedChallenge] = useState(true);
 
     function getFontSize() {
         const length = challenge.title.length;
@@ -71,13 +75,15 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
                     <View style={styles.backButtonContainer}>
                         <IconButton onPress={goBack} iconName={'chevron-back-outline'}/>
                     </View>
-                    <View style={styles.rightButtonsContainer}>
-                        <View style={styles.editButtonContainer}>
-                            <IconButton onPress={showSetting} 
-                                        iconName={'create-outline'}/>
+                    {isOwner && 
+                        <View style={styles.rightButtonsContainer}>
+                            <View style={styles.editButtonContainer}>
+                                <IconButton onPress={showSetting} 
+                                            iconName={'create-outline'}/>
+                            </View>
+                            <IconButton onPress={handleDelete} iconName={'trash-outline'} />
                         </View>
-                        <IconButton onPress={handleDelete} iconName={'trash-outline'} />
-                    </View>
+                    }
                     <ModifyChallengeModal isModalVisible={isEditModalVisible}
                                         hideModal={hideEditModal}
                                         isNew={false}
@@ -91,15 +97,25 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
                         </View>
                         <View style={styles.iconContainer}>
                             <Image source={Icons[challenge.category]} style={styles.icon} />
+                            {challenge.private === false && (
+                                <View style={styles.participants}>
+                                    <Ionicons name="people" size={25} color='white' />
+                                        <Text style={styles.participantsText}>
+                                            {challenge.participantsNum}
+                                        </Text>
+                                </View>
+                            )}
                         </View>
                     </View>
                 </View>
                 <View style={styles.bottom}>
                     <View style={styles.detailContainer}>
-                        <ChallengeDetail challenge={challenge}/>
+                        <ChallengeDetail challenge={challenge} 
+                                        hasJoinedChallenge={hasJoinedChallenge}/>
                         </View>
                     <View style={styles.discussionButtonContainer}>
-                        <DiscussionButton challenge={challenge} isPrivate={challenge.private}/>
+                        {!hasJoinedChallenge && <JoinChallengeButton/>}
+                        {hasJoinedChallenge && <DiscussionButton challenge={challenge} isPrivate={challenge.private}/>}
                     </View>
                 </View>
             </View>
@@ -137,17 +153,17 @@ const styles = StyleSheet.create({
         flex: 4
     },
     iconContainer: {
-        //borderWidth: 2,
-        //marginLeft: 20,
         marginRight: 10,
         flex: 0.4,
         justifyContent: 'center',
         alignItems: 'center',
+        alignContent: 'center',
         marginTop: 90,
     },
     icon: {
         width: 100,
         height: 100,
+        marginBottom: 10,
     },
     backButtonContainer: {
         position: "absolute",
@@ -173,7 +189,6 @@ const styles = StyleSheet.create({
         flex: 0.7,
         flexDirection: 'column',
         alignItems: 'stretch',
-        //backgroundColor: '#808080',
     },
     discussionButtonContainer: {
         //flex: 1,
@@ -183,5 +198,17 @@ const styles = StyleSheet.create({
     },
     detailContainer: {
         flex: 3,
+    },
+    participants:{
+        flexDirection: 'row',
+        marginBottom: -10,
+        alignContent: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    participantsText: {
+        marginLeft: 5,
+        fontWeight: 'bold',
+        color: 'white'
     },
 });

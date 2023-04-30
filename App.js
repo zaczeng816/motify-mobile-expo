@@ -9,7 +9,7 @@ import { testAuth, login } from "./src/api/auth";
 import { getSelf } from "./src/api/user";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
