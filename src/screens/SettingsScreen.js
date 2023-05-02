@@ -1,20 +1,38 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, Text, TouchableOpacity, Image, TextInput, ScrollView, StyleSheet, Switch } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import UploadImage from '../components/UploadImage';
 import Icons from '../constants/Icons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function SettingsScreen() {
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-    const [userName, setUserName] = useState('Your Name');
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [isEditingName, setIsEditingName] = useState(false);
-    const userEmail = 'user@example.com';
     const logOutColor = 'orange';
-    const versionNumber = 'Version 0.1.0';
+    const versionNumber = 'Version 1.0.0';
     const supportEmail = 'motify@gmail.com';
     const switchBackgroundColor = '#cccccc';
 
+    useEffect(() => {
+        const getUser = async () =>{
+            return await AsyncStorage.getItem("user")
+        }
+        getUser().then(u => {
+            const user = JSON.parse(u)
+            setEmail(user.email)
+            setUsername(user.username)
+        })
+    }, [username, email, notificationsEnabled]);
+
+    // const handleNameChange = async () =>{
+    //     let user = JSON.parse(await AsyncStorage.getItem("user"))
+    //     user.username = username
+    //
+    // }
 
     function SettingItem({ label, value }) {
         return (
@@ -46,15 +64,18 @@ function SettingsScreen() {
             {isEditingName ? (
                 <TextInput
                     style={styles.profileNameInput}
-                    value={userName}
-                    onChangeText={setUserName}
-                    onSubmitEditing={() => setIsEditingName(false)}
+                    value={username}
+                    onChangeText={setUsername}
+                    onSubmitEditing={async () => {
+                        //await handleNameChange()
+                        setIsEditingName(false)
+                    }}
                     autoFocus={true}
                     blurOnSubmit={true}
                 />
                 ) : (
                 <View style={styles.profileNameContainer}>
-                    <Text style={styles.profileName}>{userName}</Text>
+                    <Text style={styles.profileName}>{username}</Text>
                     <View style={styles.penIcon}>
                       <TouchableOpacity onPress={() => setIsEditingName(true)}>
                           {/* <Image source={Icons.pencil} style={styles.pencil}/> */}
@@ -68,7 +89,7 @@ function SettingsScreen() {
 
         <View style={styles.section}>
             <Text style={styles.sectionTitle}>Account</Text>
-            <SettingItem label="Email" value={userEmail} />
+            <SettingItem label="Email" value={email} />
         </View>
 
         <View style={styles.section}>
@@ -162,9 +183,9 @@ const styles = StyleSheet.create({
   profileNameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center', 
+    justifyContent: 'center',
     marginTop: 10,
-    paddingHorizontal: 10, 
+    paddingHorizontal: 10,
     width: '100%',
   },
   penIcon: {

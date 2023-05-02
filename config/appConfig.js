@@ -1,5 +1,4 @@
 const appConfig = {
-  API_URL: "http://192.168.1.26:8080",
-  AUTH_TOKEN: "",
+  API_URL: "http://192.168.1.17:8080",
 };
 export default appConfig;

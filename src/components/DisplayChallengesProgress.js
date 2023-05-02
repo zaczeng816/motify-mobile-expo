@@ -42,7 +42,7 @@ function DisplayChallengesProgress({challenges}) {
         if (!a.isCompleted && b.isCompleted) {
           return -1;
         }
-        return 0; 
+        return 0;
       });
     }
 
@@ -93,7 +93,7 @@ function DisplayChallengesProgress({challenges}) {
       return(
         <View style={styles.container}>
           <TouchableOpacity onPress={() => onClickHandler(challenge)}>
-          <View style={[styles.challengeContainer, 
+          <View style={[styles.challengeContainer,
               crossedOut? styles.completedChallenge : null]}>
                 <View style={styles.iconContainer}>
                   <Image source={Icons[category]} style={styles.icon} />
@@ -104,16 +104,16 @@ function DisplayChallengesProgress({challenges}) {
                       {title}
                     </Text>
                   </View>
-                  {challenge.type === 'habit' && 
+                  {challenge.type === 'habit' &&
                       <View style={styles.streakContainer}>
                         <Text style={styles.streak}>Streak: {challenge.streak} 🌟</Text>
                       </View>}
-                  {challenge.type === 'goal' && 
+                  {challenge.type === 'goal' &&
                       <View style={styles.progressBarContainer}>
                         <GoalProgress challenge={challenge} color='default'/>
                       </View>}
                 </View>
-                {challenge.type === 'habit' && 
+                {challenge.type === 'habit' &&
                     <HabitProgress challenge={challenge}/>}
               </View>
           </TouchableOpacity>
@@ -178,8 +178,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: '#F8F8F8',
     justifyContent: 'center',
-
-    alignItems: 'center',
   },
   contentContainer: {
     justifyContent: 'space-between',
@@ -250,8 +248,8 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   // hiddenButtons:{
-  //   flexDirection: 'row', 
-  //   alignContent: 'flex-end', 
+  //   flexDirection: 'row',
+  //   alignContent: 'flex-end',
   //   justifyContent: 'flex-end'
   // },
   undoText: {

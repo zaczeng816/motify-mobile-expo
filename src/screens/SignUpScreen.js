@@ -13,10 +13,12 @@ import {
 import LoginInput from "../components/LoginInput";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+import {signup} from "../api/AuthAPI";
 
 const windowWidth = Dimensions.get("window").width;
 
-function SignUpScreen() {
+function SignUpScreen({route}) {
+    const { setAuth } = route.params;
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -24,8 +26,8 @@ function SignUpScreen() {
     const [error, setError] = useState("");
     const navigation = useNavigation();
 
-    const handleSignUp = async (username, password) => {
-        if (username.length === 0 || password.length === 0) {
+    const handleSignUp = async () => {
+        if (username.length === 0 || email.length === 0 || password.length === 0) {
             setError("Please fill out all fields");
             return;
         } else if (password.length < 8) {
@@ -35,13 +37,13 @@ function SignUpScreen() {
             setError("Passwords do not match");
             return;
         }
-        const response = await register(username, password);
-        if (response !== "success") {
+        const ok = await signup(username, email, password);
+        if (!ok) {
+            console.log("Register Failed!");
             setError("Error registering user, try again later");
-            console.log("Error registering user, try again later");
         } else {
             console.log("Register Success!");
-            setError("");
+            setAuth()
         }
     };
 
@@ -56,9 +58,9 @@ function SignUpScreen() {
                 style={{ flex: 1 }}
             >
                 <TouchableOpacity onPress={goBack} style={{zIndex: 1}}>
-                    <Ionicons name='arrow-back-outline' 
-                            size={40} 
-                            color='#A9A9A9' 
+                    <Ionicons name='arrow-back-outline'
+                            size={40}
+                            color='#A9A9A9'
                             style={styles.backArrow}/>
                 </TouchableOpacity>
                 <ScrollView contentContainerStyle={styles.screen}>
@@ -105,7 +107,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingHorizontal: 40,
     },
-    registerText: { 
+    registerText: {
         fontSize: 30,
         fontWeight: 'bold',
         marginBottom: 40,

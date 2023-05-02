@@ -5,11 +5,11 @@ import * as SplashScreen from "expo-splash-screen";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setIfNotExist } from "./src/utils/AsyncStorageUtils";
-import { testAuth, login } from "./src/api/auth";
-import { getSelf } from "./src/api/user";
+import { testAuth, login } from "./src/api/AuthAPI";
+import { getSelf } from "./src/api/UserAPI";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
@@ -28,33 +28,31 @@ function App() {
   useEffect(() => {
     setTimeout(() => {
       setShowSplash(false);
-    }, 3000);
+    }, 500);
   }, []);
 
   useEffect(() => {
     const initUserInfo = { id: "", username: "", email: "", profileImagePath: "" };
     const init = async () => {
       try {
-        await AsyncStorage.clear();
-        console.log("Initializing app.");
-        await setIfNotExist("notification", "true");
-        await setIfNotExist("challenges", JSON.stringify([]));
-        await setIfNotExist("userInfo", JSON.stringify(initUserInfo));
+        await setIfNotExist("notification", JSON.stringify(true));
+        // await setIfNotExist("public_challenges", JSON.stringify([]));
+        await setIfNotExist("user", JSON.stringify(initUserInfo));
         const token = await AsyncStorage.getItem("token");
         if (token != null) {
-          const res = await testAuth(token);
-          if (res.status === 200) {
-            await AsyncStorage.setItem("userInfo", JSON.stringify(await getSelf(token)));
+          const ok = await testAuth(token);
+          if (ok) {
+            const user = await getSelf(token)
+            if (user) {
+              await AsyncStorage.setItem("user", JSON.stringify(user));
+            }
             setIsAuthenticated(true);
           } else {
-            const userInfo = await AsyncStorage.getItem("userInfo");
+            const userInfo = await AsyncStorage.getItem("user");
             const password = await AsyncStorage.getItem("password");
             if (userInfo && password && userInfo.email !== "") {
-              const login_res = await login(userInfo.email, password);
-              if (login_res.status === 200) {
-                const login_token = login_res.data.token;
-                const user = await getSelf(login_token);
-                await AsyncStorage.setItem("userInfo", JSON.stringify(user));
+              const login_ok = await login(userInfo.email, password);
+              if (login_ok) {
                 setIsAuthenticated(true);
               }
             }
@@ -68,7 +66,9 @@ function App() {
   }, [setIsAuthenticated]);
 
   if (!isAuthenticated) {
-    return <AuthContainer />;
+    return <AuthContainer setAuth={() => {
+      setIsAuthenticated(true)
+    }} />;
   } else {
     return <MainContainer />;
   }

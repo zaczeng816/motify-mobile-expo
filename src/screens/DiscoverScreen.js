@@ -4,8 +4,8 @@ import SwitchComponent from '../components/SwitchComponent';
 import {useRoute } from '@react-navigation/native';
 import DisplayChallenges from '../components/DisplayChallenges';
 import SearchComponent from '../components/SearchComponent';
-
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {getAllPublic} from "../api/ChallengeAPI";
 
 function DiscoverScreen() {
     const options = [{label: 'Habit', value: 'habit'}, {label: 'Goal', value: 'goal'}];
@@ -13,14 +13,27 @@ function DiscoverScreen() {
     const [filteredChallenges, setFilteredChallenges] = useState([]);
     const {challenges} = useRoute().params;
 
+    useEffect(() => {
+        const getChallenges = async () =>{
+            const challengeList = await getAllPublic()
+            return JSON.parse(challengeList)
+        }
+        const processChallenges = (challengeList) => {
+            const filtered = challengeList.filter(challenge => {
+                if (challenge.frequency && option === "habit"){ return true }
+                if (!challenge.frequency && option === "goal"){ return true }
+                return false
+            });
+            setFilteredChallenges(filtered);
+        }
+        getChallenges().then(c => {processChallenges(c)})
+    }, [challenges, option]);
+
+
     function switchHandler(value){
         setOption(value);
     }
 
-    useEffect(() => {
-        const filtered = challenges.filter(challenge => challenge.type === option);
-        setFilteredChallenges(filtered);
-      }, [challenges, option]);
 
     return (
         <View style={styles.container}>

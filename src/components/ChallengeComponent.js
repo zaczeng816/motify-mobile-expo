@@ -38,7 +38,7 @@ function ChallengeComponent({challenge, onClick}){
     )
 }
 
-export default ChallengeComponent; 
+export default ChallengeComponent;
 
 const styles = StyleSheet.create({
     container: {
@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 10,
         marginVertical: 5,
-        alignItems: 'center',
       },
     categoryIconContainer: {
         //backgroundColor: '#FFF',

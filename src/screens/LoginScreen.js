@@ -3,30 +3,33 @@ import { StyleSheet, Image, Button, View, Text, Dimensions, Keyboard, TouchableW
 import LoginInput from '../components/LoginInput';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {login} from "../api/AuthAPI";
 
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
 const loginTextHeight = screenHeight * 0.3;
 const inputHeight = screenHeight * 0.3;
 
-const handleLogin = async (username, password) => {
-    const response = await login(username, password);
-    if (response !== "success") {
-        setError("Invalid username or password");
-        console.log("Passwords do not match");
-    } else {
-        console.log("Logged in!");
-        setError("");
-    }
-}
-
-function LoginPage(){
+function LoginPage({route}){
+    const { setAuth } = route.params;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState("");
-    
+
     const navigation = useNavigation();
-    
+
+    const handleLogin = async () => {
+        const ok = await login(email, password);
+        if (ok) {
+            console.log("Logged in");
+            setError("");
+            setAuth();
+        } else {
+            setError("Encountered Error in Login");
+            console.log("Login Failed");
+        }
+    }
+
     function signUpHandler(){
         navigation.navigate('SignUp');
     }
@@ -39,19 +42,19 @@ function LoginPage(){
                 <Text style={styles.loginText}>Please sign in to continue.</Text>
             </View>
             <View style={[styles.inputFields, {height: inputHeight}]}>
-                <LoginInput title='Email' 
+                <LoginInput title='Email'
                             iconName='mail-outline'
                             onChangeText={setEmail}
                             value={email}
                             isPassword={false}/>
-                <LoginInput title='Password' 
+                <LoginInput title='Password'
                             iconName='key-outline'
                             onChangeText={setPassword}
                             value={password}
                             isPassword={true}/>
             </View>
             {error ? <Text style={styles.error}>{error}</Text> : null}
-            <TouchableOpacity onPress={async () => await handleLogin(username, password)} 
+            <TouchableOpacity onPress={async () => await handleLogin(setError, setAuth, email, password)}
                                 style={styles.buttonContainer}>
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
@@ -79,7 +82,7 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: 'bold',
     marginBottom: 15,
-    
+
   },
   loginText:{
     color: '#A9A9A9',
