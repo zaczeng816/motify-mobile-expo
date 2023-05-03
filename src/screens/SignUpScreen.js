@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
     View,
     Text,
@@ -27,11 +27,11 @@ function SignUpScreen() {
     const [error, setError] = useState("");
     const navigation = useNavigation();
 
-    TEST = true;
+    let TEST = true;
     useEffect(() => {
         if (TEST) {
-            setUsername("tom");
-            setEmail("tom@nyu.edu");
+            setUsername("jack");
+            setEmail("jack@nyu.edu");
             setPassword("1234myPassword");
             setConfirmPassword("1234myPassword");
         }

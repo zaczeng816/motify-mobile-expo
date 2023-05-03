@@ -23,6 +23,7 @@ function SettingsScreen() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [isEditingName, setIsEditingName] = useState(false);
+    const { logout } = useContext(AuthContext);
     const logOutColor = "orange";
     const versionNumber = "Version 1.0.0";
     const supportEmail = "motify@gmail.com";
@@ -72,7 +73,6 @@ function SettingsScreen() {
     }
 
     const handleLogout = async () => {
-        const { logout } = useContext(AuthContext);
         await removeUserConent();
         logout();
     };

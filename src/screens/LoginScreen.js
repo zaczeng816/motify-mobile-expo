@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
     StyleSheet,
     Image,
@@ -28,7 +28,7 @@ function LoginScreen({ route }) {
     const [error, setError] = useState("");
     const navigation = useNavigation();
 
-    TEST = true;
+    let TEST = true;
     useEffect(() => {
         if (TEST) {
             setEmail("yb2062@nyu.edu");
