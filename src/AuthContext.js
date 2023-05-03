@@ -18,7 +18,6 @@ function AuthProvider({ children }) {
                 setIfNotExist("token", null);
             }
         };
-
         checkStoredToken();
     }, []);
 

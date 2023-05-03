@@ -23,27 +23,30 @@ const inputHeight = screenHeight * 0.3;
 
 function LoginScreen({ route }) {
     const { setAuth } = useContext(AuthContext);
-    const [email, setEmail] = useState("yb2062@nyu.edu");
-    const [password, setPassword] = useState("1234myPassword");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-
     const navigation = useNavigation();
 
-    const handleLogin = async () => {
-        console.log("handleLogin");
+    TEST = true;
+    useEffect(() => {
+        if (TEST) {
+            setEmail("yb2062@nyu.edu");
+            setPassword("1234myPassword");
+        }
+    }, []);
 
+    const handleLogin = async () => {
         if (email.length === 0 || password.length === 0) {
             setError("Please fill out all fields");
             return;
         }
         const token = await login(email, password);
         if (token) {
-            console.log("Logged in");
             setError("");
             setAuth(token);
         } else {
             setError("Encountered Error in Login");
-            console.log("Login Failed");
         }
     };
 

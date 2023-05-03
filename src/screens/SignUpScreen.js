@@ -27,6 +27,16 @@ function SignUpScreen() {
     const [error, setError] = useState("");
     const navigation = useNavigation();
 
+    TEST = true;
+    useEffect(() => {
+        if (TEST) {
+            setUsername("tom");
+            setEmail("tom@nyu.edu");
+            setPassword("1234myPassword");
+            setConfirmPassword("1234myPassword");
+        }
+    }, []);
+
     const handleSignUp = async () => {
         if (
             username.length === 0 ||
