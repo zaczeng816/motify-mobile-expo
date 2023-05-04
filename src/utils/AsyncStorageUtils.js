@@ -7,7 +7,7 @@ export const setIfNotExist = async (key, value) => {
             await AsyncStorage.setItem(key, value);
         }
     } catch (e) {
-        console.warn(e.message);
+        console.log("setIfNotExist: " + e.message);
     }
 };
 
@@ -16,20 +16,19 @@ export const getLocalToken = async () => {
         const token = await AsyncStorage.getItem("token");
         return token;
     } catch (e) {
-        console.warn(e.message);
-        return null;
+        console.warn("getLocalToken: " + e.message);
     }
 };
 
-export const removeUserConent = async () => {
+export const removeLocalUserConent = async () => {
     try {
         await AsyncStorage.removeItem("token");
         await AsyncStorage.removeItem("username");
         await AsyncStorage.removeItem("id");
         await AsyncStorage.removeItem("email");
         await AsyncStorage.removeItem("user");
-        console.log("User removed from storage!");
+        console.log("removeLocalUserConent: User removed from storage!");
     } catch (e) {
-        console.warn(e.message);
+        console.log("removeLocalUserConent Error: " + e.message);
     }
 };

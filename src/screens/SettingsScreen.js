@@ -16,7 +16,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../AuthContext";
-import { removeUserConent } from "../utils/AsyncStorageUtils";
+import { removeLocalUserConent } from "../utils/AsyncStorageUtils";
 
 function SettingsScreen() {
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
@@ -33,11 +33,13 @@ function SettingsScreen() {
         const getUser = async () => {
             return await AsyncStorage.getItem("user");
         };
-        getUser().then((u) => {
-            const user = JSON.parse(u);
-            setEmail(user.email);
-            setUsername(user.username);
-        });
+        getUser()
+            .then((u) => {
+                const user = JSON.parse(u);
+                setEmail(user.email);
+                setUsername(user.username);
+            })
+            .catch((e) => console.log("getUser: " + e.message));
     }, [username, email, notificationsEnabled]);
 
     // const handleNameChange = async () =>{
@@ -73,8 +75,7 @@ function SettingsScreen() {
     }
 
     const handleLogout = async () => {
-        await removeUserConent();
-        clearAuth();
+        await removeLocalUserConent().finally(clearAuth);
     };
 
     return (
@@ -86,7 +87,7 @@ function SettingsScreen() {
                         style={styles.profileNameInput}
                         value={username}
                         onChangeText={setUsername}
-                        onSubmitEditing={async () => {
+                        onSubmitEditing={() => {
                             //await handleNameChange()
                             setIsEditingName(false);
                         }}

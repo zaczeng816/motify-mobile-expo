@@ -3,11 +3,6 @@ import MainContainer from "./src/MainContainer";
 import AuthContainer from "./src/AuthContainer";
 import * as SplashScreen from "expo-splash-screen";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { setIfNotExist } from "./src/utils/AsyncStorageUtils";
-import { testAuth, login } from "./src/api/AuthAPI";
-import { getSelf } from "./src/api/UserAPI";
-
 import { AuthContext, AuthProvider } from "./src/AuthContext";
 import { UserProvider } from "./src/UserContext";
 
@@ -19,7 +14,7 @@ function App() {
         const hideDefaultSplashScreen = async () => {
             await SplashScreen.preventAutoHideAsync();
         };
-        hideDefaultSplashScreen();
+        hideDefaultSplashScreen().finally();
     }, []);
 
     useEffect(() => {

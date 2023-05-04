@@ -1,41 +1,48 @@
-import React, { useState } from 'react';
-import { Image, View, TouchableOpacity, StyleSheet } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
-import Icons from '../constants/Icons';
+import React, { useState } from "react";
+import { Image, View, TouchableOpacity, StyleSheet } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import Icons from "../constants/Icons";
 
 function UploadImage() {
     const [image, setImage] = useState(Icons.avatar);
 
     const addImage = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-            alert("Please grant camera roll permissions inside your system's settings");
-            return;
-        }
-    
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-    
-        if (!result.canceled) {
-            if (result.assets && result.assets.length > 0) {
-                setImage({ uri: result.assets[0].uri });
+        try {
+            const { status } =
+                await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== "granted") {
+                alert(
+                    "Please grant camera roll permissions inside your system's settings"
+                );
+                return;
             }
+
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+            });
+
+            if (!result.canceled) {
+                if (result.assets && result.assets.length > 0) {
+                    setImage({ uri: result.assets[0].uri });
+                }
+            }
+        } catch (e) {
+            console.log("addImage: " + e.message);
         }
     };
-    
 
     return (
         <View style={imageUploaderStyles.container}>
-            {
-                <Image source={image} style={imageUploaderStyles.profileImage} />
-            }
+            {<Image source={image} style={imageUploaderStyles.profileImage} />}
             <View style={imageUploaderStyles.uploadBtnContainer}>
-                <TouchableOpacity onPress={addImage} style={imageUploaderStyles.uploadBtn}>
+                <TouchableOpacity
+                    onPress={addImage}
+                    style={imageUploaderStyles.uploadBtn}
+                >
                     <AntDesign name="camera" size={20} color="black" />
                 </TouchableOpacity>
             </View>
@@ -50,8 +57,8 @@ const imageUploaderStyles = StyleSheet.create({
         elevation: 2,
         height: 150,
         width: 150,
-        backgroundColor: '#efefef',
-        position: 'relative',
+        backgroundColor: "#efefef",
+        position: "relative",
         borderRadius: 999,
     },
     profileImage: {
@@ -60,23 +67,22 @@ const imageUploaderStyles = StyleSheet.create({
         borderRadius: 999,
     },
     uploadBtnContainer: {
-        position: 'absolute',
+        position: "absolute",
         right: 10,
         bottom: 0,
-        backgroundColor: '#DCDCDC',
+        backgroundColor: "#DCDCDC",
         borderRadius: 25,
         width: 35,
         height: 35,
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center",
         borderWidth: 2,
-        borderColor: 'white',
+        borderColor: "white",
         zIndex: 20,
     },
     uploadBtn: {
-        display: 'flex',
+        display: "flex",
         alignItems: "center",
-        justifyContent: 'center',
+        justifyContent: "center",
     },
 });
-

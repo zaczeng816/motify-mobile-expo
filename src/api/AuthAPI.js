@@ -68,9 +68,14 @@ export const testAuth = async (token) => {
     const config = {
         headers: { Authorization: `Bearer ${token}` },
     };
-    const response = await axios.get(
-        appConfig.API_URL + "/api/user/testAuth",
-        config
-    );
-    return response.status === 200;
+    try {
+        const response = await axios.get(
+            appConfig.API_URL + "/api/user/testAuth",
+            config
+        );
+        return response.status === 200;
+    } catch (e) {
+        console.log("testAuth: " + e.message);
+        return false;
+    }
 };

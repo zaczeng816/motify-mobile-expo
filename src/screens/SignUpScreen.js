@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import {
-    View,
     Text,
     KeyboardAvoidingView,
     TouchableOpacity,
@@ -15,6 +14,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { signup } from "../api/AuthAPI";
 import { AuthContext } from "../AuthContext";
+import appConfig from "../../config/appConfig";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -27,9 +27,8 @@ function SignUpScreen() {
     const [error, setError] = useState("");
     const navigation = useNavigation();
 
-    let TEST = true;
     useEffect(() => {
-        if (TEST) {
+        if (appConfig.AUTH_SCREEN_TEST) {
             setUsername("neal");
             setEmail("neal@nyu.edu");
             setPassword("1234myPassword");
@@ -114,9 +113,13 @@ function SignUpScreen() {
                     />
                     {error ? <Text style={styles.error}>{error}</Text> : null}
                     <TouchableOpacity
-                        onPress={async () =>
-                            await handleSignUp(username, password)
-                        }
+                        onPress={async () => {
+                            try {
+                                handleSignUp();
+                            } catch (e) {
+                                console.log("handleSignup Error: " + e.message);
+                            }
+                        }}
                         style={styles.button}
                     >
                         <Text style={styles.buttonText}>Sign Up</Text>

@@ -1,45 +1,64 @@
-import React, {useEffect, useState} from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
-import SwitchComponent from '../components/SwitchComponent';
-import {useRoute } from '@react-navigation/native';
-import DisplayChallenges from '../components/DisplayChallenges';
-import SearchComponent from '../components/SearchComponent';
+import React, { useEffect, useState } from "react";
+import {
+    View,
+    Text,
+    StyleSheet,
+    ScrollView,
+    TouchableOpacity,
+} from "react-native";
+import SwitchComponent from "../components/SwitchComponent";
+import { useRoute } from "@react-navigation/native";
+import DisplayChallenges from "../components/DisplayChallenges";
+import SearchComponent from "../components/SearchComponent";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {getAllPublic} from "../api/ChallengeAPI";
+import { getAllPublic } from "../api/ChallengeAPI";
+import appConfig from "../../config/appConfig";
 
 function DiscoverScreen() {
-    const options = [{label: 'Habit', value: 'habit'}, {label: 'Goal', value: 'goal'}];
-    const [option, setOption] = useState('habit');
+    const { challenges } = useRoute().params;
+
+    const options = [
+        { label: "Habit", value: "habit" },
+        { label: "Goal", value: "goal" },
+    ];
+    const [option, setOption] = useState("habit");
     const [filteredChallenges, setFilteredChallenges] = useState([]);
-    const {challenges} = useRoute().params;
 
     useEffect(() => {
-        const getChallenges = async () =>{
-            const challengeList = await getAllPublic()
-            return JSON.parse(challengeList)
-        }
+        const getChallenges = async () => {
+            const challengeList = await getAllPublic();
+            return JSON.parse(challengeList);
+        };
         const processChallenges = (challengeList) => {
-            const filtered = challengeList.filter(challenge => {
-                if (challenge.frequency && option === "habit"){ return true }
-                if (!challenge.frequency && option === "goal"){ return true }
-                return false
+            const filtered = challengeList.filter((challenge) => {
+                if (challenge.frequency && option === "habit") {
+                    return true;
+                }
+                if (!challenge.frequency && option === "goal") {
+                    return true;
+                }
+                return false;
             });
             setFilteredChallenges(filtered);
-        }
-        getChallenges().then(c => {processChallenges(c)})
+        };
+        getChallenges()
+            .then((c) => {
+                processChallenges(c);
+            })
+            .catch((e) => {
+                console.log("getChallenges: " + e.message);
+            });
     }, [challenges, option]);
 
-
-    function switchHandler(value){
+    function switchHandler(value) {
         setOption(value);
     }
 
-
     return (
         <View style={styles.container}>
-            <SwitchComponent options={options} switchHandler={switchHandler}/>
+            <SwitchComponent options={options} switchHandler={switchHandler} />
             <View style={styles.challengesContainer}>
-                <SearchComponent challenges={filteredChallenges}/>
+                <SearchComponent challenges={filteredChallenges} />
             </View>
         </View>
     );
@@ -50,7 +69,7 @@ export default DiscoverScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
+        alignItems: "center",
         padding: 20,
         // alignItems: 'stretch',
         //backgroundColor: '#d9d9d9'
@@ -58,5 +77,4 @@ const styles = StyleSheet.create({
     challengesContainer: {
         flex: 1,
     },
-
-})
+});

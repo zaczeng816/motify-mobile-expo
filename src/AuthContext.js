@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getToken, setIfNotExist } from "./utils/AsyncStorageUtils";
-import { set } from "lodash";
+import {
+    getLocalToken,
+    removeLocalUserConent,
+} from "./utils/AsyncStorageUtils";
+import { testAuth } from "./api/AuthAPI";
 
 const AuthContext = React.createContext();
 
@@ -10,12 +13,20 @@ const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const checkStoredToken = async () => {
-            const token = await getToken();
-            if (testAuth(token)) {
-                setIsAuthenticated(true);
-                setToken(token);
-            } else {
-                setIfNotExist("token", null);
+            try {
+                const token = await getLocalToken();
+                if (token) {
+                    if (await testAuth(token)) {
+                        setIsAuthenticated(true);
+                        setToken(token);
+                    } else {
+                        await removeLocalUserConent();
+                        clearAuth();
+                    }
+                }
+            } catch (e) {
+                console.log(e.message);
+                clearAuth();
             }
         };
 

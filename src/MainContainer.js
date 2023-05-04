@@ -15,7 +15,6 @@ const settingsName = "Settings";
 
 const Tab = createBottomTabNavigator();
 
-
 const challenges = [
     {
         title: "Reading",
@@ -27,7 +26,7 @@ const challenges = [
         isTimeBased: false,
         duration: new Date(0, 0, 0, 0, 30),
         amount: 100,
-        unit: 'pages',
+        unit: "pages",
         description: "I want to read more books",
         isOngoing: false,
         startDate: new Date(2023, 4, 20, 0, 0),

@@ -15,6 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { login } from "../api/AuthAPI";
 import { AuthContext } from "../AuthContext";
+import appConfig from "../../config/appConfig";
 
 const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
@@ -28,9 +29,8 @@ function LoginScreen({ route }) {
     const [error, setError] = useState("");
     const navigation = useNavigation();
 
-    let TEST = true;
     useEffect(() => {
-        if (TEST) {
+        if (appConfig.AUTH_SCREEN_TEST) {
             setEmail("yb2062@nyu.edu");
             setPassword("1234myPassword");
         }
@@ -83,7 +83,13 @@ function LoginScreen({ route }) {
                 </View>
                 {error ? <Text style={styles.error}>{error}</Text> : null}
                 <TouchableOpacity
-                    onPress={handleLogin}
+                    onPress={async () => {
+                        try {
+                            handleLogin();
+                        } catch (e) {
+                            console.log("handleLogin Error: " + e.message);
+                        }
+                    }}
                     style={styles.buttonContainer}
                 >
                     <Text style={styles.buttonText}>Login</Text>

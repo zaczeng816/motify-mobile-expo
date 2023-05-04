@@ -5,17 +5,21 @@ import { getSelf } from "./api/UserAPI"; // This is a sample function to fetch u
 const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
-    const { token } = useContext(AuthContext);
+    const { token, isAuthenticated } = useContext(AuthContext);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        fetchUserData();
+    }, [token]);
 
     const fetchUserData = async () => {
         setLoading(true);
         try {
             const userData = await getSelf(token);
             setUser(userData);
-        } catch (error) {
-            console.error("Error fetching user data:", error);
+        } catch (e) {
+            console.log("fetchUserData: ", e.message);
         } finally {
             setLoading(false);
         }
