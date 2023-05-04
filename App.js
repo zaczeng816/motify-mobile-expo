@@ -9,6 +9,7 @@ import { testAuth, login } from "./src/api/AuthAPI";
 import { getSelf } from "./src/api/UserAPI";
 
 import { AuthContext, AuthProvider } from "./src/AuthContext";
+import { UserProvider } from "./src/UserContext";
 
 function App() {
     const { isAuthenticated } = useContext(AuthContext);
@@ -79,7 +80,13 @@ function App() {
     }, [setIsAuthenticated]);
     */
 
-    return isAuthenticated ? <MainContainer /> : <AuthContainer />;
+    return isAuthenticated ? (
+        <UserProvider>
+            <MainContainer />
+        </UserProvider>
+    ) : (
+        <AuthContainer />
+    );
 }
 
 export default () => (
