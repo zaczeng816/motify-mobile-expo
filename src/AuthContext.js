@@ -4,7 +4,7 @@ import { set } from "lodash";
 
 const AuthContext = React.createContext();
 
-function AuthProvider({ children }) {
+const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [token, setToken] = useState(null);
 
@@ -18,6 +18,7 @@ function AuthProvider({ children }) {
                 setIfNotExist("token", null);
             }
         };
+
         checkStoredToken();
     }, []);
 
@@ -27,7 +28,7 @@ function AuthProvider({ children }) {
         console.log("Context: logged in");
     };
 
-    const logout = () => {
+    const clearAuth = () => {
         setIsAuthenticated(false);
         setToken(null);
         console.log("Context: logged out");
@@ -41,12 +42,12 @@ function AuthProvider({ children }) {
                 isAuthenticated,
                 setIsAuthenticated,
                 setAuth,
-                logout,
+                clearAuth,
             }}
         >
             {children}
         </AuthContext.Provider>
     );
-}
+};
 
 export { AuthProvider, AuthContext };

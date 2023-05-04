@@ -30,8 +30,8 @@ function SignUpScreen() {
     let TEST = true;
     useEffect(() => {
         if (TEST) {
-            setUsername("jack");
-            setEmail("jack@nyu.edu");
+            setUsername("neal");
+            setEmail("neal@nyu.edu");
             setPassword("1234myPassword");
             setConfirmPassword("1234myPassword");
         }
@@ -51,16 +51,16 @@ function SignUpScreen() {
         } else if (password !== confirmPassword) {
             setError("Passwords do not match");
             return;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setError("Please enter a valid email");
+            return;
         }
-        setEmail(email.toLowerCase());
-        const token = await signup(username, email, password);
-        if (token) {
-            setAuth(token);
+        try {
+            const signUpResponse = await signup(username, email, password);
+            setAuth(signUpResponse.token);
             console.log("Register Success!");
-        } else {
-            setError("Error registering user, try again later");
-            console.log("Register Failed!");
-            setAuth(false);
+        } catch (e) {
+            setError(e.message);
         }
     };
 

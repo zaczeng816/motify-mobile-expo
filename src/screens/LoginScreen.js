@@ -41,18 +41,18 @@ function LoginScreen({ route }) {
             setError("Please fill out all fields");
             return;
         }
-        const token = await login(email, password);
-        if (token) {
+        try {
+            const loginResponse = await login(email, password);
             setError("");
-            setAuth(token);
-        } else {
-            setError("Encountered Error in Login");
+            setAuth(loginResponse.token);
+        } catch (e) {
+            setError(e.message);
         }
     };
 
-    function toSignUp() {
+    const toSignUp = () => {
         navigation.navigate("SignUp");
-    }
+    };
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>

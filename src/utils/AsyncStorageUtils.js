@@ -1,9 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const setIfNotExist = async (key, value) => {
-    const itemExists = await AsyncStorage.getItem(key);
-    if (!itemExists) {
-        await AsyncStorage.setItem(key, value);
+    try {
+        const itemExists = await AsyncStorage.getItem(key);
+        if (!itemExists) {
+            await AsyncStorage.setItem(key, value);
+        }
+    } catch (e) {
+        console.warn(e.message);
     }
 };
 
@@ -12,7 +16,7 @@ export const getLocalToken = async () => {
         const token = await AsyncStorage.getItem("token");
         return token;
     } catch (e) {
-        console.log(e);
+        console.warn(e.message);
         return null;
     }
 };
@@ -26,6 +30,6 @@ export const removeUserConent = async () => {
         await AsyncStorage.removeItem("user");
         console.log("User removed from storage!");
     } catch (e) {
-        console.log(e);
+        console.warn(e.message);
     }
 };
