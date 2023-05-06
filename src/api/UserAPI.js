@@ -12,21 +12,20 @@ export const getSelf = async (token) => {
             config
         );
         if (response.status !== 200) {
-            return null;
+            throw new Error("request failed, status: " + "${response.status}");
         }
-        await AsyncStorage.setItem("user", JSON.stringify(response.data));
         return response.data;
     } catch (e) {
-        console.log(e.message);
+        new Error("getSelf error: " + e.message);
         return null;
     }
 };
 
-export const getOneById = async (id) => {
+export const getOneById = async (token, id) => {
     try {
         const config = {
             headers: {
-                Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+                Authorization: `Bearer ${token}`,
             },
         };
         const response = await axios.get(
@@ -34,40 +33,47 @@ export const getOneById = async (id) => {
             config
         );
         if (response.status !== 200) {
+            console.log("getOneById request failed, status: ", response.status);
             return null;
         }
         return response.data;
     } catch (e) {
+        console.log("getOneById error: ", e.message);
         return null;
     }
 };
 
-export const getListByIds = async (idList) => {
+export const getListByIds = async (token, idList) => {
     try {
         const config = {
             headers: {
-                Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+                Authorization: `Bearer ${token}`,
             },
         };
-        const response = await axios.post(
+        const response = await axios.get(
             appConfig.API_URL + `/api/user/getListByIds`,
             idList,
             config
         );
         if (response.status !== 200) {
+            console.log(
+                "getListByIds request failed, status: ",
+                response.status
+            );
             return null;
         }
         return response.data;
     } catch (e) {
+        console.log("getListByIds error: ", e.message);
         return null;
     }
 };
 
-export const getAllByUsername = async (username) => {
+export const getAllByUsername = async (token, username) => {
     try {
         const config = {
             headers: {
-                Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+                Authorization: `Bearer ${token}`,
             },
         };
         const response = await axios.get(
@@ -75,19 +81,24 @@ export const getAllByUsername = async (username) => {
             config
         );
         if (response.status !== 200) {
+            console.log(
+                "getAllByUsername request failed, status: ",
+                response.status
+            );
             return null;
         }
         return response.data;
     } catch (e) {
+        console.log("getAllByUsername error: ", e.message);
         return null;
     }
 };
 
-export const getByEmail = async (email) => {
+export const getByEmail = async (token, email) => {
     try {
         const config = {
             headers: {
-                Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+                Authorization: `Bearer ${token}`,
             },
         };
         const response = await axios.get(
@@ -95,15 +106,17 @@ export const getByEmail = async (email) => {
             config
         );
         if (response.status !== 200) {
+            console.log("getByEmail request failed, status: ", response.status);
             return null;
         }
         return response.data;
     } catch (e) {
+        console.log("getByEmail error: ", e.message);
         return null;
     }
 };
 
-export const setProfileImage = async (imageUri) => {
+export const setProfileImage = async (token, imageUri) => {
     try {
         const formData = new FormData();
         formData.append("file", {
@@ -117,8 +130,7 @@ export const setProfileImage = async (imageUri) => {
             {
                 headers: {
                     "Content-Type": "multipart/form-data",
-                    Authorization:
-                        "Bearer " + (await AsyncStorage.getItem("token")),
+                    Authorization: `Bearer ${token}`,
                 },
             }
         );

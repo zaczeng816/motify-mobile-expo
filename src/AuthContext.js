@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
     getLocalToken,
     removeLocalUserConent,
+    setIfNotExist,
 } from "./utils/AsyncStorageUtils";
 import { testAuth } from "./api/AuthAPI";
 
@@ -15,17 +16,17 @@ const AuthProvider = ({ children }) => {
         const checkStoredToken = async () => {
             try {
                 const token = await getLocalToken();
-                if (token) {
+                console.log("checkStoredToken: " + token);
+                if (token != null) {
                     if (await testAuth(token)) {
-                        setIsAuthenticated(true);
-                        setToken(token);
+                        setAuth(token);
                     } else {
                         await removeLocalUserConent();
                         clearAuth();
                     }
                 }
             } catch (e) {
-                console.log(e.message);
+                console.log("checkStoredToken: " + e.message);
                 clearAuth();
             }
         };
@@ -36,13 +37,21 @@ const AuthProvider = ({ children }) => {
     const setAuth = (newToken) => {
         setToken(newToken);
         setIsAuthenticated(true);
-        console.log("Context: logged in");
+        console.log("AuthContext: logged in with token ", newToken);
+    };
+
+    const saveAuth = async (newToken) => {
+        try {
+            await setIfNotExist("token", newToken);
+        } catch (e) {
+            console.log("saveAuth: " + e.message);
+        }
     };
 
     const clearAuth = () => {
         setIsAuthenticated(false);
         setToken(null);
-        console.log("Context: logged out");
+        console.log("AuthContext: logged out");
     };
 
     return (
@@ -53,6 +62,7 @@ const AuthProvider = ({ children }) => {
                 isAuthenticated,
                 setIsAuthenticated,
                 setAuth,
+                saveAuth,
                 clearAuth,
             }}
         >

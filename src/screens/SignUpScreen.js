@@ -19,7 +19,7 @@ import appConfig from "../../config/appConfig";
 const windowWidth = Dimensions.get("window").width;
 
 function SignUpScreen() {
-    const { setAuth } = useContext(AuthContext);
+    const { setAuth, saveAuth } = useContext(AuthContext);
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -56,6 +56,7 @@ function SignUpScreen() {
         }
         try {
             const signUpResponse = await signup(username, email, password);
+            await saveAuth(loginResponse.token);
             setAuth(signUpResponse.token);
             console.log("Register Success!");
         } catch (e) {

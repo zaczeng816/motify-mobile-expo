@@ -15,14 +15,16 @@ import { getAllPublic } from "../api/ChallengeAPI";
 import appConfig from "../../config/appConfig";
 
 function DiscoverScreen() {
+    // ---------- Dummy Data ---------- //
     const { challenges } = useRoute().params;
+    const [filteredChallenges, setFilteredChallenges] = useState([]);
+    // ---------- Dummy Data ---------- //
 
     const options = [
         { label: "Habit", value: "habit" },
         { label: "Goal", value: "goal" },
     ];
     const [option, setOption] = useState("habit");
-    const [filteredChallenges, setFilteredChallenges] = useState([]);
 
     useEffect(() => {
         const getChallenges = async () => {

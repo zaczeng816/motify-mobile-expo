@@ -8,7 +8,12 @@ import NoChallenge from "../components/NoChallenge";
 import appConfig from "../../config/appConfig";
 
 function ChallengesScreen() {
+    // ---------- Dummy Data ---------- //
     const { challenges } = useRoute().params;
+    const currentChallenges = challenges.filter((challenge) => {
+        return challenge.private === (currentOption === "private");
+    });
+    // ---------- Dummy Data ---------- //
 
     const options = [
         { label: "Private", value: "private" },
@@ -30,10 +35,6 @@ function ChallengesScreen() {
     function switchHandler(value) {
         setCurrentOption(value);
     }
-
-    const currentChallenges = challenges.filter((challenge) => {
-        return challenge.private === (currentOption === "private");
-    });
 
     return (
         <View style={styles.challengesContainer}>

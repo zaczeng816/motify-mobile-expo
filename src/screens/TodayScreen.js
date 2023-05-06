@@ -9,7 +9,14 @@ import { useNavigation, useRoute, useParams } from "@react-navigation/native";
 import appConfig from "../../config/appConfig";
 
 function TodayScreen() {
+    // ---------- Dummy Data ---------- //
     const { challenges } = useRoute().params;
+    const showChallenges = challenges.filter((challenge) =>
+        selectedOption === "habit"
+            ? challenge.type === "habit"
+            : challenge.type === "goal"
+    );
+    // ---------- Dummy Data ---------- //
 
     const screenHeight = Dimensions.get("window").height;
     const paddingTop = 0.08 * screenHeight;
@@ -25,12 +32,6 @@ function TodayScreen() {
     function handleDayPress(day) {
         setSelectedDate(day);
     }
-
-    const showChallenges = challenges.filter((challenge) =>
-        selectedOption === "habit"
-            ? challenge.type === "habit"
-            : challenge.type === "goal"
-    );
 
     const [currentMonth, setCurrentMonth] = useState();
     const [currentYear, setCurrentYear] = useState();

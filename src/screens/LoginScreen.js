@@ -22,8 +22,8 @@ const screenWidth = Dimensions.get("window").width;
 const loginTextHeight = screenHeight * 0.3;
 const inputHeight = screenHeight * 0.3;
 
-function LoginScreen({ route }) {
-    const { setAuth } = useContext(AuthContext);
+function LoginScreen() {
+    const { setAuth, saveAuth } = useContext(AuthContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -43,6 +43,7 @@ function LoginScreen({ route }) {
         }
         try {
             const loginResponse = await login(email, password);
+            await saveAuth(loginResponse.token);
             setError("");
             setAuth(loginResponse.token);
         } catch (e) {
