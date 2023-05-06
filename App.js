@@ -8,6 +8,7 @@ import { UserProvider } from "./src/UserContext";
 
 import appConfig from "./config/appConfig";
 import UserAPITest from "./src/UserAPITest";
+import ChallengeAPITest from "./src/ChallengeAPITest";
 
 function App() {
     const { isAuthenticated } = useContext(AuthContext);
@@ -81,7 +82,7 @@ function App() {
     if (appConfig.TEST_APIs) {
         return isAuthenticated ? (
             <UserProvider>
-                <UserAPITest />
+                <ChallengeAPITest />
                 <MainContainer />
             </UserProvider>
         ) : (

@@ -6,7 +6,7 @@ export const getAllPublic = async (token) => {
     try {
         const config = {
             headers: {
-                Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+                Authorization: `Bearer ${token}`,
             },
         };
         const response = await axios.get(
@@ -14,10 +14,11 @@ export const getAllPublic = async (token) => {
             config
         );
         if (response.status !== 200) {
-            return null;
+            throw new Error(`Request failed, status: ${response.status}`);
         }
         return response.data;
     } catch (e) {
+        console.log(`getAllPublic: ${e.message}`);
         return null;
     }
 };
