@@ -16,7 +16,7 @@ export const getLocalToken = async () => {
         const token = await AsyncStorage.getItem("token");
         return token;
     } catch (e) {
-        console.warn("getLocalToken: " + e.message);
+        console.log("getLocalToken: " + e.message);
     }
 };
 

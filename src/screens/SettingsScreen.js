@@ -77,10 +77,12 @@ function SettingsScreen() {
     }
 
     const handleLogout = async () => {
-        await removeLocalUserConent().finally(() => {
-            clearAuth();
-            showMessage("Logged out");
-        });
+        await removeLocalUserConent()
+            .catch()
+            .finally(() => {
+                clearAuth();
+                showMessage("Logged out");
+            });
     };
 
     return (

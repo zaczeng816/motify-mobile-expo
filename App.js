@@ -4,13 +4,13 @@ import AuthContainer from "./src/AuthContainer";
 import * as SplashScreen from "expo-splash-screen";
 
 import { StatusProvider } from "./src/StatusContext";
-import StatusIndicator from "./src/StatusIndicator";
 import { AuthContext, AuthProvider } from "./src/AuthContext";
 import { UserProvider } from "./src/UserContext";
+import StatusIndicator from "./src/StatusIndicator";
 
 import appConfig from "./config/appConfig";
 import UserAPITest from "./src/UserAPITest";
-import ChallengeAPITest from "./src/ChallengeAPITest";
+import DiscussionAPITest from "./src/DiscussionAPITest";
 
 function App() {
     const { isAuthenticated } = useContext(AuthContext);
@@ -20,12 +20,18 @@ function App() {
         const hideDefaultSplashScreen = async () => {
             await SplashScreen.preventAutoHideAsync();
         };
-        hideDefaultSplashScreen().finally();
+        hideDefaultSplashScreen()
+            .catch((error) =>
+                console.log("Error in hideDefaultSplashScreen:", error)
+            )
+            .finally();
     }, []);
 
     useEffect(() => {
         if (!showSplash) {
-            SplashScreen.hideAsync();
+            SplashScreen.hideAsync().catch((error) =>
+                console.log("Error in SplashScreen.hideAsync:", error)
+            );
         }
     }, [showSplash]);
 
@@ -34,6 +40,7 @@ function App() {
             setShowSplash(false);
         }, 500);
     }, []);
+
     /*
     useEffect(() => {
         const initUserInfo = {
@@ -86,7 +93,7 @@ function App() {
             <>
                 {isAuthenticated ? (
                     <UserProvider>
-                        <ChallengeAPITest />
+                        <DiscussionAPITest />
                         <MainContainer />
                     </UserProvider>
                 ) : (

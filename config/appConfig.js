@@ -1,3 +1,5 @@
+import { truncate } from "lodash";
+
 const appConfig = {
     API_URL: "http://localhost:8080",
     DATA_SOURCE: "local",
