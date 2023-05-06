@@ -14,6 +14,7 @@ import LoginInput from "../components/LoginInput";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { login } from "../api/AuthAPI";
+import { StatusContext } from "../StatusContext";
 import { AuthContext } from "../AuthContext";
 import appConfig from "../../config/appConfig";
 
@@ -23,6 +24,7 @@ const loginTextHeight = screenHeight * 0.3;
 const inputHeight = screenHeight * 0.3;
 
 function LoginScreen() {
+    const { showLoading, showMessage } = useContext(StatusContext);
     const { setAuth, saveAuth } = useContext(AuthContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -42,11 +44,14 @@ function LoginScreen() {
             return;
         }
         try {
+            showLoading("Logging in...");
             const loginResponse = await login(email, password);
             await saveAuth(loginResponse.token);
             setError("");
             setAuth(loginResponse.token);
+            showMessage("Login Successful!");
         } catch (e) {
+            showMessage("Login failed");
             setError(e.message);
         }
     };

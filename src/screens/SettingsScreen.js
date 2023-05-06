@@ -16,6 +16,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../AuthContext";
+import { StatusContext } from "../StatusContext";
 import { removeLocalUserConent } from "../utils/AsyncStorageUtils";
 
 function SettingsScreen() {
@@ -23,6 +24,7 @@ function SettingsScreen() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [isEditingName, setIsEditingName] = useState(false);
+    const { showMessage } = useContext(StatusContext);
     const { clearAuth } = useContext(AuthContext);
     const logOutColor = "orange";
     const versionNumber = "Version 1.0.0";
@@ -75,7 +77,10 @@ function SettingsScreen() {
     }
 
     const handleLogout = async () => {
-        await removeLocalUserConent().finally(clearAuth);
+        await removeLocalUserConent().finally(() => {
+            clearAuth();
+            showMessage("Logged out");
+        });
     };
 
     return (

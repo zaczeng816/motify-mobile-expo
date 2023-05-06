@@ -3,6 +3,8 @@ import MainContainer from "./src/MainContainer";
 import AuthContainer from "./src/AuthContainer";
 import * as SplashScreen from "expo-splash-screen";
 
+import { StatusProvider } from "./src/StatusContext";
+import StatusIndicator from "./src/StatusIndicator";
 import { AuthContext, AuthProvider } from "./src/AuthContext";
 import { UserProvider } from "./src/UserContext";
 
@@ -80,27 +82,39 @@ function App() {
     */
 
     if (appConfig.TEST_APIs) {
-        return isAuthenticated ? (
-            <UserProvider>
-                <ChallengeAPITest />
-                <MainContainer />
-            </UserProvider>
-        ) : (
-            <AuthContainer />
+        return (
+            <>
+                {isAuthenticated ? (
+                    <UserProvider>
+                        <ChallengeAPITest />
+                        <MainContainer />
+                    </UserProvider>
+                ) : (
+                    <AuthContainer />
+                )}
+                <StatusIndicator />
+            </>
         );
     } else {
-        return isAuthenticated ? (
-            <UserProvider>
-                <MainContainer />
-            </UserProvider>
-        ) : (
-            <AuthContainer />
+        return (
+            <>
+                {isAuthenticated ? (
+                    <UserProvider>
+                        <MainContainer />
+                    </UserProvider>
+                ) : (
+                    <AuthContainer />
+                )}
+                <StatusIndicator />
+            </>
         );
     }
 }
 
 export default () => (
-    <AuthProvider>
-        <App />
-    </AuthProvider>
+    <StatusProvider>
+        <AuthProvider>
+            <App />
+        </AuthProvider>
+    </StatusProvider>
 );

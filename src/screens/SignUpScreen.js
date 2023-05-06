@@ -13,12 +13,14 @@ import LoginInput from "../components/LoginInput";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { signup } from "../api/AuthAPI";
+import { StatusContext } from "../StatusContext";
 import { AuthContext } from "../AuthContext";
 import appConfig from "../../config/appConfig";
 
 const windowWidth = Dimensions.get("window").width;
 
 function SignUpScreen() {
+    const { showLoading, showMessage } = useContext(StatusContext);
     const { setAuth, saveAuth } = useContext(AuthContext);
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -55,11 +57,14 @@ function SignUpScreen() {
             return;
         }
         try {
+            showLoading("Signing up...");
             const signUpResponse = await signup(username, email, password);
             await saveAuth(loginResponse.token);
             setAuth(signUpResponse.token);
             console.log("Register Success!");
+            showMessage("Welcome!");
         } catch (e) {
+            showMessage("Sign up failed");
             setError(e.message);
         }
     };
