@@ -3,14 +3,14 @@ import MainContainer from "./src/MainContainer";
 import AuthContainer from "./src/AuthContainer";
 import * as SplashScreen from "expo-splash-screen";
 
-import { StatusProvider } from "./src/StatusContext";
-import { AuthContext, AuthProvider } from "./src/AuthContext";
-import { UserProvider } from "./src/UserContext";
+import { StatusProvider } from "./src/contexts/StatusContext";
+import { AuthContext, AuthProvider } from "./src/contexts/AuthContext";
+import { UserProvider } from "./src/contexts/UserContext";
 import StatusIndicator from "./src/StatusIndicator";
 
 import appConfig from "./config/appConfig";
-import UserAPITest from "./src/UserAPITest";
-import DiscussionAPITest from "./src/DiscussionAPITest";
+import UserAPITest from "./src/api_tests/UserAPITest";
+import DiscussionAPITest from "./src/api_tests/DiscussionAPITest";
 
 function App() {
     const { isAuthenticated } = useContext(AuthContext);

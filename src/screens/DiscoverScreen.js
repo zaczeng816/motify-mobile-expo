@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
     View,
     Text,
@@ -13,11 +13,13 @@ import SearchComponent from "../components/SearchComponent";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllPublic } from "../api/ChallengeAPI";
 import appConfig from "../../config/appConfig";
+import {AuthContext} from "../contexts/AuthContext";
 
 function DiscoverScreen() {
     // ---------- Dummy Data ---------- //
     const { challenges } = useRoute().params;
     const [filteredChallenges, setFilteredChallenges] = useState([]);
+    const {token} = useContext(AuthContext)
     // ---------- Dummy Data ---------- //
 
     const options = [
@@ -28,7 +30,7 @@ function DiscoverScreen() {
 
     useEffect(() => {
         const getChallenges = async () => {
-            const challengeList = await getAllPublic();
+            const challengeList = await getAllPublic(token);
             return JSON.parse(challengeList);
         };
         const processChallenges = (challengeList) => {

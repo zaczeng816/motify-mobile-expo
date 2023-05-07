@@ -3,8 +3,8 @@ import {
     getLocalToken,
     removeLocalUserConent,
     setIfNotExist,
-} from "./utils/AsyncStorageUtils";
-import { testAuth } from "./api/AuthAPI";
+} from "../utils/AsyncStorageUtils";
+import { testAuth } from "../api/AuthAPI";
 import { StatusContext } from "./StatusContext";
 
 const AuthContext = React.createContext();

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
-import { getSelf } from "./api/UserAPI"; // This is a sample function to fetch user data from the API
+import { getSelf } from "../api/UserAPI"; // This is a sample function to fetch user data from the API
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const UserContext = createContext();

@@ -14,8 +14,8 @@ import LoginInput from "../components/LoginInput";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { login } from "../api/AuthAPI";
-import { StatusContext } from "../StatusContext";
-import { AuthContext } from "../AuthContext";
+import { StatusContext } from "../contexts/StatusContext";
+import { AuthContext } from "../contexts/AuthContext";
 import appConfig from "../../config/appConfig";
 
 const screenHeight = Dimensions.get("window").height;
@@ -44,7 +44,7 @@ function LoginScreen() {
             return;
         }
         try {
-            showLoading("Logging in...");
+            showLoading("Logging in...")
             const loginResponse = await login(email, password);
             await saveAuth(loginResponse.token);
             setError("");

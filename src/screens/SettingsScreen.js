@@ -15,8 +15,8 @@ import Icons from "../constants/Icons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AuthContext } from "../AuthContext";
-import { StatusContext } from "../StatusContext";
+import { AuthContext } from "../contexts/AuthContext";
+import { StatusContext } from "../contexts/StatusContext";
 import { removeLocalUserConent } from "../utils/AsyncStorageUtils";
 
 function SettingsScreen() {

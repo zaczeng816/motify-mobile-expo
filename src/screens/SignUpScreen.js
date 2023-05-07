@@ -13,8 +13,8 @@ import LoginInput from "../components/LoginInput";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { signup } from "../api/AuthAPI";
-import { StatusContext } from "../StatusContext";
-import { AuthContext } from "../AuthContext";
+import { StatusContext } from "../contexts/StatusContext";
+import { AuthContext } from "../contexts/AuthContext";
 import appConfig from "../../config/appConfig";
 
 const windowWidth = Dimensions.get("window").width;

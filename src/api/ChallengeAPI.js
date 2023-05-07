@@ -37,7 +37,7 @@ export const getPublicChallengePage = async (token, page, size) => {
             throw new Error(`Request failed, status: ${response.status}`);
         }
     } catch (e) {
-        console.log(`getPublicChallengePage: ${e.message}`);
+        console.log(`getAllPublic: ${e.message}`);
         return null;
     }
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from "react";
-import { AuthContext } from "./AuthContext";
-import { getAllPublic } from "./api/ChallengeAPI";
+import { AuthContext } from "../contexts/AuthContext";
+import { getAllPublic } from "../api/ChallengeAPI";
 import {
     getAllSelfPublicParticipation,
     getAllSelfPrivateParticipation,
@@ -11,7 +11,7 @@ import {
     checkIn,
     joinPublicChallenge,
     quitPublicChallenge,
-} from "./api/ParticipationAPI";
+} from "../api/ParticipationAPI";
 import { isReturnStatement } from "typescript";
 
 const DiscussionAPITest = () => {

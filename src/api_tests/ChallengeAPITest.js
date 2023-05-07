@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from "react";
-import { AuthContext } from "./AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
 import {
     getById,
     getPublicPage,
@@ -8,7 +8,7 @@ import {
     createChallenge,
     updateChallenge,
     deleteChallenge,
-} from "./api/ChallengeAPI";
+} from "../api/ChallengeAPI";
 
 const ChallengeAPITest = () => {
     const { token } = useContext(AuthContext);

@@ -11,11 +11,13 @@ export const login = async (email, password) => {
         console.log(
             "Sending Login request to " + appConfig.API_URL + "/api/auth/login"
         );
+
         const response = await axios.post(
             appConfig.API_URL + "/api/auth/login",
             dto,
             { timeout: 5000 }
-        );
+        )
+        console.log("HERE")
         if (response.status !== 200) {
             console.log("Login response status: " + response.status);
             throw new Error(

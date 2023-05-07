@@ -6,7 +6,7 @@ import {
     TouchableOpacity,
     StyleSheet,
 } from "react-native";
-import { StatusContext } from "./StatusContext";
+import { StatusContext } from "./contexts/StatusContext";
 
 const StatusIndicator = () => {
     const { isLoading, appStatus, setAppStatus } = useContext(StatusContext);

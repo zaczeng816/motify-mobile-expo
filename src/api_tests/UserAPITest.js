@@ -1,13 +1,13 @@
 import React, { useEffect, useContext } from "react";
-import { AuthContext } from "./AuthContext";
-import { UserContext } from "./UserContext";
+import { AuthContext } from "../contexts/AuthContext";
+import { UserContext } from "../contexts/UserContext";
 import {
     getOneById,
     getListByIds,
     getAllByUsername,
     getByEmail,
     setProfileImage,
-} from "./api/UserAPI";
+} from "../api/UserAPI";
 
 const TestAPIComponent = () => {
     const { token } = useContext(AuthContext);
