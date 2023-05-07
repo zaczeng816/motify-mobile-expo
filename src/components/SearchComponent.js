@@ -40,9 +40,8 @@ function SearchComponent({challenges}){
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchResult, setSearchResult] = useState([])
 
-
   useEffect(() => {
-      setSuggestions(filterData(challenges, searchQuery))}, 
+      setSuggestions(filterData(challenges, searchQuery))},
       [challenges, searchQuery]);
 
   useEffect(() => {
@@ -62,7 +61,7 @@ function SearchComponent({challenges}){
       return challenges;
     }
     return challenges.filter((challenge) => {
-      const itemData = challenge.title.toUpperCase();
+      const itemData = challenge.name.toUpperCase();
       const textData = query.toUpperCase();
       return itemData.indexOf(textData) > -1;
     });
@@ -92,7 +91,7 @@ function SearchComponent({challenges}){
       <View style={styles.searchContainer}>
         <View style={styles.inputContainer}>
           <View style={styles.searchIconContainer}>
-            <Ionicons name='search' size={25} 
+            <Ionicons name='search' size={25}
                                     style={styles.searchIcon}
                                     color='grey'/>
           </View>
@@ -105,17 +104,17 @@ function SearchComponent({challenges}){
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
-          {searchQuery !== '' && 
+          {searchQuery !== '' &&
             <View style={styles.clearIconContainer}>
               <TouchableOpacity onPress={clearHandler}>
-                <Ionicons name='close-circle' 
+                <Ionicons name='close-circle'
                           size={25}
                           color='grey'/>
                 </TouchableOpacity>
               </View>
           }
         </View>
-        {isSearching && 
+        {isSearching &&
           <TouchableOpacity onPress={cancelHandler}>
             <View style={styles.cancelButton}>
                 <Text>Cancel</Text>
@@ -128,7 +127,7 @@ function SearchComponent({challenges}){
         <FilterList selectedCategory={selectedCategory}
                     setSelectedCategory={setSelectedCategory}/>
       </View>
-      <View style={styles.displayChallengeContainer}> 
+      <View style={styles.displayChallengeContainer}>
         <DisplayChallenges challenges={searchResult}/>
         {searchResult.length === 0  && <NoResult />}
       </View>
@@ -152,7 +151,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'hsl(0, 0%, 90%)',
     borderRadius: 20,
     flexDirection: 'row',
-    justifyContent: 'center'
   },
   searchIconContainer: {
     justifyContent: 'center',
@@ -202,7 +200,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'orange',
   },
   displayChallengeContainer: {
-    flex: 1, 
+    flex: 1,
   },
   filterListContainer: {
     marginVertical: 10,

@@ -20,7 +20,7 @@ export const getLocalToken = async () => {
     }
 };
 
-export const removeLocalUserConent = async () => {
+export const removeLocalUserContent = async () => {
     try {
         await AsyncStorage.removeItem("token");
         await AsyncStorage.removeItem("username");

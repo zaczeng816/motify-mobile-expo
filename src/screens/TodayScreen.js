@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useContext} from "react";
 import { StyleSheet, View, Text, Dimensions, Button } from "react-native";
 import CalendarComponent from "../components/CalenderComponent";
 import DisplayChallenges from "../components/DisplayChallenges";
@@ -7,10 +7,24 @@ import SwitchComponent from "../components/SwitchComponent";
 import AddChallengeButton from "../components/buttons/AddChallengeButton";
 import { useNavigation, useRoute, useParams } from "@react-navigation/native";
 import appConfig from "../../config/appConfig";
+import {getAllPrivateChallenges, getAllPublicChallenges} from "../api/ChallengeAPI";
+import {AuthContext} from "../contexts/AuthContext";
 
 function TodayScreen() {
+    const [challenges, setChallenges] = useState([])
+    const {token} = useContext(AuthContext)
+
+    useEffect(() => {
+        const getChallenges = async () => {
+            return getAllChallengesB
+        }
+        getChallenges().then(cList => {
+            setChallenges(cList);
+        })
+
+    }, [challenges])
     // ---------- Dummy Data ---------- //
-    const { challenges } = useRoute().params;
+    // const { challenges } = useRoute().params;
     const showChallenges = challenges.filter((challenge) =>
         selectedOption === "habit"
             ? challenge.type === "habit"

@@ -16,12 +16,13 @@ const topColor = 'orange';
 const titleMarginTop = screenHeight * 0.15;
 
 function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
+    console.log("CHALLENGE: ",challenge)
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const isOwner = true;
     const [hasJoinedChallenge, setHasJoinedChallenge] = useState(true);
 
     function getFontSize() {
-        const length = challenge.title.length;
+        const length = challenge.name.length;
         if (length <= 10) {
           return 26;
         } else if (length > 10 && length <= 20) {
@@ -38,7 +39,7 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
     function showSetting(){
         setIsEditModalVisible(true)
     }
-    
+
     function handleDelete(){
         Alert.alert(
             'Confirm Delete',
@@ -75,10 +76,10 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
                     <View style={styles.backButtonContainer}>
                         <IconButton onPress={goBack} iconName={'chevron-back-outline'}/>
                     </View>
-                    {isOwner && 
+                    {isOwner &&
                         <View style={styles.rightButtonsContainer}>
                             <View style={styles.editButtonContainer}>
-                                <IconButton onPress={showSetting} 
+                                <IconButton onPress={showSetting}
                                             iconName={'create-outline'}/>
                             </View>
                             <IconButton onPress={handleDelete} iconName={'trash-outline'} />
@@ -110,7 +111,7 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
                 </View>
                 <View style={styles.bottom}>
                     <View style={styles.detailContainer}>
-                        <ChallengeDetail challenge={challenge} 
+                        <ChallengeDetail challenge={challenge}
                                         hasJoinedChallenge={hasJoinedChallenge}/>
                         </View>
                     <View style={styles.discussionButtonContainer}>

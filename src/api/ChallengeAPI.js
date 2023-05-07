@@ -2,6 +2,27 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import appConfig from "../../config/appConfig";
 
+
+export const getAllPublicChallenges = async (token) => {
+    try {
+        const config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+        const response = await axios.get(
+            appConfig.API_URL + `/api/challenge/getAllPublic`,
+            config
+        );
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            throw new Error(`Request failed, status: ${response.status}`);
+        }
+    } catch (e) {
+        console.log(`getAllPublicChallenges: ${e.message}`);
+        return null;
+    }
+};
+
 export const getChallengeById = async (token, id) => {
     try {
         const config = {
@@ -37,7 +58,7 @@ export const getPublicChallengePage = async (token, page, size) => {
             throw new Error(`Request failed, status: ${response.status}`);
         }
     } catch (e) {
-        console.log(`getAllPublic: ${e.message}`);
+        console.log(`getPublicChallengePage: ${e.message}`);
         return null;
     }
 };

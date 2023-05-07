@@ -17,7 +17,7 @@ import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncSto
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../contexts/AuthContext";
 import { StatusContext } from "../contexts/StatusContext";
-import { removeLocalUserConent } from "../utils/AsyncStorageUtils";
+import { removeLocalUserContent } from "../utils/AsyncStorageUtils";
 
 function SettingsScreen() {
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
@@ -77,7 +77,7 @@ function SettingsScreen() {
     }
 
     const handleLogout = async () => {
-        await removeLocalUserConent()
+        await removeLocalUserContent()
             .catch()
             .finally(() => {
                 clearAuth();

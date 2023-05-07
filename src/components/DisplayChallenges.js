@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {View, FlatList, StyleSheet, Text, Animated, TouchableOpacity} from 'react-native';
 import ChallengeComponent from "./ChallengeComponent";
 import DisplayChallengeModal from "../modals/DisplayChallengeModal";
 import NoChallenge from "./NoChallenge";
+import {AuthContext} from "../contexts/AuthContext";
+import {getOneSelfParticipation} from "../api/ParticipationAPI";
 
 function DisplayChallenges({challenges}){
 
@@ -11,10 +13,28 @@ function DisplayChallenges({challenges}){
 
   const [isChallengeModalVisible, setIsChallengeModalVisible] = useState(false);
   const [currentChallenge, setCurrentChallenge] = useState(challenges[0]);
-  const [challengesList, setChallengesList] = useState(sortChallenges(challenges));
+  const [challengesList, setChallengesList] = useState([]);
+  const {token} = useContext(AuthContext)
 
   useEffect(() => {
-    setChallengesList(sortChallenges(challenges));
+    const getParticipation = async () => {
+      for (const challenge of challenges) {
+        const {id} = challenge;
+        const participation = await getOneSelfParticipation(token, id);
+
+        const {isActive, progress, durationProgress, completedDates, streak} = participation;
+
+        challenge.isActive = isActive;
+        challenge.progress = progress;
+        challenge.durationProgress = durationProgress;
+        challenge.completedDates = completedDates;
+        challenge.streak = streak;
+      }
+    }
+    getParticipation().then(cList => {
+      setChallengesList(sortChallenges(cList));
+    })
+
   }, [challenges])
 
   function onClick(challenge){
@@ -32,13 +52,13 @@ function DisplayChallenges({challenges}){
 
   function sortChallenges(challenges) {
     return challenges.sort((a, b) => {
-      if (a.isCompleted && !b.isCompleted) {
+      if (!a.isActive && b.isActive) {
         return 1;
       }
-      if (!a.isCompleted && b.isCompleted) {
+      if (a.isActive && !b.isActive) {
         return -1;
       }
-      return 0; 
+      return 0;
     });
   }
 

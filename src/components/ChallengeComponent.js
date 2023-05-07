@@ -3,17 +3,17 @@ import { Text, View, StyleSheet, TouchableOpacity, Image} from "react-native";
 import Icons from "../constants/Icons";
 
 function ChallengeComponent({challenge, onClick}){
-    const {title, category, type} = challenge;
+    const {name, category, frequency, isActive, isOngoing, startDate, endDate} = challenge;
     const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric'};
     let endDateText = '';
-    if (challenge.type === 'goal' && challenge.isCompleted){
+    if (frequency === null && !isActive){
         endDateText = 'Completed';
     }
-    else if (challenge.endDate === null){
+    else if (isOngoing){
         endDateText = 'Ongoing';
     }
     else{
-        endDateText = 'To ' + challenge.endDate.toLocaleDateString('en-US', dateOptions);
+        endDateText = 'To ' + endDate.toLocaleDateString('en-US', dateOptions);
     }
 
     function onClickHandler(){
@@ -28,7 +28,7 @@ function ChallengeComponent({challenge, onClick}){
                 </View>
                 <View style={styles.detailContainer}>
                     <View style={styles.titleWrapper} >
-                        <Text style={styles.title}>{title}</Text>
+                        <Text style={styles.title}>{name}</Text>
                     </View>
                     <Text style={styles.endDateText}>{endDateText}</Text>
                 </View>

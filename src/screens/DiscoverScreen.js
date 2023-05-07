@@ -11,15 +11,15 @@ import { useRoute } from "@react-navigation/native";
 import DisplayChallenges from "../components/DisplayChallenges";
 import SearchComponent from "../components/SearchComponent";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getAllPublic } from "../api/ChallengeAPI";
+import { getAllPublicChallenges } from "../api/ChallengeAPI";
 import appConfig from "../../config/appConfig";
 import {AuthContext} from "../contexts/AuthContext";
 
 function DiscoverScreen() {
     // ---------- Dummy Data ---------- //
-    const { challenges } = useRoute().params;
+    // const { challenges } = useRoute().params;
     const [filteredChallenges, setFilteredChallenges] = useState([]);
-    const {token} = useContext(AuthContext)
+    const { token } = useContext(AuthContext)
     // ---------- Dummy Data ---------- //
 
     const options = [
@@ -30,8 +30,7 @@ function DiscoverScreen() {
 
     useEffect(() => {
         const getChallenges = async () => {
-            const challengeList = await getAllPublic(token);
-            return JSON.parse(challengeList);
+            return await getAllPublicChallenges(token);
         };
         const processChallenges = (challengeList) => {
             const filtered = challengeList.filter((challenge) => {
@@ -52,7 +51,7 @@ function DiscoverScreen() {
             .catch((e) => {
                 console.log("getChallenges: " + e.message);
             });
-    }, [challenges, option]);
+    }, [option]);
 
     function switchHandler(value) {
         setOption(value);

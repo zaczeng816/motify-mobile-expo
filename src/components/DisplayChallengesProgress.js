@@ -36,10 +36,10 @@ function DisplayChallengesProgress({challenges}) {
 
     function sortChallenges(challenges) {
       return challenges.sort((a, b) => {
-        if (a.isCompleted && !b.isCompleted) {
+        if (!a.isActive && b.isActive) {
           return 1;
         }
-        if (!a.isCompleted && b.isCompleted) {
+        if (a.isActive && !b.isActive) {
           return -1;
         }
         return 0;
