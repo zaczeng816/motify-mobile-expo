@@ -209,7 +209,11 @@ const EnterAmount = ({amount, setAmount, unit, setUnit}) => {
       )
 }
 
-const DatePicker = ({title, date, dateHandler}) => {
+const DatePicker = ({title, dateString, dateHandler}) => {
+    // console.log('date: ');
+    // console.log(date);
+    //const date = new Date(dateString.substring(0, 4) + dateString.substring(5,7) + dateString.substring(8,10));
+    const date = new Date();
     return (
         <View style={styles.dateContainer}>
             <Text style={styles.sectionTitle}>{title}</Text>
@@ -246,30 +250,31 @@ const Description = ({description, setDescription}) => {
 function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge, refresh}){
 
     const [title, setTitle] = isNew? useState('') : useState(challenge.name);
-    const [category, setCategory] = isNew? useState(categories[0]) : useState(challenge.category);
+    const [category, setCategory] = isNew? useState(categories[0]) : useState(challenge.category.toLowerCase());
     const [isPrivate, setIsPrivate] = isNew? useState(true) : useState(challenge.isPrivate);
     const [type, setType] = isNew? useState('habit') : useState(challenge.frequency? 'habit' : 'goal');
-    const [frequency, setFrequency] = isNew? useState('day') : useState(challenge.frequency? challenge.frequency: 'day');
+    const [frequency, setFrequency] = isNew? useState('day') : useState(challenge.frequency? challenge.frequency.toLowerCase(): 'day');
     const [isTimeBased, setIsTimeBased] = isNew? useState(false) : useState(challenge.workload.type === 'time');
     const [duration, setDuration] = isNew? useState(new Date(0,0,0,0,0,0)) :
-                                    useState(challenge.workload.type === 'time'? challenge.workload.duration: new Date(0,0,0,0,0,0));
+                                    useState(challenge.workload.type === 'time'?
+                                        challenge.workload.duration: new Date(0,0,0,0,0,0));
     const [amount, setAmount] = isNew? useState('') : useState(challenge.amount? challenge.amount: '');
     const [unit, setUnit] = isNew? useState('') : useState(challenge.workload.unit? challenge.workload.unit : '');
     const [description, setDescription] = isNew? useState('') : useState(challenge.description);
     const [isOngoing, setIsOngoing] = isNew? useState(false) : useState(challenge.isOngoing);
-    const [startDate, setStartDate] = isNew? useState(new Date()) : useState(challenge.startDate);
-    const [endDate, setEndDate] = isNew? useState(new Date()) : useState(challenge.endDate);
+    const [startDate, setStartDate] = isNew? useState(new Date()) : useState(challenge.isOngoing? new Date(): challenge.startDate);
+    const [endDate, setEndDate] = isNew? useState(new Date()) : useState(challenge.isOngoing? new Date(): challenge.endDate);
     const [curCategory, setCurCategory] = useState(category);
     const [curFrequency, setCurFrequency] = useState(frequency);
     const [curDuration, setCurDuration] = useState(duration);
-
     const [scrollModalVisible, setScrollModalVisible] = useState(false);
     const [currentSection, setCurrentSection] = useState('');
     const [titleWidth, setTitleWidth] = useState(0);
     const [titleIcon, setTitleIcon] = useState(Icons[category.toUpperCase()]);
     const {token} = useContext(AuthContext);
     const {user} = useContext(UserContext);
-
+    // console.log('frequency');
+    // console.log(curFrequency);
 
     const handleContentSizeChange = (event) => {
         const { width } = event.nativeEvent.contentSize;

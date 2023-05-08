@@ -101,7 +101,7 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge, refresh}){
 
     async function getParticipantsNum() {
         const res = await getParticipantsByPublicChallengeId(token, challenge.id);
-        return res.data.length;
+        return res.length;
     }
 
     async function getSelfParticipation() {
@@ -113,7 +113,6 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge, refresh}){
     }
 
     useEffect(() => {
-
         getParticipantsNum().then(n => {
             getSelfParticipation().then(p => {
                 setParticipantsNum(n);
