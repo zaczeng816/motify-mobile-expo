@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, TextInput, Modal, Dimensions,} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -37,13 +37,16 @@ function DurationInput({inputTime, setInputTime}){
     )
 }
 
-function EnterAmountModal({isModalVisible, hideModal, onSubmit, challenge}){
-    const [amountInputValue, setAmountInputValue] = useState('');
+function EnterAmountModal({isModalVisible, hideModal, onSubmit, challenge, refresh}){
+    const [amountInputValue, setAmountInputValue] = useState(0);
     const [timeInputValue, setTimeInputValue] = useState(new Date(0,0,0,0,0,0));
-    const isTimeBased = challenge.workload.type === 'time';
+    const [isTimeBased, setIsTimeBased] = useState(challenge.workload.type === 'time');
+
+    useEffect(() => {
+      setIsTimeBased(challenge.workload.type === 'time');
+    }, [challenge])
 
     const handleSubmit = () => {
-      const isTimeBased = challenge.workload.type === 'time';
       if (isTimeBased) {
         onSubmit(timeInputValue.toISOString());
       }
@@ -52,6 +55,7 @@ function EnterAmountModal({isModalVisible, hideModal, onSubmit, challenge}){
       }
       setAmountInputValue('');
       setTimeInputValue(new Date(0,0,0,0,0,0));
+      refresh();
       hideModal();
     };
 

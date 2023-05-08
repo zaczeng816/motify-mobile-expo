@@ -104,7 +104,7 @@ function DisplayChallengesProgress({challenge_pairs, refresh}) {
       }
       else{ //is goal
           openAmountModal();
-          setCurrentChallenge(data.item);
+          setCurrentChallenge(data.item.first);
       }
     }
 
@@ -212,7 +212,8 @@ function DisplayChallengesProgress({challenge_pairs, refresh}) {
         <EnterAmountModal challenge={currentChallenge}
                         isModalVisible={isEnterAmountModalVisible}
                         hideModal={closeAmountModal}
-                        onSubmit={submitAmountHandler}/>
+                        onSubmit={submitAmountHandler}
+                        refresh={refresh}/>
       </View>
     );
 }

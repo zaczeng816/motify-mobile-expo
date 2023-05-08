@@ -24,7 +24,6 @@ const topColor = 'orange';
 const titleMarginTop = screenHeight * 0.15;
 
 function DisplayChallengeModal({isModalVisible, hideModal, challenge, refresh}){
-    console.log("CHALLENGE: ",challenge)
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     // const {user} = useContext(UserContext);
     // const isOwner = challenge.ownerId === user.id;

@@ -16,7 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Icons from "../constants/Icons";
 import * as ImagePicker from "expo-image-picker";
 import {AuthContext} from "../contexts/AuthContext";
-import {getAllByChallengeId, sendPost} from "../api/DiscussionAPI";
+import {deletePost, getAllByChallengeId, sendPost} from "../api/DiscussionAPI";
 import {useIsFocused} from "@react-navigation/native";
 
 // const posts = [
@@ -60,6 +60,9 @@ function DiscussionComponent({challenge}) {
     const {token} = useContext(AuthContext);
     const isFocused = useIsFocused();
     const [posts, setPosts] = useState([]);
+    const [refresh, setRefresh] = useState(false);
+
+    //const sortPosts = (posts) => {posts.sort((a, b) => a.date - b.date)};
 
     useEffect(() => {
         const getPosts = async () => {
@@ -68,12 +71,14 @@ function DiscussionComponent({challenge}) {
         getPosts().then(pList => {
             setPosts(pList);
         })
-    }, [isFocused])
-    function deletePost(id) {
+    }, [isFocused, refresh])
+
+    function deleteOnePost(id) {
         Alert.alert("Confirm delete", "Do you want to delete this post?", [
             { text: "Cancel", style: "cancel" },
             { text: "Confirm", onPress: () => {
                 const callApi = async () => {
+                    console.log(token)
                     await deletePost(token, id);
                 }
                 callApi().then()
@@ -118,6 +123,8 @@ function DiscussionComponent({challenge}) {
             await sendPost(token, body);
         }
         callApi().then();
+        setMessage('')
+        setRefresh(!refresh);
     }
 
     function renderItem({ item }) {
@@ -127,22 +134,16 @@ function DiscussionComponent({challenge}) {
                     <Image source={Icons.avatar} style={styles.avatar} />
                     <View style={styles.postInfo}>
                         <Text style={styles.author}>{item.ownerUsername}</Text>
-                        <Text style={styles.timestamp}>{item.date}</Text>
+                        <Text style={styles.timestamp}>{item.date.slice(0,10)}</Text>
                     </View>
                 </View>
                 <View style={styles.contentContainer}>
                     <View style={styles.postContent}>
                         <Text style={styles.content}>{item.content}</Text>
-                        {/*{item.image && (*/}
-                        {/*    <Image*/}
-                        {/*        source={item.imagePath}*/}
-                        {/*        style={styles.postImage}*/}
-                        {/*    />*/}
-                        {/*)}*/}
                     </View>
                     <TouchableOpacity
                         style={styles.deleteButton}
-                        onPress={() => deletePost(item.id)}
+                        onPress={() => deleteOnePost(item.id)}
                     >
                         <Ionicons name="trash-outline" size={20} color="grey" />
                     </TouchableOpacity>

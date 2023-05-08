@@ -83,7 +83,7 @@ export const deletePost = async (token, id) => {
                 Authorization: `Bearer ${token}`,
             },
         };
-        const response = await axios.delete(
+        const response = await axios.get(
             appConfig.API_URL + `/api/discussion/deletePost/${id}`,
             config
         );
