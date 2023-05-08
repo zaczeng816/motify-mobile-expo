@@ -24,11 +24,16 @@ function TodayScreen() {
         const getChallenges = async () => {
             if (isFocused) {
                 try {
+                    showLoading("Getting Todays Challenges...");
                     const cList = await getAllPublicChallenges(token);
                     if (Array.isArray(cList) && cList.length > 0) {
                         setChallenges(cList);
+                        showMessage("Challenges loaded");
+                    } else {
+                        showMessage("No Challenges Found");
                     }
                 } catch (e) {
+                    showMessage("Error Getting Challenges");
                     console.log("getChallenges: " + e.message);
                 }
             }
