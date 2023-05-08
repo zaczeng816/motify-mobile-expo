@@ -8,8 +8,8 @@ export const getAllPublicChallenges = async (token) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.get(
-            appConfig.API_URL + `/api/challenge/getAllPublic`
-            //config
+            appConfig.API_URL + `/api/challenge/getAllPublic`,
+            config
         );
         if (response.status === 200) {
             return response.data;
