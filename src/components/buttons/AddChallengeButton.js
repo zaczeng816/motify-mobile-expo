@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 import ModifyChallengeModal from '../../modals/ModifyChallengeModal';
 
-function AddChallengeButton() {
+function AddChallengeButton({refresh}) {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
 
   function hideAddModal(){
@@ -22,7 +22,8 @@ function AddChallengeButton() {
       </TouchableOpacity>
       <ModifyChallengeModal isModalVisible={isAddModalVisible}
                           hideModal={hideAddModal}
-                          isNew={true}/>
+                          isNew={true}
+                          refresh={refresh}/>
     </View>
   );
 }

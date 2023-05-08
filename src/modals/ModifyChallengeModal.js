@@ -202,7 +202,7 @@ const EnterAmount = ({amount, setAmount, unit, setUnit}) => {
                     label="Unit"
                     value={unit}
                     onChangeText={setUnit}
-                    //placeholder="Enter unit"
+                    autoCapitalize="none"
                 />
             </View>
         </View>
@@ -243,7 +243,7 @@ const Description = ({description, setDescription}) => {
 }
 
 
-function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
+function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge, refresh}){
 
     const [title, setTitle] = isNew? useState('') : useState(challenge.name);
     const [category, setCategory] = isNew? useState(categories[0]) : useState(challenge.category);
@@ -254,7 +254,7 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
     const [duration, setDuration] = isNew? useState(new Date(0,0,0,0,0,0)) :
                                     useState(challenge.workload.type === 'time'? challenge.workload.duration: new Date(0,0,0,0,0,0));
     const [amount, setAmount] = isNew? useState('') : useState(challenge.amount? challenge.amount: '');
-    const [unit, setUnit] = isNew? useState('') : useState(challenge.unit? challenge.unit : '');
+    const [unit, setUnit] = isNew? useState('') : useState(challenge.workload.unit? challenge.workload.unit : '');
     const [description, setDescription] = isNew? useState('') : useState(challenge.description);
     const [isOngoing, setIsOngoing] = isNew? useState(false) : useState(challenge.isOngoing);
     const [startDate, setStartDate] = isNew? useState(new Date()) : useState(challenge.startDate);
@@ -266,9 +266,10 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
     const [scrollModalVisible, setScrollModalVisible] = useState(false);
     const [currentSection, setCurrentSection] = useState('');
     const [titleWidth, setTitleWidth] = useState(0);
-    const [titleIcon, setTitleIcon] = useState(Icons[category.toLowerCase()]);
+    const [titleIcon, setTitleIcon] = useState(Icons[category.toUpperCase()]);
     const {token} = useContext(AuthContext);
     const {user} = useContext(UserContext);
+
 
     const handleContentSizeChange = (event) => {
         const { width } = event.nativeEvent.contentSize;
@@ -303,7 +304,7 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
         if (currentSection === 'Category') {
             setCategory(curCategory);
             const category = curCategory.toLowerCase();
-            setTitleIcon(Icons[category]);
+            setTitleIcon(Icons[category.toUpperCase()]);
         } else if (currentSection === 'Duration') {
             setDuration(curDuration);
         } else if (currentSection === 'Frequency') {
@@ -328,6 +329,7 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
         dto.isPrivate = isPrivate;
         dto.ownerUsername = user.username;
         dto.ownerId = user.id;
+        return dto;
     }
 
     const create = async () => {
@@ -335,13 +337,17 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
         dto = getDTO(dto);
         dto.id = null;
         dto.createdAt = null;
-        return await createChallenge(token, dto)
+        const res = await createChallenge(token, dto);
+        refresh();
+        return res;
     }
 
     const update = async () => {
         let dto = challenge;
         dto = getDTO(dto);
-        return await updateChallenge(token, dto)
+        const res = await updateChallenge(token, dto);
+        refresh();
+        return res;
     }
 
     const handleSubmit = () => {

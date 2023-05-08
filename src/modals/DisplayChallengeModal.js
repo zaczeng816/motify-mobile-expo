@@ -23,7 +23,7 @@ const topHeight = screenHeight * 0.5;
 const topColor = 'orange';
 const titleMarginTop = screenHeight * 0.15;
 
-function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
+function DisplayChallengeModal({isModalVisible, hideModal, challenge, refresh}){
     console.log("CHALLENGE: ",challenge)
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     // const {user} = useContext(UserContext);
@@ -67,6 +67,7 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
                 text: 'Delete',
                 onPress: () => {
                     deleteChallenge(token, challenge.id).then(hideModal());
+                    refresh();
                 },
                 style: 'destructive',
               },
@@ -87,6 +88,7 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
                     text: 'Quit',
                     onPress: () => {
                         quitPublicChallenge(token, challenge.id).then((hideModal()));
+                        refresh();
                     },
                     style: 'destructive',
                 },

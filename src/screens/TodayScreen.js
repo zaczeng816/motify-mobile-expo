@@ -15,6 +15,7 @@ function TodayScreen() {
     const screenHeight = Dimensions.get("window").height;
     const paddingTop = 0.08 * screenHeight;
     const isFocused = useIsFocused();
+    const [refresh, setRefresh] = useState(false);
     const [selectedDate, setSelectedDate] = useState(
         new Date().toISOString()
     );
@@ -37,7 +38,7 @@ function TodayScreen() {
             setChallengesPair(pairList);
         });
 
-    }, [isFocused]);
+    }, [isFocused, refresh]);
 
     useEffect(() => {
         setShowChallengePair(challengesPair.filter((pair) =>
@@ -66,17 +67,21 @@ function TodayScreen() {
         setSelectedOption(value);
     }
 
+    function refreshChallenges(){
+        setRefresh(!refresh);
+    }
+
     return (
         <View style={styles.screen}>
             <View style={[styles.header, { paddingTop }]}>
                 <View>
                     <Text style={styles.todayText}>Today</Text>
                     <Text style={styles.dateText}>
-                        {currentMonth} {currentYear}ho
+                        {currentMonth} {currentYear}
                     </Text>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <AddChallengeButton />
+                    <AddChallengeButton refresh={refreshChallenges}/>
                 </View>
             </View>
             <CalendarComponent
@@ -90,7 +95,7 @@ function TodayScreen() {
                     options={options}
                     switchHandler={switchHandler}
                 />
-                <DisplayChallengesProgress challenge_pairs={showChallengePair} />
+                <DisplayChallengesProgress challenge_pairs={showChallengePair} refresh={refreshChallenges}/>
             </View>
         </View>
     );

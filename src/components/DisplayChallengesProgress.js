@@ -22,7 +22,7 @@ const HiddenButtonContent = ({isHabit, completed}) => {
   return <Ionicons name='add' size={50} color='white'/>
 }
 
-function DisplayChallengesProgress({challenge_pairs}) {
+function DisplayChallengesProgress({challenge_pairs, refresh}) {
     if (challenge_pairs.length === 0){
       return <NoChallenge />
     }
@@ -210,7 +210,8 @@ function DisplayChallengesProgress({challenge_pairs}) {
         />
         <DisplayChallengeModal challenge={currentChallenge}
                         isModalVisible={isChallengeModalVisible}
-                        hideModal={closeChallengeModal}/>
+                        hideModal={closeChallengeModal}
+                        refresh={refresh}/>
         <EnterAmountModal challenge={currentChallenge}
                         isModalVisible={isEnterAmountModalVisible}
                         hideModal={closeAmountModal}

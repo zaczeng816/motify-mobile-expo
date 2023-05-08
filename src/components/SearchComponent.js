@@ -47,7 +47,7 @@ function SearchComponent({challenges}){
   useEffect(() => {
     const results =
       selectedCategory === 'All' ? suggestions
-        : suggestions.filter((challenge) => challenge.category === selectedCategory);
+        : suggestions.filter((challenge) => challenge.category.toUpperCase() === selectedCategory.toUpperCase());
     setSearchResult(results);
   }, [selectedCategory, suggestions]);
 
