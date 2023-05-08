@@ -70,7 +70,7 @@ function TodayScreen() {
                 <View>
                     <Text style={styles.todayText}>Today</Text>
                     <Text style={styles.dateText}>
-                        {currentMonth} {currentYear}
+                        {currentMonth} {currentYear}ho
                     </Text>
                 </View>
                 <View style={styles.buttonContainer}>
@@ -88,7 +88,7 @@ function TodayScreen() {
                     options={options}
                     switchHandler={switchHandler}
                 />
-                <DisplayChallengesProgress challenges={showChallengesPair} />
+                <DisplayChallengesProgress challenge_pairs={showChallengesPair} />
             </View>
         </View>
     );
