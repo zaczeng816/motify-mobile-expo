@@ -91,15 +91,12 @@ function DisplayChallengesProgress({challenge_pairs, refresh}) {
               setTimeout(() => {
                   setChallengesPairList((prevState) => {
                       const updatedChallenges = prevState.map((item) => {
-                          //     if (item.name === challenge.name){
-                          //       return {...item, isCompleted: !item.isCompleted};
-                          //     }
-                          //     return item;
-                          //   });
-                          //   return sortChallenges(updatedChallenges);
-                          // });
-                          return item.second = !item.second;
+                          if (item.first.name === challenge.name) {
+                              return { ...item, second: !item.second };
+                          }
+                          return item;
                       })
+                      console.log('updated: ', updatedChallenges);
                       return sortChallenges(updatedChallenges);
                   })
               }, 200);
@@ -114,7 +111,7 @@ function DisplayChallengesProgress({challenge_pairs, refresh}) {
     const renderHiddenItem = (data, rowMap) => {
       const challenge = data.item.first;
       const isHabit = challenge.frequency !== null;
-      const completed = data.item.second;
+      const completed = !data.item.second;
       const buttonColor = (isHabit && completed)? '#ff3b30': 'green';
 
       return(
@@ -131,7 +128,7 @@ function DisplayChallengesProgress({challenge_pairs, refresh}) {
 
     const renderItem = ({item}) => {
       const challenge = item.first;
-      const crossedOut = item.second;
+      const crossedOut = !item.second;
       const {name, category, streak} = challenge;
       const isHabit = challenge.frequency !== null;
       const titleLength = challenge.name.length;
@@ -205,7 +202,7 @@ function DisplayChallengesProgress({challenge_pairs, refresh}) {
           renderItem={renderItem}
           renderHiddenItem={renderHiddenItem}
           rightOpenValue={-130}
-          keyExtractor={(item) => item.title}
+          keyExtractor={(item) => item.first.name}
           contentContainerStyle={styles.listContainer}
         />
         <DisplayChallengeModal challenge={currentChallenge}
