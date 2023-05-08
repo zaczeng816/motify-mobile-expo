@@ -1,6 +1,9 @@
-import React from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { View, Text, StyleSheet, ScrollView} from "react-native";
 import { Calendar } from 'react-native-calendars';
+import {AuthContext} from "../contexts/AuthContext";
+import {getOneSelfParticipation} from "../api/ParticipationAPI";
+import {useIsFocused} from "@react-navigation/native";
 
 const highlightedDates = {
   '2023-05-01': { selected: true, selectedColor: 'orange'},
@@ -50,6 +53,27 @@ function ChallengeDetail({challenge}){
 
     const challengeCategory = category.substring(0,1).toUpperCase() + category.substring(1).toLowerCase();
     const challengeType = frequency? 'Habit' : 'Goal';
+    const [hasJoinedChallenge, setHasJoinedChallenge] = useState(false)
+    const [checkInDates, setCheckInDates] = useState([])
+    const { token } = useContext(AuthContext);
+    const isFocus = useIsFocused();
+
+    useEffect(() => {
+        const callApi = async () => {
+            return await getOneSelfParticipation(token, challenge.id);
+        }
+        callApi().then(res => {
+            if (res){
+                let markedDates = {}
+                for (const date in res.completedDates){
+                    markedDates[date.slice(0,10)] = { selected: true, selectedColor: 'orange'}
+                }
+                setHasJoinedChallenge(true);
+                setCheckInDates(markedDates);
+            }
+        })
+
+    }, [isFocus]);
 
     return (
       <View style={styles.outerContainer}>
@@ -72,7 +96,7 @@ function ChallengeDetail({challenge}){
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Check-In History</Text>
               <Calendar
-                markedDates={highlightedDates}
+                markedDates={checkInDates}
                 style={styles.calendar}
                 theme={{arrowColor: 'orange'}}
               />

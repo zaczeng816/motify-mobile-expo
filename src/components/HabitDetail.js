@@ -1,25 +1,34 @@
 import React from "react";
 import {View, Text, StyleSheet} from 'react-native';
+import moment from 'moment';
+
 
 function HabitDetail({challenge}){
     function displayTime(){
-        const hours = challenge.duration.getHours();
-        const minutes = challenge.duration.getMinutes();
-        if (hours == 0){
+        const durationString = challenge.workload.duration;
+        const duration = moment.duration(durationString);
+        const hours = duration.hours();
+        const minutes = duration.minutes();
+        if (hours === 0 && minutes === 0) {
+            return '0 min';
+        } else if (hours === 0) {
             return minutes + ' min';
+        } else if (minutes === 0) {
+            return hours + ' hr';
+        } else {
+            return hours + ' hr ' + minutes + ' min';
         }
-        return hours + ':' + minutes.toString().padStart(2, '0') + ' hr';
     }
 
     function displayAmount(){
-        const unit = challenge.amount > 1? challenge.unit + 's': challenge.unit;
-        return challenge.amount + ' ' + unit;
+        const unit = challenge.workload.amount > 1? challenge.workload.unit + 's': challenge.workload.unit;
+        return challenge.workload.amount + ' ' + unit;
     }
 
-    const frequencyText = (challenge.amountType === 'duration'? 
-                    displayTime(): displayAmount()) + ' every ' + challenge.frequency;
+    const frequencyText = (challenge.workload.type === 'time'?
+                    displayTime(): displayAmount()) + ' every ' + challenge.frequency.toLowerCase();
     return (
-        <View style={styles.container}> 
+        <View style={styles.container}>
             <Text style={styles.frequencyText}>{frequencyText}</Text>
         </View>
     )

@@ -5,6 +5,8 @@ import Icons from "../constants/Icons";
 function ChallengeComponent({challenge, onClick}){
     const {name, category, frequency, isActive, isOngoing, startDate, endDate} = challenge;
     const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric'};
+    const titleLength = challenge.name.length;
+    const fontSize = titleLength > 23? 12: (titleLength > 15 ? 14: 16);
     let endDateText = '';
     if (frequency === null && !isActive){
         endDateText = 'Completed';
@@ -13,7 +15,8 @@ function ChallengeComponent({challenge, onClick}){
         endDateText = 'Ongoing';
     }
     else{
-        endDateText = 'To ' + endDate.toLocaleDateString('en-US', dateOptions);
+        const endDateObject = new Date(endDate);
+        endDateText = 'To ' + endDateObject.toLocaleDateString('en-US', dateOptions);
     }
 
     function onClickHandler(){
@@ -28,7 +31,7 @@ function ChallengeComponent({challenge, onClick}){
                 </View>
                 <View style={styles.detailContainer}>
                     <View style={styles.titleWrapper} >
-                        <Text style={styles.title}>{name}</Text>
+                        <Text style={[styles.title, {fontSize: fontSize}]}>{name}</Text>
                     </View>
                     <Text style={styles.endDateText}>{endDateText}</Text>
                 </View>
@@ -73,7 +76,7 @@ const styles = StyleSheet.create({
         //borderWidth: 2,
         fontSize: 16,
         fontWeight: 'bold',
-        textAlign: 'center',
+        textAlign: 'left',
     },
     detailContainer: {
         flex: 1,

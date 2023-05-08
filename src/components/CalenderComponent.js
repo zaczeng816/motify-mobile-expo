@@ -7,11 +7,12 @@ import Day from "./Day";
 const { width, height } = Dimensions.get('window');
 
 function CalendarComponent({ handleDayPress, selectedDate, setMonth, setYear}) {
-  //startDate is the first day that the user 
+  //startDate is the first day that the user
   const flatListRef = useRef(null);
   const startDate = '2023-01-01';
-  const endDate = '2023-06-30';
+  const endDate = '2024-01-01';
   const dayWidth = width / 7;
+  selectedDate = selectedDate.slice(0,10);
 
 
   function generateDateRange(start, end) {
@@ -69,6 +70,7 @@ function CalendarComponent({ handleDayPress, selectedDate, setMonth, setYear}) {
   const initialDate = new Date(selectedDate);
   const initialDay = initialDate.getDay();
   const initialScrollIndex = initialIndex - initialDay;
+
 
   useEffect(() => {
     flatListRef.current.scrollToIndex({ index: initialScrollIndex });

@@ -15,6 +15,10 @@ function DisplayChallenges({challenges}){
   const [currentChallenge, setCurrentChallenge] = useState(challenges[0]);
   const [challengesList, setChallengesList] = useState(sortChallenges(challenges));
 
+  useEffect(()=> {
+    setChallengesList(sortChallenges(challenges));
+  }, [challenges]);
+
   function onClick(challenge){
       setCurrentChallenge(challenge)
       setIsChallengeModalVisible(true);

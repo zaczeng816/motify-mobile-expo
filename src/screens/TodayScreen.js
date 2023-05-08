@@ -18,7 +18,8 @@ function TodayScreen() {
     const [selectedDate, setSelectedDate] = useState(
         new Date().toISOString()
     );
-    const [selectedOption, setSelectedOption] = useState("habit");
+    const [selectedOption, setSelectedOption] = useState('habit');
+    const [showChallengePair, setShowChallengePair] = useState([]);
     const options = [
         {label: "Habit", value: "habit"},
         {label: "Goal", value: "goal"},
@@ -32,18 +33,19 @@ function TodayScreen() {
             }
             return await getSelfChallengesByDate(token, myDate);
         };
-        getChallengePairs().then(pairList => {setChallengesPair(pairList)});
+        getChallengePairs().then(pairList => {
+            setChallengesPair(pairList);
+        });
 
     }, [isFocused]);
 
-    // ---------- Dummy Data ---------- //
-    // const { challenges } = useRoute().params;
-    const showChallengesPair = challengesPair.filter((pair) =>
-        selectedOption === "habit"
-            ? pair.first.frequency !== null
-            : pair.second.frequency === null
-    );
-    // ---------- Dummy Data ---------- //
+    useEffect(() => {
+        setShowChallengePair(challengesPair.filter((pair) =>
+            selectedOption === "habit"
+                ? pair.first.frequency !== null
+                : pair.first.frequency === null
+        ))
+    }, [isFocused, challengesPair, selectedOption]);
 
     function handleDayPress(day) {
         setSelectedDate(day);
@@ -88,7 +90,7 @@ function TodayScreen() {
                     options={options}
                     switchHandler={switchHandler}
                 />
-                <DisplayChallengesProgress challenge_pairs={showChallengesPair} />
+                <DisplayChallengesProgress challenge_pairs={showChallengePair} />
             </View>
         </View>
     );

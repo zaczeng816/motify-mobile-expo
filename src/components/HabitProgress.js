@@ -1,19 +1,38 @@
 import React from "react";
 import {Text, View, StyleSheet} from "react-native";
+import moment from 'moment';
 
 function HabitProgress({challenge}){
-    function displayTime(date){
-        const hours = date.getHours();
-        const minutes = date.getMinutes();
-        if (hours == 0){
-            return minutes + ' min';
-        }
-        return hours + ':' + minutes.toString().padStart(2, '0') + ' hr';
-    }
-    const unit = challenge.amount + ' ' + (challenge.amount > 1? challenge.unit + 's': challenge.unit);
+    function displayTime(dateString){
+        const duration = moment.duration(dateString);
+        const hours = duration.hours();
+        const minutes = duration.minutes();
 
-    const taskText = challenge.amountType === 'duration'? 
-                    displayTime(challenge.duration) : unit;
+        if (hours === 0 && minutes === 0) {
+            return '0 min';
+        } else if (hours === 0) {
+            return minutes + ' min';
+        } else if (minutes === 0) {
+            return hours + ' hr';
+        } else {
+            return hours + ' hr ' + minutes + ' min';
+        }
+    }
+
+    let showAmount = '';
+    let showDuration = '';
+    if (challenge.workload.type === 'time'){
+        showDuration = displayTime(challenge.workload.duration);
+    }
+    else {
+        const amount = challenge.workload.amount;
+        const unit = challenge.workload.unit.toLowerCase();
+        showAmount = amount + ' ' + (amount > 1 ? unit + 's' : unit);
+    }
+
+
+    const taskText = challenge.workload.type === 'time'?
+                    showDuration : showAmount;
 
     return (
         <View style={styles.container}>

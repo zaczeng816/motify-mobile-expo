@@ -55,8 +55,7 @@ function DisplayChallengesProgress({challenge_pairs}) {
             setChallengesPairList(sortChallenges(challenge_pairs));
         })
 
-    }, [isFocused])
-
+    }, [isFocused, challenge_pairs])
 
     function sortChallenges(challengePairs) {
       return challengePairs.sort((a, b) => {
@@ -133,7 +132,10 @@ function DisplayChallengesProgress({challenge_pairs}) {
     const renderItem = ({item}) => {
       const challenge = item.first;
       const crossedOut = item.second;
-      const {title, category} = challenge;
+      const {name, category, streak} = challenge;
+      const isHabit = challenge.frequency !== null;
+      const titleLength = challenge.name.length;
+      const fontSize = titleLength > 23? 12: (titleLength > 15 ? 14: 16);
 
       return(
         <View style={styles.container}>
@@ -145,20 +147,20 @@ function DisplayChallengesProgress({challenge_pairs}) {
                 </View>
                 <View style={styles.detailContainer}>
                   <View style={styles.titleWrapper} >
-                    <Text style={[styles.title, crossedOut? styles.crossedOut: null]}>
-                      {title}
+                    <Text style={[styles.title, {fontSize: fontSize},crossedOut? styles.crossedOut: null]}>
+                      {name}
                     </Text>
                   </View>
-                  {challenge.type === 'habit' &&
+                  {isHabit &&
                       <View style={styles.streakContainer}>
-                        <Text style={styles.streak}>Streak: {challenge.streak} 🌟</Text>
+                        <Text style={styles.streak}>Streak: {streak} 🌟</Text>
                       </View>}
-                  {challenge.type === 'goal' &&
+                  {!isHabit &&
                       <View style={styles.progressBarContainer}>
                         <GoalProgress challenge={challenge} color='default'/>
                       </View>}
                 </View>
-                {challenge.type === 'habit' &&
+                {isHabit &&
                     <HabitProgress challenge={challenge}/>}
               </View>
           </TouchableOpacity>
@@ -254,7 +256,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center',
+    textAlign: 'left',
   },
   dateText: {
     fontSize: 12,

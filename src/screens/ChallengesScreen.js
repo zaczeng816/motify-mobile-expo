@@ -23,45 +23,47 @@ function ChallengesScreen() {
         { label: "Private", value: "private" },
         { label: "Public", value: "public" },
     ];
-    const [challenges, setChallenges] = useState([]);
+    const [publicChallenges, setPublicChallenges] = useState([]);
+    const [privateChallenges, setPrivateChallenges] = useState([]);
     const [currentOption, setCurrentOption] = useState("private");
     const [isDisplayModalVisible, setIsDisplayModalVisible] = useState(false);
-    const [currentChallenge, setCurrentChallenge] = useState(challenges[0]);
     const { showLoading, showMessage } = useContext(StatusContext);
+    const [currentChallenges, setCurrentChallenges] = useState([]);
+    const [currentChallenge, setCurrentChallenge] = useState(privateChallenges[0]);
     const { token } = useContext(AuthContext);
     const { user } = useContext(UserContext);
 
     useEffect(() => {
         const getChallenges = async () => {
-            if (isFocused) {
-                try {
-                    showLoading("Loading challenges...");
-                    const allPrivate = await getAllPrivateChallenges(token);
-                    const allPublic = await getAllPublicChallenges(token);
-                    const allChallenges = allPrivate.concat(allPublic);
-                    if (
-                        Array.isArray(allChallenges) &&
-                        allChallenges.length > 0
-                    ) {
-                        setChallenges(allChallenges);
-                        showMessage("Challenges loaded");
-                    } else {
-                        showMessage("No Challenges Found");
-                    }
-                } catch (e) {
-                    showMessage("Error Getting Challenges");
-                    console.log("Challenge Screen getChallenges: " + e.message);
-                }
+            try {
+                const allPrivate = await getAllPrivateChallenges(token);
+                const allPublic = await getAllPublicChallenges(token);
+                setPrivateChallenges(allPrivate);
+                setPublicChallenges(allPublic);
+            //     if (
+            //         Array.isArray(allChallenges) &&
+            //         allChallenges.length > 0
+            //     ) {
+            //         setChallenges(allChallenges);
+            //         showMessage("Challenges loaded");
+            //     } else {
+            //         showMessage("No Challenges Found");
+            //     }
+            // } catch (e) {
+            //     showMessage("Error Getting Challenges");
+            }
+            catch (e) {
+                console.log('Failed to fetch challenges');
             }
         };
 
-        getChallenges();
+        getChallenges().then();
     }, [isFocused]);
 
-    const currentChallenges = challenges.filter((challenge) => {
-        return challenge.isPrivate === (currentOption === "private");
-    });
-    // ---------- Dummy Data ---------- //
+    useEffect(() => {
+        setCurrentChallenges(currentOption === 'private'? privateChallenges: publicChallenges);
+    }, [isFocused, currentOption, publicChallenges, privateChallenges])
+
 
     function onClickChallengeHandler(challenge) {
         setCurrentChallenge(challenge);

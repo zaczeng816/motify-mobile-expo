@@ -9,8 +9,14 @@ import ModifyChallengeModal from "./ModifyChallengeModal";
 import DiscussionButton from "../components/buttons/DiscussionButton";
 import JoinChallengeButton from "../components/buttons/JoinChallengeButton";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import {getOneSelfParticipation, getParticipantsByPublicChallengeId} from "../api/ParticipationAPI";
+import {
+    getOneSelfParticipation,
+    getParticipantsByPublicChallengeId,
+    quitPublicChallenge
+} from "../api/ParticipationAPI";
 import {AuthContext} from "../contexts/AuthContext";
+import {deleteChallenge} from "../api/ChallengeAPI";
+import {UserContext} from "../contexts/UserContext";
 
 const screenHeight = Dimensions.get('window').height;
 const topHeight = screenHeight * 0.5;
@@ -20,11 +26,14 @@ const titleMarginTop = screenHeight * 0.15;
 function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
     console.log("CHALLENGE: ",challenge)
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-    const isOwner = true;
+    // const {user} = useContext(UserContext);
+    // const isOwner = challenge.ownerId === user.id;
+
     const [hasJoinedChallenge, setHasJoinedChallenge] = useState(true);
     const [participantsNum, setParticipantsNum] = useState(0);
-
+    const [isOwner, setIsOwner] = useState(false)
     const {token} = useContext(AuthContext);
+    // console.log("Token is: ", token)
 
     function getFontSize() {
         const length = challenge.name.length;
@@ -57,12 +66,32 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
               {
                 text: 'Delete',
                 onPress: () => {
-                  // delete the challenge here
+                    deleteChallenge(token, challenge.id).then(hideModal());
                 },
                 style: 'destructive',
               },
             ],
           );
+    }
+
+    function handleQuit(){
+        Alert.alert(
+            'Confirm Quit',
+            'Do you want to quit this challenge?',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Quit',
+                    onPress: () => {
+                        quitPublicChallenge(token, challenge.id).then((hideModal()));
+                    },
+                    style: 'destructive',
+                },
+            ],
+        );
     }
 
     function hideEditModal(){
@@ -88,6 +117,7 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
             getSelfParticipation().then(p => {
                 setParticipantsNum(n);
                 setHasJoinedChallenge(p !== null)
+                setIsOwner(p.ownerId === challenge.ownerId);
             })
 
         })
@@ -114,6 +144,11 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
                             <IconButton onPress={handleDelete} iconName={'trash-outline'} />
                         </View>
                     }
+                    {!isOwner &&
+                        <View style={styles.rightButtonsContainer}>
+                            <IconButton onPress={handleQuit} iconName={'trash-outline'} />
+                        </View>
+                    }
                     <ModifyChallengeModal isModalVisible={isEditModalVisible}
                                         hideModal={hideEditModal}
                                         isNew={false}
@@ -121,7 +156,7 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
                     <View style={styles.topDetail}>
                         <View style={styles.topHeader}>
                             <Text style={[styles.title, {fontSize: getFontSize()}, {marginTop: titleMarginTop}]}>
-                                        {challenge.title}</Text>
+                                        {challenge.name}</Text>
                             {!challenge.frequency && <GoalDetail challenge={challenge}/>}
                             {challenge.frequency && <HabitDetail challenge={challenge}/>}
                         </View>
