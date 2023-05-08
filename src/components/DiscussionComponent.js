@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
     View,
     Text,
@@ -15,106 +15,134 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import Icons from "../constants/Icons";
 import * as ImagePicker from "expo-image-picker";
+import {AuthContext} from "../contexts/AuthContext";
+import {getAllByChallengeId, sendPost} from "../api/DiscussionAPI";
+import {useIsFocused} from "@react-navigation/native";
 
-const posts = [
-    {
-        id: 1,
-        author: "Alice",
-        avatar: Icons.avatar,
-        content: "This is a sample text post.",
-        timestamp: "10:00 4/14/23 ",
-    },
-    {
-        id: 2,
-        author: "Bob",
-        avatar: Icons.avatar,
-        content: "This is another sample text post.",
-        image: Icons.reading,
-        timestamp: "12:30 3/15/23",
-    },
-    {
-        id: 3,
-        author: "Casey",
-        avatar: Icons.avatar,
-        content: "This is another sample text post.",
-        //image: Icons.reading,
-        timestamp: "6:30 2/18/23",
-    },
-    {
-        id: 4,
-        author: "David",
-        avatar: Icons.avatar,
-        content: "This is another sample text post.",
-        //image: Icons.reading,
-        timestamp: "18:20 7/11/22",
-    },
-];
+// const posts = [
+//     {
+//         id: 1,
+//         author: "Alice",
+//         avatar: Icons.avatar,
+//         content: "This is a sample text post.",
+//         timestamp: "10:00 4/14/23 ",
+//     },
+//     {
+//         id: 2,
+//         author: "Bob",
+//         avatar: Icons.avatar,
+//         content: "This is another sample text post.",
+//         image: Icons.reading,
+//         timestamp: "12:30 3/15/23",
+//     },
+//     {
+//         id: 3,
+//         author: "Casey",
+//         avatar: Icons.avatar,
+//         content: "This is another sample text post.",
+//         //image: Icons.reading,
+//         timestamp: "6:30 2/18/23",
+//     },
+//     {
+//         id: 4,
+//         author: "David",
+//         avatar: Icons.avatar,
+//         content: "This is another sample text post.",
+//         //image: Icons.reading,
+//         timestamp: "18:20 7/11/22",
+//     },
+// ];
 
-function DiscussionComponent() {
+function DiscussionComponent({challenge}) {
     const [message, setMessage] = useState("");
     const [image, setImage] = useState(null);
     const [inputHeight, setInputHeight] = useState(30);
+    const {token} = useContext(AuthContext);
+    const isFocused = useIsFocused();
+    const [posts, setPosts] = useState([]);
 
-    function deletePost() {
+    useEffect(() => {
+        const getPosts = async () => {
+            return await getAllByChallengeId(token, challenge.id);
+        }
+        getPosts().then(pList => {
+            setPosts(pList);
+        })
+    }, [isFocused])
+    function deletePost(id) {
         Alert.alert("Confirm delete", "Do you want to delete this post?", [
             { text: "Cancel", style: "cancel" },
-            { text: "Confirm", onPress: () => {} },
+            { text: "Confirm", onPress: () => {
+                const callApi = async () => {
+                    await deletePost(token, id);
+                }
+                callApi().then()
+                } },
         ]);
     }
 
     const addImage = async () => {
-        try {
-            const { status } =
-                await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (status !== "granted") {
-                alert(
-                    "Please grant camera roll permissions inside your system's settings"
-                );
-                return;
-            }
-
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                allowsEditing: true,
-                aspect: [4, 3],
-                quality: 1,
-            });
-
-            if (!result.canceled) {
-                if (result.assets && result.assets.length > 0) {
-                    setImage({ uri: result.assets[0].uri });
-                }
-            }
-        } catch (e) {
-            console.log("addImage: " + e.message);
-        }
+        // try {
+        //     const { status } =
+        //         await ImagePicker.requestMediaLibraryPermissionsAsync();
+        //     if (status !== "granted") {
+        //         alert(
+        //             "Please grant camera roll permissions inside your system's settings"
+        //         );
+        //         return;
+        //     }
+        //
+        //     let result = await ImagePicker.launchImageLibraryAsync({
+        //         mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        //         allowsEditing: true,
+        //         aspect: [4, 3],
+        //         quality: 1,
+        //     });
+        //
+        //     if (!result.canceled) {
+        //         if (result.assets && result.assets.length > 0) {
+        //             setImage({ uri: result.assets[0].uri });
+        //         }
+        //     }
+        // } catch (e) {
+        //     console.log("addImage: " + e.message);
+        // }
     };
 
-    function handleSend() {}
+    function handleSend() {
+        const callApi = async () => {
+            const body = {
+                content: message,
+                challengeId: challenge.id
+            }
+            await sendPost(token, body);
+        }
+        callApi().then();
+    }
 
     function renderItem({ item }) {
         return (
             <View key={item.id} style={styles.postBackground}>
                 <View style={styles.post}>
-                    <Image source={item.avatar} style={styles.avatar} />
+                    <Image source={Icons.avatar} style={styles.avatar} />
                     <View style={styles.postInfo}>
-                        <Text style={styles.author}>{item.author}</Text>
-                        <Text style={styles.timestamp}>{item.timestamp}</Text>
+                        <Text style={styles.author}>{item.ownerUsername}</Text>
+                        <Text style={styles.timestamp}>{item.date}</Text>
                     </View>
                 </View>
                 <View style={styles.contentContainer}>
                     <View style={styles.postContent}>
                         <Text style={styles.content}>{item.content}</Text>
-                        {item.image && (
-                            <Image
-                                source={item.image}
-                                style={styles.postImage}
-                            />
-                        )}
+                        {/*{item.image && (*/}
+                        {/*    <Image*/}
+                        {/*        source={item.imagePath}*/}
+                        {/*        style={styles.postImage}*/}
+                        {/*    />*/}
+                        {/*)}*/}
                     </View>
                     <TouchableOpacity
                         style={styles.deleteButton}
-                        onPress={deletePost}
+                        onPress={() => deletePost(item.id)}
                     >
                         <Ionicons name="trash-outline" size={20} color="grey" />
                     </TouchableOpacity>
@@ -138,28 +166,28 @@ function DiscussionComponent() {
                 />
                 <View style={styles.inputContainer}>
                     <View style={styles.customInputContainer}>
-                        {image && (
-                            <View style={styles.imageContainer}>
-                                <TouchableOpacity
-                                    style={styles.closeButton}
-                                    onPress={() => setImage(null)}
-                                >
-                                    <Ionicons
-                                        name="close-circle-outline"
-                                        size={25}
-                                        color="#fff"
-                                        style={{
-                                            marginTop: -1.7,
-                                            marginLeft: -0.5,
-                                        }}
-                                    />
-                                </TouchableOpacity>
-                                <Image
-                                    source={image}
-                                    style={styles.imagePreview}
-                                />
-                            </View>
-                        )}
+                        {/*{image && (*/}
+                        {/*    <View style={styles.imageContainer}>*/}
+                        {/*        <TouchableOpacity*/}
+                        {/*            style={styles.closeButton}*/}
+                        {/*            onPress={() => setImage(null)}*/}
+                        {/*        >*/}
+                        {/*            <Ionicons*/}
+                        {/*                name="close-circle-outline"*/}
+                        {/*                size={25}*/}
+                        {/*                color="#fff"*/}
+                        {/*                style={{*/}
+                        {/*                    marginTop: -1.7,*/}
+                        {/*                    marginLeft: -0.5,*/}
+                        {/*                }}*/}
+                        {/*            />*/}
+                        {/*        </TouchableOpacity>*/}
+                        {/*        <Image*/}
+                        {/*            source={image}*/}
+                        {/*            style={styles.imagePreview}*/}
+                        {/*        />*/}
+                        {/*    </View>*/}
+                        {/*)}*/}
                         <TextInput
                             style={[styles.input, { height: inputHeight }]}
                             placeholder="Write your message..."
@@ -187,7 +215,7 @@ function DiscussionComponent() {
                                 color="orange"
                             />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.sendButton}>
+                        <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
                             <Ionicons name="send" size={25} color="orange" />
                         </TouchableOpacity>
                     </View>
@@ -259,7 +287,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
     inputContainer: {
-        borderColor: "black",
+        // borderColor: "black",
         flexDirection: "row",
         alignItems: "flex-start",
         justifyContent: "center",
@@ -325,7 +353,6 @@ const styles = StyleSheet.create({
     closeButton: {
         position: "absolute",
         alignContent: "center",
-        alignItems: "center",
         top: -5,
         right: -5,
         backgroundColor: "rgba(0,0,0,0.5)",

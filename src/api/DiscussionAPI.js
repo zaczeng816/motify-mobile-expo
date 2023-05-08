@@ -53,7 +53,7 @@ export const getAllByChallengeId = async (token, id) => {
     }
 };
 
-export const post = async (token, request) => {
+export const sendPost = async (token, request) => {
     try {
         const config = {
             headers: {
@@ -89,9 +89,9 @@ export const deletePost = async (token, id) => {
         );
         if (response.status !== 200) {
             console.log("deletePost request failed, status: ", response.status);
-            return null;
+            return false;
         }
-        return response.data;
+        return true;
     } catch (e) {
         console.log("deletePost error: ", e.message);
         return null;

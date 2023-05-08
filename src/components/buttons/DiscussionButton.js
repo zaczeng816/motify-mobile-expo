@@ -6,7 +6,7 @@ import DiscussionModal from "../../modals/DiscussionModal";
 const screenWidth = Dimensions.get('window').width;
 const buttonWidth = screenWidth * 0.8;
 
-function DiscussionButton({challenge, isPrivate}){
+function DiscussionButton({challenge, isPrivate, participantsNum}){
 
     const imageSrc = isPrivate? Icons.pen :Icons.discussion;
     const [isDiscussionModalVisible, setIsDiscussionModalVisible] = useState(false);
@@ -31,7 +31,7 @@ function DiscussionButton({challenge, isPrivate}){
             return (
                 <View style={styles.textContainer}>
                     <Text style={styles.discussionText}>Discussion</Text>
-                    <Text style={styles.participantsText}>{challenge.participantsNum} people joined</Text>
+                    <Text style={styles.participantsText}>{participantsNum} people joined</Text>
                 </View>
             );
         }
@@ -47,7 +47,7 @@ function DiscussionButton({challenge, isPrivate}){
                     <ButtonText />
                 </View>
             </TouchableOpacity>
-            <DiscussionModal isPrivate={isPrivate}
+            <DiscussionModal challenge={challenge}
                 isModalVisible={isDiscussionModalVisible}
                 hideModal={hideDiscussionModal}/>
         </View>
@@ -82,12 +82,12 @@ const styles = StyleSheet.create({
     discussionText: {
         color: 'white',
         fontWeight: 'bold',
-    },  
+    },
     checkInText:{
         color: 'white',
         fontWeight: 'bold',
         fontSize: 16,
-    },  
+    },
     participantsText: {
         color: 'white',
         fontStyle: 'italic'

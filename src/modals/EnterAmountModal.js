@@ -13,7 +13,7 @@ function AmountInput({inputValue, setInputValue, challenge}){
               onChangeText={setInputValue}
               value={inputValue}
             />
-            <Text style={styles.unitText}>{challenge.unit}</Text>
+            <Text style={styles.unitText}>{challenge.workload.unit}</Text>
           </View>
       </View>
     )
@@ -24,7 +24,7 @@ function DurationInput({inputTime, setInputTime}){
       <View>
         <Text style={styles.modalTitle}>Completed time</Text>
         <View style={styles.pickerContainer}>
-            <DateTimePicker 
+            <DateTimePicker
                 value={inputTime}
                 mode='time'
                 is24Hour={true}
@@ -40,12 +40,19 @@ function DurationInput({inputTime, setInputTime}){
 function EnterAmountModal({isModalVisible, hideModal, onSubmit, challenge}){
     const [amountInputValue, setAmountInputValue] = useState('');
     const [timeInputValue, setTimeInputValue] = useState(new Date(0,0,0,0,0,0));
-    const isTimeBased = challenge.isTimeBased;
+    const isTimeBased = challenge.workload.type === 'time';
 
     const handleSubmit = () => {
-        onSubmit(inputValue);
-        setInputValue('');
-        hideModal();
+      const isTimeBased = challenge.workload.type === 'time';
+      if (isTimeBased) {
+        onSubmit(timeInputValue.toISOString());
+      }
+      else{
+        onSubmit(amountInputValue);
+      }
+      setAmountInputValue('');
+      setTimeInputValue(new Date(0,0,0,0,0,0));
+      hideModal();
     };
 
     const cancelHandler = () => {

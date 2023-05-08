@@ -85,15 +85,29 @@ function App() {
             }
         };
         init().then();
-    }, [setIsAuthenticated]);
+    }, []);
     */
 
-    if (appConfig.TEST_APIs) {
+    // if (appConfig.TEST_APIs) {
+    //     return (
+    //         <>
+    //             {isAuthenticated ? (
+    //                 <UserProvider>
+    //                     <DiscussionAPITest />
+    //                     <MainContainer />
+    //                 </UserProvider>
+    //             ) : (
+    //                 <AuthContainer />
+    //             )}
+    //             <StatusIndicator />
+    //         </>
+    //     );
+    // } else {
+    //console.log(isAuthenticated)
         return (
             <>
                 {isAuthenticated ? (
                     <UserProvider>
-                        <DiscussionAPITest />
                         <MainContainer />
                     </UserProvider>
                 ) : (
@@ -102,20 +116,7 @@ function App() {
                 <StatusIndicator />
             </>
         );
-    } else {
-        return (
-            <>
-                {isAuthenticated ? (
-                    <UserProvider>
-                        <MainContainer />
-                    </UserProvider>
-                ) : (
-                    <AuthContainer />
-                )}
-                <StatusIndicator />
-            </>
-        );
-    }
+    // }
 }
 
 export default () => (

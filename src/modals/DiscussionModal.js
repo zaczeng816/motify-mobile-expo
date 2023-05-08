@@ -7,9 +7,9 @@ import DiscussionComponent from "../components/DiscussionComponent";
 const screenHeight = Dimensions.get('window').height;
 const headerHeight = screenHeight * 0.15;
 
-function DiscussionModal({isPrivate, isModalVisible, hideModal}){
+function DiscussionModal({challenge, isModalVisible, hideModal}){
 
-    const title = isPrivate? 'Check-in log' : 'Discussion'
+    const title = challenge.isPrivate? 'Check-in log' : 'Discussion'
 
     function goBack(){
         hideModal();
@@ -25,7 +25,7 @@ function DiscussionModal({isPrivate, isModalVisible, hideModal}){
                         leftIcon='chevron-back'
                         onLeftIconPress={goBack}
                         />
-            <DiscussionComponent />
+            <DiscussionComponent challenge={challenge}/>
         </Modal>
     )
 }
@@ -56,4 +56,4 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row'
     }
-})  
+})

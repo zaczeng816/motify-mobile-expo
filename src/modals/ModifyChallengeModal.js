@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
 import { View, ScrollView, Image, StyleSheet, Modal, Switch, TouchableOpacity, Animated, TextInput, Keyboard} from 'react-native';
 import { Text, Button, Divider,  } from 'react-native-elements';
 import { Picker } from '@react-native-picker/picker';
@@ -8,8 +8,13 @@ import SwitchSelector from 'react-native-switch-selector';
 import PickerModal from '../components/PickerModal';
 import Icons from '../constants/Icons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {createChallenge, updateChallenge} from "../api/ChallengeAPI";
+import authContainer from "../AuthContainer";
+import {AuthContext} from "../contexts/AuthContext";
+import {UserContext} from "../contexts/UserContext";
 
 const categories = [
+    'Eating',
   'Reading',
   'Exercise',
   'Meditation',
@@ -17,6 +22,12 @@ const categories = [
   'Professional',
   'Social',
   'Finance',
+    'Studying',
+    'Writing',
+    'Productivity',
+    'Creativity',
+    'Family',
+    'Other'
 ];
 
 const Section = ({title, showScrollModal, value}) => {
@@ -37,7 +48,7 @@ const Section = ({title, showScrollModal, value}) => {
             <View style={styles.sectionContainer}>
                 <Text style={styles.sectionTitle}>{title}</Text>
                 <Text style={styles.sectionValue}>{value}</Text>
-            </View> 
+            </View>
         </TouchableOpacity>
     )
 };
@@ -62,7 +73,7 @@ const Access = ({isPrivate, accessOptions, accessSwitchHandler}) => {
     return (
         <View style={styles.row}>
             <SwitchComponent value={isPrivate? 0 : 1}
-                            options={accessOptions} 
+                            options={accessOptions}
                             switchHandler={accessSwitchHandler}/>
         </View>
     )
@@ -84,7 +95,7 @@ const Type = ({value, typeOptions, typeSwitchHandler}) => {
     return (
         <View style={styles.row}>
             <SwitchComponent value={value === 'habit'? 0 : 1}
-                            options={typeOptions} 
+                            options={typeOptions}
                             switchHandler={typeSwitchHandler}/>
         </View>
     )
@@ -130,7 +141,7 @@ const TimeBasedSwitch = ({isTimeBased, setIsTimeBased}) => {
     return (
         <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>Time-based</Text>
-            <Switch value={isTimeBased} 
+            <Switch value={isTimeBased}
                     onValueChange={setIsTimeBased}
                     trackColor={{true: 'orange', false: 'grey'}} />
         </View>
@@ -141,7 +152,7 @@ const OngoingSwitch = ({isOngoing, setIsOngoing}) => {
     return (
         <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>Ongoing</Text>
-            <Switch value={isOngoing} 
+            <Switch value={isOngoing}
                     onValueChange={setIsOngoing}
                     trackColor={{true: 'orange', false: 'grey'}} />
         </View>
@@ -157,7 +168,7 @@ const TimePicker = ({curDuration, setCurDuration}) => {
 
     return (
         <View style={styles.pickerContainer}>
-            <DateTimePicker 
+            <DateTimePicker
                 value={curDuration}
                 mode='time'
                 is24Hour={true}
@@ -234,15 +245,16 @@ const Description = ({description, setDescription}) => {
 
 function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
 
-    const [title, setTitle] = isNew? useState('') : useState(challenge.title);
+    const [title, setTitle] = isNew? useState('') : useState(challenge.name);
     const [category, setCategory] = isNew? useState(categories[0]) : useState(challenge.category);
     const [isPrivate, setIsPrivate] = isNew? useState(true) : useState(challenge.isPrivate);
-    const [type, setType] = isNew? useState('habit') : useState(challenge.type);
-    const [frequency, setFrequency] = isNew? useState('day') : useState(challenge.frequency);
-    const [isTimeBased, setIsTimeBased] = isNew? useState(false) : useState(challenge.isTimeBased);
-    const [duration, setDuration] = isNew? useState(new Date(0,0,0,0,0,0)) : useState(challenge.duration);
-    const [amount, setAmount] = isNew? useState('') : useState(challenge.amount);
-    const [unit, setUnit] = isNew? useState('') : useState(challenge.unit);
+    const [type, setType] = isNew? useState('habit') : useState(challenge.frequency? 'habit' : 'goal');
+    const [frequency, setFrequency] = isNew? useState('day') : useState(challenge.frequency? challenge.frequency: 'day');
+    const [isTimeBased, setIsTimeBased] = isNew? useState(false) : useState(challenge.workload.type === 'time');
+    const [duration, setDuration] = isNew? useState(new Date(0,0,0,0,0,0)) :
+                                    useState(challenge.workload.type === 'time'? challenge.workload.duration: new Date(0,0,0,0,0,0));
+    const [amount, setAmount] = isNew? useState('') : useState(challenge.amount? challenge.amount: '');
+    const [unit, setUnit] = isNew? useState('') : useState(challenge.unit? challenge.unit : '');
     const [description, setDescription] = isNew? useState('') : useState(challenge.description);
     const [isOngoing, setIsOngoing] = isNew? useState(false) : useState(challenge.isOngoing);
     const [startDate, setStartDate] = isNew? useState(new Date()) : useState(challenge.startDate);
@@ -255,6 +267,8 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
     const [currentSection, setCurrentSection] = useState('');
     const [titleWidth, setTitleWidth] = useState(0);
     const [titleIcon, setTitleIcon] = useState(Icons[category.toLowerCase()]);
+    const {token} = useContext(AuthContext);
+    const {user} = useContext(UserContext);
 
     const handleContentSizeChange = (event) => {
         const { width } = event.nativeEvent.contentSize;
@@ -269,7 +283,7 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
     const hideScrollModal = () => {
         setScrollModalVisible(false);
     };
-    
+
     const renderScrollContent = () => {
         if (currentSection === 'Category'){
             return <CategoryPicker curCategory={curCategory}
@@ -298,9 +312,46 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
         hideScrollModal();
     };
 
-  
+    const getDTO = (dto) => {
+        dto.name = title;
+        dto.category = category.toUpperCase();
+        dto.frequency = type === 'habit'? frequency: null;
+        if (isTimeBased){
+            dto.workload = {type:"time", duration: duration.toISOString()};
+        }else{
+            dto.workload = {type:"quantity", amount: amount, unit: unit};
+        }
+        dto.description = description;
+        dto.isOngoing = isOngoing;
+        dto.startDate = startDate.toISOString();
+        dto.endDate = endDate.toISOString();
+        dto.isPrivate = isPrivate;
+        dto.ownerUsername = user.username;
+        dto.ownerId = user.id;
+    }
+
+    const create = async () => {
+        let dto = {};
+        dto = getDTO(dto);
+        dto.id = null;
+        dto.createdAt = null;
+        return await createChallenge(token, dto)
+    }
+
+    const update = async () => {
+        let dto = challenge;
+        dto = getDTO(dto);
+        return await updateChallenge(token, dto)
+    }
+
     const handleSubmit = () => {
-        hideModal();
+        if (isNew){
+            create().then();
+        }
+        else{
+            update().then();
+        }
+
         setTitle('');
         setIsPrivate(true);
         setType('habit');
@@ -313,18 +364,7 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
         setStartDate(new Date());
         setEndDate((new Date()));
         setDescription('');
-        // console.log('title: ' + title);
-        // console.log('private: ' + isPrivate);
-        // console.log('type: ' + type);
-        // console.log('category: ' + category);
-        // console.log('isTimeBased: '+ isTimeBased);
-        // console.log('duration: '+ duration);
-        // console.log('amount: '+ amount);
-        // console.log('unit: '+ unit);
-        // console.log('isOngoing: '+ isOngoing);
-        // console.log('start date: '+ startDate);
-        // console.log('end date: '+ endDate);
-        // console.log('description: '+ description);
+        hideModal();
     };
 
     const accessOptions = [{label: 'Private', value: 'private'}, {label: 'Public', value: 'public'}];
@@ -372,20 +412,20 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
                 <Type   value={type}
                         typeOptions={typeOptions}
                         typeSwitchHandler={typeSwitchHandler}/>
-                <Section title='Category' 
+                <Section title='Category'
                         showScrollModal={showScrollModal}
                         value={category}/>
-                {type === 'habit' && 
-                                <Section title='Frequency' 
+                {type === 'habit' &&
+                                <Section title='Frequency'
                                         showScrollModal={showScrollModal}
                                         value={'Every ' + frequency}/>}
                 <TimeBasedSwitch isTimeBased={isTimeBased}
                                 setIsTimeBased={setIsTimeBased}/>
-                {isTimeBased ?  <Section title='Duration' 
+                {isTimeBased ?  <Section title='Duration'
                                         showScrollModal={showScrollModal}
                                         value={duration}/> :
                                 <View>
-                                        <EnterAmount amount={amount} 
+                                        <EnterAmount amount={amount}
                                                     setAmount={setAmount}
                                                     unit={unit}
                                                     setUnit={setUnit}/>
@@ -399,7 +439,7 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge}){
                                                 date={endDate}
                                                 dateHandler={endDateHandler}/>
                                 </View>}
-                <Description description={description} 
+                <Description description={description}
                             setDescription={setDescription}/>
                 <PickerModal scrollModalVisible={scrollModalVisible}
                             hideScrollModal={hideScrollModal}
@@ -514,8 +554,6 @@ const styles = StyleSheet.create({
       padding: 20,
       paddingTop: 10,
       backgroundColor: '#f5f5f5',
-      borderRadius: 10,
-      marginBottom: 250,
       fontSize: 18,
     },
     descriptionContainer:{
@@ -547,7 +585,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         justifyContent: 'center'
       },
-      
+
       sectionValue: {
         fontSize: 16,
         color: '#4d4d4d',

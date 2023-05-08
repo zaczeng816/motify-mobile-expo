@@ -5,43 +5,45 @@ import DisplayChallenges from "../components/DisplayChallenges";
 import DisplayChallengesProgress from "../components/DisplayChallengesProgress";
 import SwitchComponent from "../components/SwitchComponent";
 import AddChallengeButton from "../components/buttons/AddChallengeButton";
-import { useNavigation, useRoute, useParams } from "@react-navigation/native";
-import appConfig from "../../config/appConfig";
-import {getAllPrivateChallenges, getAllPublicChallenges} from "../api/ChallengeAPI";
 import {AuthContext} from "../contexts/AuthContext";
+import {getSelfChallengesByDate} from "../api/ParticipationAPI";
+import {useIsFocused} from "@react-navigation/native";
 
 function TodayScreen() {
-    const [challenges, setChallenges] = useState([])
+    const [challengesPair, setChallengesPair] = useState([])
     const {token} = useContext(AuthContext)
-
-    useEffect(() => {
-        const getChallenges = async () => {
-            return getAllChallengesB
-        }
-        getChallenges().then(cList => {
-            setChallenges(cList);
-        })
-
-    }, [challenges])
-    // ---------- Dummy Data ---------- //
-    // const { challenges } = useRoute().params;
-    const showChallenges = challenges.filter((challenge) =>
-        selectedOption === "habit"
-            ? challenge.type === "habit"
-            : challenge.type === "goal"
-    );
-    // ---------- Dummy Data ---------- //
-
     const screenHeight = Dimensions.get("window").height;
     const paddingTop = 0.08 * screenHeight;
+    const isFocused = useIsFocused();
     const [selectedDate, setSelectedDate] = useState(
-        new Date().toISOString().slice(0, 10)
+        new Date().toISOString()
     );
     const [selectedOption, setSelectedOption] = useState("habit");
     const options = [
-        { label: "Habit", value: "habit" },
-        { label: "Goal", value: "goal" },
+        {label: "Habit", value: "habit"},
+        {label: "Goal", value: "goal"},
     ];
+
+    useEffect(() => {
+        const getChallengePairs = async () => {
+            let myDate = selectedDate.slice(0, 10) + "T00:00:00.000Z";
+            if (selectedDate.slice(0, 10) === new Date().toISOString().slice(0, 10)) {
+                myDate = new Date().toISOString();
+            }
+            return await getSelfChallengesByDate(token, myDate);
+        };
+        getChallengePairs().then(pairList => {setChallengesPair(pairList)});
+
+    }, [isFocused]);
+
+    // ---------- Dummy Data ---------- //
+    // const { challenges } = useRoute().params;
+    const showChallengesPair = challengesPair.filter((pair) =>
+        selectedOption === "habit"
+            ? pair.first.frequency !== null
+            : pair.second.frequency === null
+    );
+    // ---------- Dummy Data ---------- //
 
     function handleDayPress(day) {
         setSelectedDate(day);
@@ -86,7 +88,7 @@ function TodayScreen() {
                     options={options}
                     switchHandler={switchHandler}
                 />
-                <DisplayChallengesProgress challenges={showChallenges} />
+                <DisplayChallengesProgress challenges={showChallengesPair} />
             </View>
         </View>
     );

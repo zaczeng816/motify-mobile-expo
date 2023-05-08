@@ -16,9 +16,9 @@ function formatDate(date){
 };
 
 function Duration({challenge}){
-    const {type, isOngoing, startDate, endDate, isCompleted} = challenge;
+    const {frequency, isOngoing, startDate, endDate, isActive} = challenge;
     let durationText;
-    if (type === 'goal' && isCompleted){
+    if (!frequency && isActive){
         durationText = 'Completed';
     }
     else if (isOngoing){
@@ -37,20 +37,19 @@ function Duration({challenge}){
 }
 
 
-function ChallengeDetail({challenge, hasJoinedChallenge}){
+function ChallengeDetail({challenge}){
 
     const {
-        type,
+        frequency,
         startDate,
         endDate,
         description,
-        bestStreak,
-        currentStreak,
+        streak,
         category
       } = challenge;
 
-    const challengeCategory = category.substring(0,1).toUpperCase() + category.substring(1);
-    const challengeType = type.substring(0,1).toUpperCase() + type.substring(1);
+    const challengeCategory = category.substring(0,1).toUpperCase() + category.substring(1).toLowerCase();
+    const challengeType = frequency? 'Habit' : 'Goal';
 
     return (
       <View style={styles.outerContainer}>
@@ -69,7 +68,7 @@ function ChallengeDetail({challenge, hasJoinedChallenge}){
             <Text style={styles.sectionTitle}>Description</Text>
             <Text style={styles.sectionText}>{description}</Text>
           </View>
-          {hasJoinedChallenge && 
+          {hasJoinedChallenge &&
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Check-In History</Text>
               <Calendar

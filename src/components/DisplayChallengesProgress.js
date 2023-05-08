@@ -1,5 +1,5 @@
 import Icons from "../constants/Icons";
-import React, { useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import GoalProgress from "./GoalProgress";
 import HabitProgress from "./HabitProgress";
@@ -8,6 +8,9 @@ import DisplayChallengeModal from "../modals/DisplayChallengeModal";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EnterAmountModal from "../modals/EnterAmountModal";
 import NoChallenge from "./NoChallenge";
+import {checkIn, getOneSelfParticipation, unCheckIn} from "../api/ParticipationAPI";
+import {AuthContext} from "../contexts/AuthContext";
+import {useIsFocused} from "@react-navigation/native";
 
 const HiddenButtonContent = ({isHabit, completed}) => {
   if (isHabit){
@@ -19,65 +22,107 @@ const HiddenButtonContent = ({isHabit, completed}) => {
   return <Ionicons name='add' size={50} color='white'/>
 }
 
-function DisplayChallengesProgress({challenges}) {
-    if (challenges.length === 0){
+function DisplayChallengesProgress({challenge_pairs}) {
+    if (challenge_pairs.length === 0){
       return <NoChallenge />
     }
 
     const [isChallengeModalVisible, setIsChallengeModalVisible] = useState(false);
-    const [challengesList, setChallengesList] = useState(sortChallenges(challenges));
-    const [currentChallenge, setCurrentChallenge] = useState(challengesList[0]);
+    const [challengesPairList, setChallengesPairList] = useState(sortChallenges(challenge_pairs));
+    const [currentChallenge, setCurrentChallenge] = useState(challengesPairList[0].first);
     const [isEnterAmountModalVisible, setIsEnterAmountModalVisible] = useState(false);
-
+    const {token} = useContext(AuthContext);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
-      setChallengesList(sortChallenges(challenges));
-    },[challenges])
+        const getParticipation = async () => {
+            for (let i=0; i<challenge_pairs.length; i++) {
+                const challenge = challenge_pairs[i].first
+                const participation = await getOneSelfParticipation(token, challenge.id);
 
-    function sortChallenges(challenges) {
-      return challenges.sort((a, b) => {
-        if (!a.isActive && b.isActive) {
+                const {isActive, isQuantity, progress, durationProgress, completedDates, streak} = participation;
+
+                challenge.isActive = isActive;
+                challenge.isQuantity = isQuantity;
+                challenge.progress = progress;
+                challenge.durationProgress = durationProgress;
+                challenge.completedDates = completedDates;
+                challenge.streak = streak;
+                challenge_pairs[i].first = challenge;
+            }
+        }
+        getParticipation().then(() => {
+            setChallengesPairList(sortChallenges(challenge_pairs));
+        })
+
+    }, [isFocused])
+
+
+    function sortChallenges(challengePairs) {
+      return challengePairs.sort((a, b) => {
+        if (!a.first.isActive && b.first.isActive) {
           return 1;
         }
-        if (a.isActive && !b.isActive) {
+        if (a.first.isActive && !b.first.isActive) {
           return -1;
         }
         return 0;
       });
     }
 
-    function onPressHiddenButton(challenge, rowMap, data){
-      rowMap[data.item.title].closeRow();
-      if (challenge.type === 'habit'){
-        setTimeout(() => {
-          setChallengesList((prevState) => {
-            const updatedChallenges = prevState.map((item) => {
-              if (item.title === challenge.title){
-                return {...item, isCompleted: !item.isCompleted};
+    function onPressHiddenButton(challengePair, rowMap, data){
+        const challenge = challengePair.first;
+        const isCompleted = !challengePair.second;
+      rowMap[challenge.name].closeRow();
+      if (challenge.frequency){ //is habit
+          const checkInToggler = async () => {
+              if (isCompleted){
+                  await unCheckIn(token, challenge.id);
               }
-              return item;
-            });
-            return sortChallenges(updatedChallenges);
-          });
-        }, 200);
+              else{
+                  const body = {
+                      challengeId: challenge.id,
+                      amount: null,
+                      duration: null
+                  }
+                  await checkIn(token, body);
+              }
+          }
+          checkInToggler().then(() => {
+              setTimeout(() => {
+                  setChallengesPairList((prevState) => {
+                      const updatedChallenges = prevState.map((item) => {
+                          //     if (item.name === challenge.name){
+                          //       return {...item, isCompleted: !item.isCompleted};
+                          //     }
+                          //     return item;
+                          //   });
+                          //   return sortChallenges(updatedChallenges);
+                          // });
+                          return item.second = !item.second;
+                      })
+                      return sortChallenges(updatedChallenges);
+                  })
+              }, 200);
+          })
       }
-      else if (challenge.type === 'goal'){
+      else{ //is goal
           openAmountModal();
           setCurrentChallenge(data.item);
       }
     }
 
     const renderHiddenItem = (data, rowMap) => {
-      const challenge = data.item;
-      const isHabit = challenge.type === 'habit';
-      const completed = challenge.isCompleted;
+      const challenge = data.item.first;
+      const isHabit = challenge.frequency !== null;
+      const completed = data.item.second;
       const buttonColor = (isHabit && completed)? '#ff3b30': 'green';
 
       return(
             <View style={styles.hiddenItem}>
               <TouchableOpacity
                 style={[styles.hiddenButton, {backgroundColor: buttonColor}]}
-                onPress={() => onPressHiddenButton(challenge, rowMap, data)}
+                onPress={() => onPressHiddenButton(data.item, rowMap, data)}
               >
               <HiddenButtonContent isHabit={isHabit} completed={completed}/>
               </TouchableOpacity>
@@ -86,9 +131,9 @@ function DisplayChallengesProgress({challenges}) {
     };
 
     const renderItem = ({item}) => {
-      const challenge = item;
+      const challenge = item.first;
+      const crossedOut = item.second;
       const {title, category} = challenge;
-      const crossedOut = challenge.isCompleted && challenge.type === 'habit';
 
       return(
         <View style={styles.container}>
@@ -136,12 +181,25 @@ function DisplayChallengesProgress({challenges}) {
 
     function closeAmountModal(){
       setIsEnterAmountModalVisible(false);
-    };
+    }
+
+    async function submitAmountHandler(inputValue){
+        const isTimeBased = currentChallenge.workload.type === 'time';
+        const addedAmount = isTimeBased? null : inputValue;
+        const addedDuration = isTimeBased? inputValue : null;
+
+        const body = {
+            challengeId: currentChallenge.id,
+            amount: addedAmount,
+            duration: addedDuration,
+        }
+        await checkIn(token, body);
+    }
 
     return (
       <View style={{flex: 1}}>
         <SwipeListView
-          data={challengesList}
+          data={challengesPairList}
           renderItem={renderItem}
           renderHiddenItem={renderHiddenItem}
           rightOpenValue={-130}
@@ -153,7 +211,8 @@ function DisplayChallengesProgress({challenges}) {
                         hideModal={closeChallengeModal}/>
         <EnterAmountModal challenge={currentChallenge}
                         isModalVisible={isEnterAmountModalVisible}
-                        hideModal={closeAmountModal}/>
+                        hideModal={closeAmountModal}
+                        onSubmit={submitAmountHandler}/>
       </View>
     );
 }

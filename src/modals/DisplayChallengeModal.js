@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { Text, View, StatusBar, Modal, Alert, Dimensions, StyleSheet, Image} from "react-native";
 import GoalDetail from "../components/GoalDetail";
 import HabitDetail from "../components/HabitDetail";
@@ -9,6 +9,8 @@ import ModifyChallengeModal from "./ModifyChallengeModal";
 import DiscussionButton from "../components/buttons/DiscussionButton";
 import JoinChallengeButton from "../components/buttons/JoinChallengeButton";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import {getOneSelfParticipation, getParticipantsByPublicChallengeId} from "../api/ParticipationAPI";
+import {AuthContext} from "../contexts/AuthContext";
 
 const screenHeight = Dimensions.get('window').height;
 const topHeight = screenHeight * 0.5;
@@ -20,6 +22,9 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const isOwner = true;
     const [hasJoinedChallenge, setHasJoinedChallenge] = useState(true);
+    const [participantsNum, setParticipantsNum] = useState(0);
+
+    const {token} = useContext(AuthContext);
 
     function getFontSize() {
         const length = challenge.name.length;
@@ -64,6 +69,30 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
         setIsEditModalVisible(false);
     }
 
+    async function getParticipantsNum() {
+        const res = await getParticipantsByPublicChallengeId(token, challenge.id);
+        return res.data.length;
+    }
+
+    async function getSelfParticipation() {
+        const res = await getOneSelfParticipation(token, challenge.id);
+        if (res == null){
+            return null
+        }
+        return res
+    }
+
+    useEffect(() => {
+
+        getParticipantsNum().then(n => {
+            getSelfParticipation().then(p => {
+                setParticipantsNum(n);
+                setHasJoinedChallenge(p !== null)
+            })
+
+        })
+    }, [challenge])
+
     return (
         <Modal
             animationType="slide"
@@ -93,16 +122,16 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
                         <View style={styles.topHeader}>
                             <Text style={[styles.title, {fontSize: getFontSize()}, {marginTop: titleMarginTop}]}>
                                         {challenge.title}</Text>
-                            {challenge.type === 'goal' && <GoalDetail challenge={challenge}/>}
-                            {challenge.type === 'habit' && <HabitDetail challenge={challenge}/>}
+                            {!challenge.frequency && <GoalDetail challenge={challenge}/>}
+                            {challenge.frequency && <HabitDetail challenge={challenge}/>}
                         </View>
                         <View style={styles.iconContainer}>
                             <Image source={Icons[challenge.category]} style={styles.icon} />
-                            {challenge.private === false && (
+                            {challenge.isPrivate === false && (
                                 <View style={styles.participants}>
                                     <Ionicons name="people" size={25} color='white' />
                                         <Text style={styles.participantsText}>
-                                            {challenge.participantsNum}
+                                            {participantsNum}
                                         </Text>
                                 </View>
                             )}
@@ -116,7 +145,9 @@ function DisplayChallengeModal({isModalVisible, hideModal, challenge}){
                         </View>
                     <View style={styles.discussionButtonContainer}>
                         {!hasJoinedChallenge && <JoinChallengeButton/>}
-                        {hasJoinedChallenge && <DiscussionButton challenge={challenge} isPrivate={challenge.private}/>}
+                        {hasJoinedChallenge && <DiscussionButton challenge={challenge}
+                                                                 isPrivate={challenge.isPrivate}
+                                                                participantsNum={participantsNum}/>}
                     </View>
                 </View>
             </View>

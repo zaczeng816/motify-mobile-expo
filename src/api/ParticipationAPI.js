@@ -65,7 +65,7 @@ export const getOneSelfParticipation = async (token, id) => {
         if (response.status === 200) {
             return response.data;
         } else {
-            throw new Error(`Request failed, status: ${response.status}`);
+            return null;
         }
     } catch (e) {
         console.log(`getOneSelfParticipation: ${e.message}`);
@@ -154,6 +154,28 @@ export const checkIn = async (token, request) => {
         return null;
     }
 };
+
+
+export const unCheckIn = async (token, id) => {
+    try {
+        const config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+        const response = await axios.get(
+            appConfig.API_URL + `/api/participation/uncheckin/${id}`,
+            config
+        );
+        if (response.status !== 200) {
+            throw new Error(`Request failed, status: ${response.status}`);
+        }
+        return response.data;
+    } catch (e) {
+        console.log(`checkIn: ${e.message}`);
+        return null;
+    }
+};
+
+
 
 export const joinPublicChallenge = async (token, id) => {
     try {

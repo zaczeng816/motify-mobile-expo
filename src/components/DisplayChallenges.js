@@ -13,29 +13,7 @@ function DisplayChallenges({challenges}){
 
   const [isChallengeModalVisible, setIsChallengeModalVisible] = useState(false);
   const [currentChallenge, setCurrentChallenge] = useState(challenges[0]);
-  const [challengesList, setChallengesList] = useState([]);
-  const {token} = useContext(AuthContext)
-
-  useEffect(() => {
-    const getParticipation = async () => {
-      for (const challenge of challenges) {
-        const {id} = challenge;
-        const participation = await getOneSelfParticipation(token, id);
-
-        const {isActive, progress, durationProgress, completedDates, streak} = participation;
-
-        challenge.isActive = isActive;
-        challenge.progress = progress;
-        challenge.durationProgress = durationProgress;
-        challenge.completedDates = completedDates;
-        challenge.streak = streak;
-      }
-    }
-    getParticipation().then(cList => {
-      setChallengesList(sortChallenges(cList));
-    })
-
-  }, [challenges])
+  const [challengesList, setChallengesList] = useState(sortChallenges(challenges));
 
   function onClick(challenge){
       setCurrentChallenge(challenge)
