@@ -316,9 +316,13 @@ function ModifyChallengeModal({isModalVisible, hideModal, isNew, challenge, refr
     const getDTO = (dto) => {
         dto.name = title;
         dto.category = category.toUpperCase();
-        dto.frequency = type === 'habit'? frequency: null;
+        dto.frequency = type === 'habit'? frequency.toUpperCase(): null;
         if (isTimeBased){
-            dto.workload = {type:"time", duration: duration.toISOString()};
+            const durationString = 'PT' + duration.getHours() + 'H' + duration.getMinutes() + 'M'
+            dto.workload = {
+                type:"time",
+                duration: durationString
+            };
         }else{
             dto.workload = {type:"quantity", amount: amount, unit: unit};
         }
