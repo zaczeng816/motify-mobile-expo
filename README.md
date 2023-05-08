@@ -1,4 +1,3 @@
-Depdendcy:  
-`react-native@0.71.`  
-`@react-native-async-storage/async-storage`  
-`axios`
+1. Change `config/appConfig.js`. 
+2. `npm install package.json`. 
+3. `npx epxo start`. 
