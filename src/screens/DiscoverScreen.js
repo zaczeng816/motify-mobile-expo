@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -7,20 +7,23 @@ import {
     TouchableOpacity,
 } from "react-native";
 import SwitchComponent from "../components/SwitchComponent";
-import { useRoute } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import DisplayChallenges from "../components/DisplayChallenges";
 import SearchComponent from "../components/SearchComponent";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllPublicChallenges } from "../api/ChallengeAPI";
 import appConfig from "../../config/appConfig";
-import {AuthContext} from "../contexts/AuthContext";
+import { showLoading, showMessage } from "../contexts/StatusContext";
+import { StatusContext } from "../contexts/StatusContext";
+import { AuthContext } from "../contexts/AuthContext";
+import { UserContext } from "../contexts/UserContext";
 
 function DiscoverScreen() {
-    // ---------- Dummy Data ---------- //
-    // const { challenges } = useRoute().params;
+    const { isFocused } = useIsFocused();
+    const { token } = useContext(AuthContext);
+    const { user } = useContext(UserContext);
+    const { showLoading, showMessage, hideLoading } = useContext(StatusContext);
     const [filteredChallenges, setFilteredChallenges] = useState([]);
-    const { token } = useContext(AuthContext)
-    // ---------- Dummy Data ---------- //
 
     const options = [
         { label: "Habit", value: "habit" },
@@ -30,6 +33,7 @@ function DiscoverScreen() {
 
     useEffect(() => {
         const getChallenges = async () => {
+            showLoading("Loading challenges...");
             return await getAllPublicChallenges(token);
         };
         const processChallenges = (challengeList) => {
@@ -47,11 +51,13 @@ function DiscoverScreen() {
         getChallenges()
             .then((c) => {
                 processChallenges(c);
+                hideLoading();
             })
             .catch((e) => {
+                showMessage("Error Getting Challenges");
                 console.log("getChallenges: " + e.message);
             });
-    }, [option]);
+    }, [option, isFocused]);
 
     function switchHandler(value) {
         setOption(value);
