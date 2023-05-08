@@ -1,35 +1,51 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, View, Text, Dimensions, Button } from "react-native";
 import CalendarComponent from "../components/CalenderComponent";
 import DisplayChallenges from "../components/DisplayChallenges";
 import DisplayChallengesProgress from "../components/DisplayChallengesProgress";
 import SwitchComponent from "../components/SwitchComponent";
 import AddChallengeButton from "../components/buttons/AddChallengeButton";
-import { useNavigation, useRoute, useParams } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import appConfig from "../../config/appConfig";
-import {getAllPrivateChallenges, getAllPublicChallenges} from "../api/ChallengeAPI";
-import {AuthContext} from "../contexts/AuthContext";
+import {
+    getAllPrivateChallenges,
+    getAllPublicChallenges,
+} from "../api/ChallengeAPI";
+import { AuthContext } from "../contexts/AuthContext";
+import { StatusContext } from "../contexts/StatusContext";
 
 function TodayScreen() {
-    const [challenges, setChallenges] = useState([])
-    const {token} = useContext(AuthContext)
+    const isFocused = useIsFocused();
+    const [challenges, setChallenges] = useState([]);
+    const { token } = useContext(AuthContext);
+    const { showLoading, hideLoading } = useContext(StatusContext);
 
     useEffect(() => {
         const getChallenges = async () => {
-            return getAllChallengesB
-        }
-        getChallenges().then(cList => {
-            setChallenges(cList);
-        })
+            if (isFocused) {
+                try {
+                    const cList = await getAllPublicChallenges(token);
+                    if (Array.isArray(cList) && cList.length > 0) {
+                        setChallenges(cList);
+                    }
+                } catch (e) {
+                    console.log("getChallenges: " + e.message);
+                }
+            }
+        };
 
-    }, [challenges])
+        getChallenges();
+    }, [token, isFocused]);
     // ---------- Dummy Data ---------- //
     // const { challenges } = useRoute().params;
-    const showChallenges = challenges.filter((challenge) =>
-        selectedOption === "habit"
-            ? challenge.type === "habit"
-            : challenge.type === "goal"
-    );
+    const showChallenges =
+        Array.isArray(challenges) && challenges.length > 0
+            ? challenges.filter((challenge) =>
+                  selectedOption === "habit"
+                      ? challenge.type === "habit"
+                      : challenge.type === "goal"
+              )
+            : [];
     // ---------- Dummy Data ---------- //
 
     const screenHeight = Dimensions.get("window").height;

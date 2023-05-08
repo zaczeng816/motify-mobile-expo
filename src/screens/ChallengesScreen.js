@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import SwitchComponent from "../components/SwitchComponent";
 import { useNavigation, useRoute, useParams } from "@react-navigation/native";
@@ -6,41 +6,62 @@ import DisplayChallenges from "../components/DisplayChallenges";
 import DisplayChallengeModal from "../modals/DisplayChallengeModal";
 import NoChallenge from "../components/NoChallenge";
 import appConfig from "../../config/appConfig";
-import {getOneSelfParticipation} from "../api/ParticipationAPI";
-import {getAllPrivateChallenges, getAllPublicChallenges} from "../api/ChallengeAPI";
-import {AuthContext} from "../contexts/AuthContext";
+import { getOneSelfParticipation } from "../api/ParticipationAPI";
+import {
+    getAllPrivateChallenges,
+    getAllPublicChallenges,
+} from "../api/ChallengeAPI";
+import { AuthContext } from "../contexts/AuthContext";
+import { UserContext } from "../contexts/UserContext";
+import { StatusContext } from "../contexts/StatusContext";
 
 function ChallengesScreen() {
     // ---------- Dummy Data ---------- //
     // const { challenges } = useRoute().params;
+    const isFocused = useNavigation().isFocused();
     const options = [
         { label: "Private", value: "private" },
         { label: "Public", value: "public" },
     ];
-    const [challenges, setChallenges] = useState([])
+    const [challenges, setChallenges] = useState([]);
     const [currentOption, setCurrentOption] = useState("private");
     const [isDisplayModalVisible, setIsDisplayModalVisible] = useState(false);
     const [currentChallenge, setCurrentChallenge] = useState(challenges[0]);
-    const {token} = useContext(AuthContext)
+    const { showLoading, showMessage } = useContext(StatusContext);
+    const { token } = useContext(AuthContext);
+    const { user } = useContext(UserContext);
 
     useEffect(() => {
         const getChallenges = async () => {
-            const allPrivate = await getAllPrivateChallenges(token)
-            const allPublic = await getAllPublicChallenges(token)
-            return allPrivate.concat(allPublic)
-        }
-        getChallenges().then(cList => {
-            setChallenges(cList);
-        })
+            if (isFocused) {
+                try {
+                    showLoading("Loading challenges...");
+                    const allPrivate = await getAllPrivateChallenges(token);
+                    const allPublic = await getAllPublicChallenges(token);
+                    const allChallenges = allPrivate.concat(allPublic);
+                    if (
+                        Array.isArray(allChallenges) &&
+                        allChallenges.length > 0
+                    ) {
+                        setChallenges(allChallenges);
+                        showMessage("Challenges loaded");
+                    } else {
+                        showMessage("No Challenges Found");
+                    }
+                } catch (e) {
+                    showMessage("Error Getting Challenges");
+                    console.log("Challenge Screen getChallenges: " + e.message);
+                }
+            }
+        };
 
-    }, [challenges])
-
+        getChallenges();
+    }, [isFocused]);
 
     const currentChallenges = challenges.filter((challenge) => {
         return challenge.isPrivate === (currentOption === "private");
     });
     // ---------- Dummy Data ---------- //
-
 
     function onClickChallengeHandler(challenge) {
         setCurrentChallenge(challenge);
