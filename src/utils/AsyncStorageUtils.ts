@@ -1,8 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const setIfNotExist = async (key, value) => {
+export const setIfNotExist = async (
+    key: string,
+    value: string
+): Promise<undefined> => {
     try {
-        const itemExists = await AsyncStorage.getItem(key);
+        const itemExists: string | null = await AsyncStorage.getItem(key);
         if (!itemExists) {
             await AsyncStorage.setItem(key, value);
         }
@@ -11,16 +14,16 @@ export const setIfNotExist = async (key, value) => {
     }
 };
 
-export const getLocalToken = async () => {
+export const getLocalToken = async (): Promise<string | null> => {
     try {
-        const token = await AsyncStorage.getItem("token");
+        const token: string | null = await AsyncStorage.getItem("token");
         return token;
     } catch (e) {
-        console.log("getLocalToken: " + e.message);
+        throw new Error("getLocalToken: " + e.message);
     }
 };
 
-export const removeLocalUserContent = async () => {
+export const removeLocalUserContent = async (): Promise<undefined> => {
     try {
         await AsyncStorage.removeItem("token");
         await AsyncStorage.removeItem("username");
@@ -29,6 +32,6 @@ export const removeLocalUserContent = async () => {
         await AsyncStorage.removeItem("user");
         console.log("removeLocalUserConent: User removed from storage!");
     } catch (e) {
-        console.log("removeLocalUserConent Error: " + e.message);
+        throw new Error("removeLocalUserConent Error: " + e.message);
     }
 };
