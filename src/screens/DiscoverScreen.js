@@ -12,7 +12,7 @@ import DisplayChallenges from "../components/DisplayChallenges";
 import SearchComponent from "../components/SearchComponent";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllPublicChallenges } from "../api/ChallengeAPI";
-import appConfig from "../../config/appConfig";
+import appConfig from "../../appConfig";
 import { showLoading, showMessage } from "../contexts/StatusContext";
 import { StatusContext } from "../contexts/StatusContext";
 import { AuthContext } from "../contexts/AuthContext";

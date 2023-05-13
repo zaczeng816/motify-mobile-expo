@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import appConfig from "../../config/appConfig";
+import appConfig from "../../appConfig";
 
 export const getPageByChallengeId = async (token, id, page, size) => {
     try {
@@ -10,7 +10,7 @@ export const getPageByChallengeId = async (token, id, page, size) => {
             },
         };
         const response = await axios.get(
-            appConfig.API_URL +
+            API_URL +
                 `/api/discussion/getPageByChallengeId/${id}/${page}/${size}`,
             config
         );
@@ -36,7 +36,7 @@ export const getAllByChallengeId = async (token, id) => {
             },
         };
         const response = await axios.get(
-            appConfig.API_URL + `/api/discussion/getAllByChallengeId/${id}`,
+            API_URL + `/api/discussion/getAllByChallengeId/${id}`,
             config
         );
         if (response.status !== 200) {
@@ -61,7 +61,7 @@ export const sendPost = async (token, request) => {
             },
         };
         const response = await axios.post(
-            appConfig.API_URL + `/api/discussion/post`,
+            API_URL + `/api/discussion/post`,
             request,
             config
         );
@@ -84,7 +84,7 @@ export const deletePost = async (token, id) => {
             },
         };
         const response = await axios.get(
-            appConfig.API_URL + `/api/discussion/deletePost/${id}`,
+            API_URL + `/api/discussion/deletePost/${id}`,
             config
         );
         if (response.status !== 200) {

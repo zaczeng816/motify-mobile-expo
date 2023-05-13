@@ -1,25 +1,32 @@
 import React from "react";
-import { Text, View, StyleSheet, TouchableOpacity, Image} from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Icons from "../constants/Icons";
 
-function ChallengeComponent({challenge, onClick}){
-    const {name, category, frequency, isActive, isOngoing, startDate, endDate} = challenge;
-    const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric'};
+function ChallengeComponent({ challenge, onClick }) {
+    const {
+        name,
+        category,
+        frequency,
+        isActive,
+        isOngoing,
+        startDate,
+        endDate,
+    } = challenge;
+    const dateOptions = { year: "numeric", month: "numeric", day: "numeric" };
     const titleLength = challenge.name.length;
-    const fontSize = titleLength > 23? 12: (titleLength > 15 ? 14: 16);
-    let endDateText = '';
-    if (frequency === null && !isActive){
-        endDateText = 'Completed';
-    }
-    else if (isOngoing){
-        endDateText = 'Ongoing';
-    }
-    else{
+    const fontSize = titleLength > 23 ? 12 : titleLength > 15 ? 14 : 16;
+    let endDateText = "";
+    if (frequency === null && !isActive) {
+        endDateText = "Completed";
+    } else if (isOngoing) {
+        endDateText = "Ongoing";
+    } else {
         const endDateObject = new Date(endDate);
-        endDateText = 'To ' + endDateObject.toLocaleDateString('en-US', dateOptions);
+        endDateText =
+            "To " + endDateObject.toLocaleDateString("en-US", dateOptions);
     }
 
-    function onClickHandler(){
+    function onClickHandler() {
         onClick(challenge);
     }
 
@@ -27,18 +34,23 @@ function ChallengeComponent({challenge, onClick}){
         <TouchableOpacity onPress={onClickHandler}>
             <View style={styles.container}>
                 <View style={styles.categoryIconContainer}>
-                    <Image source={Icons[category]} style={styles.categoryIcon} />
+                    <Image
+                        source={Icons[category]}
+                        style={styles.categoryIcon}
+                    />
                 </View>
                 <View style={styles.detailContainer}>
-                    <View style={styles.titleWrapper} >
-                        <Text style={[styles.title, {fontSize: fontSize}]}>{name}</Text>
+                    <View style={styles.titleWrapper}>
+                        <Text style={[styles.title, { fontSize: fontSize }]}>
+                            {name}
+                        </Text>
                     </View>
                     <Text style={styles.endDateText}>{endDateText}</Text>
                 </View>
                 {/* <Image source={Icons[challenge.type]} style={styles.icon}/> */}
             </View>
         </TouchableOpacity>
-    )
+    );
 }
 
 export default ChallengeComponent;
@@ -46,15 +58,15 @@ export default ChallengeComponent;
 const styles = StyleSheet.create({
     container: {
         height: 120,
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
         paddingVertical: 10,
         paddingHorizontal: 20,
-        backgroundColor: '#F8F8F8',
-        justifyContent: 'center',
+        backgroundColor: "#F8F8F8",
+        justifyContent: "center",
         borderRadius: 10,
         marginVertical: 5,
-      },
+    },
     categoryIconContainer: {
         //backgroundColor: '#FFF',
         padding: 10,
@@ -70,34 +82,34 @@ const styles = StyleSheet.create({
         height: 30,
         bottom: 30,
         right: 20,
-        position: 'absolute'
+        position: "absolute",
     },
     title: {
         //borderWidth: 2,
         fontSize: 16,
-        fontWeight: 'bold',
-        textAlign: 'left',
+        fontWeight: "bold",
+        textAlign: "left",
     },
     detailContainer: {
         flex: 1,
         //flexDirection: 'column',
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
         //alignSelf: 'stretch',
     },
     titleWrapper: {
         flex: 3,
-        justifyContent: 'center',
-        alignItems: 'flex-start',
+        justifyContent: "center",
+        alignItems: "flex-start",
         marginBottom: -10,
-        marginTop: -10
-      },
+        marginTop: -10,
+    },
     endDateText: {
         fontSize: 10,
-        color: '#999999',
-        fontWeight: 'bold',
+        color: "#999999",
+        fontWeight: "bold",
         //borderWidth: 2,
         marginTop: -20,
-        marginBottom: 20
+        marginBottom: 20,
     },
-})
+});

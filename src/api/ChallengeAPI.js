@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import appConfig from "../../config/appConfig";
+import appConfig from "../../appConfig";
 
 export const getAllPublicChallenges = async (token) => {
     try {
@@ -8,7 +8,7 @@ export const getAllPublicChallenges = async (token) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.get(
-            appConfig.API_URL + `/api/challenge/getAllPublic`,
+            API_URL + `/api/challenge/getAllPublic`,
             config
         );
         if (response.status === 200) {
@@ -28,7 +28,7 @@ export const getChallengeById = async (token, id) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.get(
-            appConfig.API_URL + `/api/challenge/getById/${id}`,
+            API_URL + `/api/challenge/getById/${id}`,
             config
         );
         if (response.status === 200) {
@@ -48,7 +48,7 @@ export const getPublicChallengePage = async (token, page, size) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.get(
-            appConfig.API_URL + `/api/challenge/getPublicPage/${page}/${size}`,
+            API_URL + `/api/challenge/getPublicPage/${page}/${size}`,
             config
         );
         if (response.status === 200) {
@@ -68,7 +68,7 @@ export const getAllPrivateChallenges = async (token) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.get(
-            appConfig.API_URL + `/api/challenge/getAllPrivate`,
+            API_URL + `/api/challenge/getAllPrivate`,
             config
         );
         if (response.status === 200) {
@@ -88,7 +88,7 @@ export const getAllPublicChallengesByOwner = async (token, id) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.get(
-            appConfig.API_URL + `/api/challenge/getAllPublicByOwner/${id}`,
+            API_URL + `/api/challenge/getAllPublicByOwner/${id}`,
             config
         );
         if (response.status === 200) {
@@ -108,7 +108,7 @@ export const createChallenge = async (token, challengeDTO) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.post(
-            appConfig.API_URL + `/api/challenge/create`,
+            API_URL + `/api/challenge/create`,
             challengeDTO,
             config
         );
@@ -129,7 +129,7 @@ export const updateChallenge = async (token, challengeDTO) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.put(
-            appConfig.API_URL + `/api/challenge/update`,
+            API_URL + `/api/challenge/update`,
             challengeDTO,
             config
         );
@@ -150,7 +150,7 @@ export const deleteChallenge = async (token, id) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.delete(
-            appConfig.API_URL + `/api/challenge/delete/${id}`,
+            API_URL + `/api/challenge/delete/${id}`,
             config
         );
         if (response.status === 200) {

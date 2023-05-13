@@ -16,7 +16,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { login } from "../api/AuthAPI";
 import { StatusContext } from "../contexts/StatusContext";
 import { AuthContext } from "../contexts/AuthContext";
-import appConfig from "../../config/appConfig";
+import appConfig from "../../appConfig";
 
 const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
@@ -32,7 +32,7 @@ function LoginScreen() {
     const navigation = useNavigation();
 
     useEffect(() => {
-        if (appConfig.AUTH_SCREEN_TEST) {
+        if (AUTH_SCREEN_TEST) {
             setEmail("yb2062@nyu.edu");
             setPassword("1234myPassword");
         }
@@ -44,7 +44,7 @@ function LoginScreen() {
             return;
         }
         try {
-            showLoading("Logging in...")
+            showLoading("Logging in...");
             const loginResponse = await login(email, password);
             await saveAuth(loginResponse.token);
             setError("");

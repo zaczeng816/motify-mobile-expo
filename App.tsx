@@ -8,7 +8,7 @@ import { AuthContext, AuthProvider } from "./src/contexts/AuthContext";
 import { UserProvider } from "./src/contexts/UserContext";
 import StatusIndicator from "./src/StatusIndicator";
 
-import appConfig from "./config/appConfig";
+import appConfig from "./appConfig";
 import UserAPITest from "./src/api_tests/UserAPITest";
 import DiscussionAPITest from "./src/api_tests/DiscussionAPITest";
 
@@ -88,7 +88,7 @@ function App() {
     }, []);
     */
 
-    // if (appConfig.TEST_APIs) {
+    // if (TEST_APIs) {
     //     return (
     //         <>
     //             {isAuthenticated ? (
@@ -104,18 +104,18 @@ function App() {
     //     );
     // } else {
     //console.log(isAuthenticated)
-        return (
-            <>
-                {isAuthenticated ? (
-                    <UserProvider>
-                        <MainContainer />
-                    </UserProvider>
-                ) : (
-                    <AuthContainer />
-                )}
-                <StatusIndicator />
-            </>
-        );
+    return (
+        <>
+            {isAuthenticated ? (
+                <UserProvider>
+                    <MainContainer />
+                </UserProvider>
+            ) : (
+                <AuthContainer />
+            )}
+            <StatusIndicator />
+        </>
+    );
     // }
 }
 

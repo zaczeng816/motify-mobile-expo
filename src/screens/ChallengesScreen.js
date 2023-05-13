@@ -5,7 +5,7 @@ import { useNavigation, useRoute, useParams } from "@react-navigation/native";
 import DisplayChallenges from "../components/DisplayChallenges";
 import DisplayChallengeModal from "../modals/DisplayChallengeModal";
 import NoChallenge from "../components/NoChallenge";
-import appConfig from "../../config/appConfig";
+import appConfig from "../../appConfig";
 import { getOneSelfParticipation } from "../api/ParticipationAPI";
 import {
     getAllPrivateChallenges,
@@ -29,7 +29,9 @@ function ChallengesScreen() {
     const [isDisplayModalVisible, setIsDisplayModalVisible] = useState(false);
     const { showLoading, showMessage } = useContext(StatusContext);
     const [currentChallenges, setCurrentChallenges] = useState([]);
-    const [currentChallenge, setCurrentChallenge] = useState(privateChallenges[0]);
+    const [currentChallenge, setCurrentChallenge] = useState(
+        privateChallenges[0]
+    );
     const { token } = useContext(AuthContext);
     const { user } = useContext(UserContext);
 
@@ -40,20 +42,19 @@ function ChallengesScreen() {
                 const allPublic = await getAllPublicChallenges(token);
                 setPrivateChallenges(allPrivate);
                 setPublicChallenges(allPublic);
-            //     if (
-            //         Array.isArray(allChallenges) &&
-            //         allChallenges.length > 0
-            //     ) {
-            //         setChallenges(allChallenges);
-            //         showMessage("Challenges loaded");
-            //     } else {
-            //         showMessage("No Challenges Found");
-            //     }
-            // } catch (e) {
-            //     showMessage("Error Getting Challenges");
-            }
-            catch (e) {
-                console.log('Failed to fetch challenges');
+                //     if (
+                //         Array.isArray(allChallenges) &&
+                //         allChallenges.length > 0
+                //     ) {
+                //         setChallenges(allChallenges);
+                //         showMessage("Challenges loaded");
+                //     } else {
+                //         showMessage("No Challenges Found");
+                //     }
+                // } catch (e) {
+                //     showMessage("Error Getting Challenges");
+            } catch (e) {
+                console.log("Failed to fetch challenges");
             }
         };
 
@@ -61,9 +62,10 @@ function ChallengesScreen() {
     }, [isFocused]);
 
     useEffect(() => {
-        setCurrentChallenges(currentOption === 'private'? privateChallenges: publicChallenges);
-    }, [isFocused, currentOption, publicChallenges, privateChallenges])
-
+        setCurrentChallenges(
+            currentOption === "private" ? privateChallenges : publicChallenges
+        );
+    }, [isFocused, currentOption, publicChallenges, privateChallenges]);
 
     function onClickChallengeHandler(challenge) {
         setCurrentChallenge(challenge);

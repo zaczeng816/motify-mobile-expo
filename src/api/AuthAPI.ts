@@ -1,23 +1,31 @@
-import appConfig from "../../config/appConfig";
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from "../../appConfig";
+import { User } from "../types";
+import axios, { AxiosResponse } from "axios";
 
-export const login = async (email, password) => {
+interface AuthResponse {
+    token: string;
+    user: User;
+}
+
+export const login = async (
+    email: string,
+    password: string
+): Promise<AuthResponse> => {
     const dto = {
         email: email.toLowerCase(),
         password: password,
     };
     try {
-        console.log(
-            "Sending Login request to " + appConfig.API_URL + "/api/auth/login"
-        );
+        console.log("Sending Login request to " + API_URL + "/api/auth/login");
 
-        const response = await axios.post(
-            appConfig.API_URL + "/api/auth/login",
+        const response: AxiosResponse<AuthResponse> = await axios.post(
+            API_URL + "/api/auth/login",
             dto,
-            { timeout: 5000 }
-        )
-        console.log("HERE")
+            {
+                timeout: 5000,
+            }
+        );
+        console.log("HERE");
         if (response.status !== 200) {
             console.log("Login response status: " + response.status);
             throw new Error(
@@ -35,18 +43,20 @@ export const login = async (email, password) => {
     }
 };
 
-export const signup = async (username, email, password) => {
+export const signup = async (
+    username: string,
+    email: string,
+    password: string
+): Promise<AuthResponse> => {
     const dto = {
         username: username,
         email: email.toLowerCase(),
         password: password,
     };
     try {
-        console.log(
-            "Sending Signup request to " + appConfig.API_URL + "/api/auth/login"
-        );
-        const response = await axios.post(
-            appConfig.API_URL + "/api/auth/signup",
+        console.log("Sending Signup request to " + API_URL + "/api/auth/login");
+        const response: AxiosResponse<AuthResponse> = await axios.post(
+            API_URL + "/api/auth/signup",
             dto,
             {
                 timeout: 5000, // Set a timeout of 5000 milliseconds (5 seconds)
@@ -66,13 +76,13 @@ export const signup = async (username, email, password) => {
     }
 };
 
-export const testAuth = async (token) => {
+export const testAuth = async (token: string): Promise<boolean> => {
     const config = {
         headers: { Authorization: `Bearer ${token}` },
     };
     try {
-        const response = await axios.get(
-            appConfig.API_URL + "/api/user/testAuth",
+        const response: AxiosResponse<User> = await axios.get(
+            API_URL + "/api/user/testAuth",
             config
         );
         return response.status === 200;

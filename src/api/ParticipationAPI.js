@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import appConfig from "../../config/appConfig";
+import appConfig from "../../appConfig";
 
 export const getAllSelfPublicParticipation = async (token) => {
     try {
@@ -8,8 +8,7 @@ export const getAllSelfPublicParticipation = async (token) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.get(
-            appConfig.API_URL +
-                `/api/participation/getAllSelfPublicParticipation`,
+            API_URL + `/api/participation/getAllSelfPublicParticipation`,
             config
         );
         if (response.status === 200) {
@@ -33,8 +32,7 @@ export const getAllSelfPrivateParticipation = async (token) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.get(
-            appConfig.API_URL +
-                `/api/participation/getAllSelfPrivateParticipation`,
+            API_URL + `/api/participation/getAllSelfPrivateParticipation`,
             config
         );
         if (response.status === 200) {
@@ -58,8 +56,7 @@ export const getOneSelfParticipation = async (token, id) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.get(
-            appConfig.API_URL +
-                `/api/participation/getOneSelfParticipation/${id}`,
+            API_URL + `/api/participation/getOneSelfParticipation/${id}`,
             config
         );
         if (response.status === 200) {
@@ -79,8 +76,7 @@ export const getJoinedPublicChallengesByUserId = async (token, userId) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.get(
-            appConfig.API_URL +
-                `/api/participation/getOneSelfParticipation/${userId}`,
+            API_URL + `/api/participation/getOneSelfParticipation/${userId}`,
             config
         );
         if (response.status === 200) {
@@ -100,7 +96,7 @@ export const getParticipantsByPublicChallengeId = async (token, id) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.get(
-            appConfig.API_URL +
+            API_URL +
                 `/api/participation/getParticipantsByPublicChallengeId/${id}`,
             config
         );
@@ -121,8 +117,7 @@ export const getSelfChallengesByDate = async (token, date) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.get(
-            appConfig.API_URL +
-                `/api/participation/getSelfChallengesByDate/${date}`,
+            API_URL + `/api/participation/getSelfChallengesByDate/${date}`,
             config
         );
         if (response.status !== 200) {
@@ -141,7 +136,7 @@ export const checkIn = async (token, request) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.post(
-            appConfig.API_URL + `/api/participation/checkin`,
+            API_URL + `/api/participation/checkin`,
             request,
             config
         );
@@ -155,14 +150,13 @@ export const checkIn = async (token, request) => {
     }
 };
 
-
 export const unCheckIn = async (token, id) => {
     try {
         const config = {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.get(
-            appConfig.API_URL + `/api/participation/uncheckin/${id}`,
+            API_URL + `/api/participation/uncheckin/${id}`,
             config
         );
         if (response.status !== 200) {
@@ -175,15 +169,13 @@ export const unCheckIn = async (token, id) => {
     }
 };
 
-
-
 export const joinPublicChallenge = async (token, id) => {
     try {
         const config = {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.get(
-            appConfig.API_URL + `/api/participation/joinPublic/${id}`,
+            API_URL + `/api/participation/joinPublic/${id}`,
             config
         );
         if (response.status !== 200) {
@@ -202,7 +194,7 @@ export const quitPublicChallenge = async (token, id) => {
             headers: { Authorization: `Bearer ${token}` },
         };
         const response = await axios.get(
-            appConfig.API_URL + `/api/participation/quitPublic/${id}`,
+            API_URL + `/api/participation/quitPublic/${id}`,
             config
         );
         if (response.status !== 200) {

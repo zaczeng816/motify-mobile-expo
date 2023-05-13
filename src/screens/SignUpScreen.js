@@ -15,7 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import { signup } from "../api/AuthAPI";
 import { StatusContext } from "../contexts/StatusContext";
 import { AuthContext } from "../contexts/AuthContext";
-import appConfig from "../../config/appConfig";
+import appConfig from "../../appConfig";
 
 const windowWidth = Dimensions.get("window").width;
 
@@ -30,7 +30,7 @@ function SignUpScreen() {
     const navigation = useNavigation();
 
     useEffect(() => {
-        if (appConfig.AUTH_SCREEN_TEST) {
+        if (AUTH_SCREEN_TEST) {
             setUsername("neal");
             setEmail("neal@nyu.edu");
             setPassword("1234myPassword");

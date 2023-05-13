@@ -1,5 +1,5 @@
 import axios from "axios";
-import appConfig from "../../config/appConfig";
+import appConfig from "../../appConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const getSelf = async (token) => {
@@ -7,10 +7,7 @@ export const getSelf = async (token) => {
         const config = {
             headers: { Authorization: `Bearer ${token}` },
         };
-        const response = await axios.get(
-            appConfig.API_URL + `/api/user/getSelf`,
-            config
-        );
+        const response = await axios.get(API_URL + `/api/user/getSelf`, config);
         if (response.status !== 200) {
             throw new Error("request failed, status: " + "${response.status}");
         }
@@ -29,7 +26,7 @@ export const getOneById = async (token, id) => {
             },
         };
         const response = await axios.get(
-            appConfig.API_URL + `/api/user/getOneById/${id}`,
+            API_URL + `/api/user/getOneById/${id}`,
             config
         );
         if (response.status !== 200) {
@@ -51,7 +48,7 @@ export const getListByIds = async (token, idList) => {
             },
         };
         const response = await axios.get(
-            appConfig.API_URL + `/api/user/getListByIds`,
+            API_URL + `/api/user/getListByIds`,
             idList,
             config
         );
@@ -77,7 +74,7 @@ export const getAllByUsername = async (token, username) => {
             },
         };
         const response = await axios.get(
-            appConfig.API_URL + `/api/user/getAllByUsername/${username}`,
+            API_URL + `/api/user/getAllByUsername/${username}`,
             config
         );
         if (response.status !== 200) {
@@ -102,7 +99,7 @@ export const getByEmail = async (token, email) => {
             },
         };
         const response = await axios.get(
-            appConfig.API_URL + `/api/user/getByEmail/${email}`,
+            API_URL + `/api/user/getByEmail/${email}`,
             config
         );
         if (response.status !== 200) {
@@ -125,7 +122,7 @@ export const setProfileImage = async (token, imageUri) => {
             type: "image/jpeg",
         });
         const response = await axios.post(
-            appConfig.API_URL + `/api/user/uploadUserProfileImage`,
+            API_URL + `/api/user/uploadUserProfileImage`,
             formData,
             {
                 headers: {
