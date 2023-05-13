@@ -16,7 +16,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { login } from "../api/AuthAPI";
 import { StatusContext } from "../contexts/StatusContext";
 import { AuthContext } from "../contexts/AuthContext";
-import appConfig from "../../appConfig";
+import { AUTH_SCREEN_TEST } from "../../{ AUTH_SCREEN_TEST }";
 
 const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;

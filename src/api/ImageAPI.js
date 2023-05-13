@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import appConfig from "../../appConfig";
+import , { AxiosResponse } from "axios";
+import { API_URL } from "../../{ API_URL }";
 
 export const getImageByPath = async (path) => {
     try {

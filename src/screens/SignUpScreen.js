@@ -15,7 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import { signup } from "../api/AuthAPI";
 import { StatusContext } from "../contexts/StatusContext";
 import { AuthContext } from "../contexts/AuthContext";
-import appConfig from "../../appConfig";
+import { AUTH_SCREEN_TEST } from "../../{ AUTH_SCREEN_TEST }";
 
 const windowWidth = Dimensions.get("window").width;
 

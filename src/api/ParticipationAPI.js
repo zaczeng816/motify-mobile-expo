@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import , { AxiosResponse } from "axios";
 import appConfig from "../../appConfig";
 
 export const getAllSelfPublicParticipation = async (token) => {

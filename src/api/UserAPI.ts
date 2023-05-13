@@ -1,31 +1,38 @@
-import axios from "axios";
-import appConfig from "../../appConfig";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from "../../appConfig";
+import { User } from "../types";
+import axios, { AxiosResponse } from "axios";
 
-export const getSelf = async (token) => {
+export const getSelf = async (token: string): Promise<User> => {
     try {
         const config = {
             headers: { Authorization: `Bearer ${token}` },
         };
-        const response = await axios.get(API_URL + `/api/user/getSelf`, config);
+        const response: AxiosResponse<User> = await axios.get(
+            API_URL + `/api/user/getSelf`,
+            config
+        );
         if (response.status !== 200) {
-            throw new Error("request failed, status: " + "${response.status}");
+            throw new Error(
+                "request failed with status: " + "${response.status}"
+            );
         }
         return response.data;
     } catch (e) {
-        new Error("getSelf error: " + e.message);
-        return null;
+        new Error("getSelf: " + e.message);
     }
 };
 
-export const getOneById = async (token, id) => {
+export const getOneById = async (
+    token: string,
+    id: string
+): Promise<User | null> => {
     try {
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         };
-        const response = await axios.get(
+        const response: AxiosResponse<User | null> = await axios.get(
             API_URL + `/api/user/getOneById/${id}`,
             config
         );
@@ -40,40 +47,41 @@ export const getOneById = async (token, id) => {
     }
 };
 
-export const getListByIds = async (token, idList) => {
+export const getListByIds = async (
+    token: string,
+    idList: string[]
+): Promise<User[]> => {
     try {
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
-        };
-        const response = await axios.get(
-            API_URL + `/api/user/getListByIds`,
             idList,
+        };
+        const response: AxiosResponse<User[]> = await axios.get(
+            API_URL + `/api/user/getListByIds`,
             config
         );
         if (response.status !== 200) {
-            console.log(
-                "getListByIds request failed, status: ",
-                response.status
-            );
-            return null;
+            throw new Error("request failed with status: " + response.status);
         }
         return response.data;
     } catch (e) {
-        console.log("getListByIds error: ", e.message);
-        return null;
+        throw new Error("getListByIds: ", e.message);
     }
 };
 
-export const getAllByUsername = async (token, username) => {
+export const getAllByUsername = async (
+    token: string,
+    username: string
+): Promise<User[]> => {
     try {
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         };
-        const response = await axios.get(
+        const response: AxiosResponse<User[]> = await axios.get(
             API_URL + `/api/user/getAllByUsername/${username}`,
             config
         );
@@ -82,23 +90,24 @@ export const getAllByUsername = async (token, username) => {
                 "getAllByUsername request failed, status: ",
                 response.status
             );
-            return null;
         }
         return response.data;
     } catch (e) {
-        console.log("getAllByUsername error: ", e.message);
-        return null;
+        throw new Error("getAllByUserName: " + e.message);
     }
 };
 
-export const getByEmail = async (token, email) => {
+export const getByEmail = async (
+    token: string,
+    email: string
+): Promise<User | null> => {
     try {
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         };
-        const response = await axios.get(
+        const response: AxiosResponse<User | null> = await axios.get(
             API_URL + `/api/user/getByEmail/${email}`,
             config
         );
@@ -113,7 +122,11 @@ export const getByEmail = async (token, email) => {
     }
 };
 
-export const setProfileImage = async (token, imageUri) => {
+/*
+export const setProfileImage = async (
+    token: string,
+    imageUri: string
+): Promise<boolean> => {
     try {
         const formData = new FormData();
         formData.append("file", {
@@ -121,7 +134,7 @@ export const setProfileImage = async (token, imageUri) => {
             name: "image.jpg",
             type: "image/jpeg",
         });
-        const response = await axios.post(
+        const response: AxiosResponse<> = await axios.post(
             API_URL + `/api/user/uploadUserProfileImage`,
             formData,
             {
@@ -136,3 +149,4 @@ export const setProfileImage = async (token, imageUri) => {
         return false;
     }
 };
+*/
